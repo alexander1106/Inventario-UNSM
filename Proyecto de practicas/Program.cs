@@ -1,4 +1,7 @@
+﻿using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Proyecto_de_practicas.Data;
 using Proyecto_de_practicas.Repository;
 using Proyecto_de_practicas.Service;
@@ -10,27 +13,55 @@ internal class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
-
         builder.Services.AddControllers();
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
+        // ✅ Configuración de JWT
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
 
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"],   // desde appsettings.json
+                    ValidAudience = builder.Configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)
+                    )
+                };
+            });
 
+        builder.Services.AddAuthorization();
+
+        // Base de datos
         builder.Services.AddDbContext<AplicationDBContext>(options =>
         {
             options.UseSqlServer(builder.Configuration.GetConnectionString("Conexion"));
         });
 
-        //AutoMapper
+        // AutoMapper
         builder.Services.AddAutoMapper(typeof(Program));
 
-        //Add service
+        // Servicios
         builder.Services.AddScoped<ILaboratoriosRepository, LaboratoriosRepository>();
-
         builder.Services.AddScoped<ILaboratoriosService, LaboratoriosService>();
 
+        // Aulas
+        builder.Services.AddScoped<IAulasRepository, AulaRepository>();
+        builder.Services.AddScoped<IAulasService, AulasServie>();
+            
+        //Usuarios 
+        builder.Services.AddScoped<IUsuariosRepository, UsuarioRepository>();
+        builder.Services.AddScoped<IUsuariosServices, UsuariosService>();
+
+        // Roles
+        builder.Services.AddScoped<IRolesRepository, RolesRepository>();
+        builder.Services.AddScoped<IRolesService, RolesService>();
 
         var app = builder.Build();
 
@@ -43,6 +74,8 @@ internal class Program
 
         app.UseHttpsRedirection();
 
+        // ✅ IMPORTANTE: primero Authentication, luego Authorization
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapControllers();

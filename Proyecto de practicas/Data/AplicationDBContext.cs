@@ -11,6 +11,8 @@ namespace Proyecto_de_practicas.Data
         public AplicationDBContext(DbContextOptions<AplicationDBContext> options) : base(options) { }
         public DbSet<Laboratorios> Laboratorios { get; set; }
         public DbSet<Aulas> Aulas { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<Roles> Roles{ get; set; }
 
     }
 }
