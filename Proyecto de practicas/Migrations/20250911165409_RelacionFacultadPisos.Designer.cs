@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Proyecto_de_practicas.Data;
 
@@ -10,9 +11,11 @@ using Proyecto_de_practicas.Data;
 namespace Proyecto_de_practicas.Migrations
 {
     [DbContext(typeof(AplicationDBContext))]
-    partial class AplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250911165409_RelacionFacultadPisos")]
+    partial class RelacionFacultadPisos
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -69,9 +72,6 @@ namespace Proyecto_de_practicas.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CategoriaId")
-                        .HasColumnType("int");
-
                     b.Property<int>("CodigoInventario")
                         .HasColumnType("int");
 
@@ -96,8 +96,6 @@ namespace Proyecto_de_practicas.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CategoriaId");
 
                     b.ToTable("Equipos");
                 });
@@ -160,17 +158,6 @@ namespace Proyecto_de_practicas.Migrations
                     b.ToTable("Pisos");
                 });
 
-            modelBuilder.Entity("Proyecto_de_practicas.Models.Equipos", b =>
-                {
-                    b.HasOne("Proyecto_de_practicas.Models.Categorias", "Categoria")
-                        .WithMany("Equipos")
-                        .HasForeignKey("CategoriaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Categoria");
-                });
-
             modelBuilder.Entity("Proyecto_de_practicas.Models.Pisos", b =>
                 {
                     b.HasOne("Proyecto_de_practicas.Models.Facultades", "Facultad")
@@ -180,11 +167,6 @@ namespace Proyecto_de_practicas.Migrations
                         .IsRequired();
 
                     b.Navigation("Facultad");
-                });
-
-            modelBuilder.Entity("Proyecto_de_practicas.Models.Categorias", b =>
-                {
-                    b.Navigation("Equipos");
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Models.Facultades", b =>

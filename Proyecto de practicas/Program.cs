@@ -31,8 +31,24 @@ internal class Program
 
         builder.Services.AddScoped<ILaboratoriosService, LaboratoriosService>();
 
+        builder.Services.AddScoped<IEquiposRepository, EquiposRepository>();
 
-        var app = builder.Build();
+        builder.Services.AddScoped<IEquiposService, EquiposService>();
+
+        builder.Services.AddScoped<IPisosRepository, PisosRepository>();
+
+        builder.Services.AddScoped<IPisosService, PisosService>();
+
+        builder.Services.AddScoped<ICategoriasRepository, CategoriasRepository>();
+        builder.Services.AddScoped<ICategoriasService, CategoriasService>();
+
+        builder.Services.AddScoped<IFacultadesRepository, FacultadesRepository>();
+
+        builder.Services.AddScoped<IFacultadesService, FacultadesService>();
+        
+
+
+        var app = builder.Build(); 
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
