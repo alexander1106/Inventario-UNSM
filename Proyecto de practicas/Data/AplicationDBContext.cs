@@ -13,6 +13,11 @@ namespace Proyecto_de_practicas.Data
         public DbSet<Aulas> Aulas { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Roles> Roles{ get; set; }
+        public DbSet<Equipos> Equipos { get; set; }
+        public DbSet<Pisos> Pisos { get; set; }
+        public DbSet<Categorias> Categorias { get; set; }
+        public DbSet<Facultades> Facultades { get; set; }
 
     }
+
 }

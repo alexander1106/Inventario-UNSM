@@ -22,200 +22,332 @@ namespace Proyecto_de_practicas.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            // Aulas
             modelBuilder.Entity("Proyecto_de_practicas.Models.Aulas", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Estado")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Estado")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Nombre")
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Nombre")
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Piso")
-                        .HasColumnType("int");
+                b.Property<int?>("Piso")
+                    .HasColumnType("int");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("Aulas");
-                });
+                b.ToTable("Aulas");
+            });
 
+            // Herramientas
             modelBuilder.Entity("Proyecto_de_practicas.Models.Herramientas", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AulaId")
-                        .HasColumnType("int");
+                b.Property<int>("AulaId")
+                    .HasColumnType("int");
 
-                    b.Property<string>("Descripcion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<int>("LaboratorioId")
+                    .HasColumnType("int");
 
-                    b.Property<bool>("Estado")
-                        .HasColumnType("bit");
+                b.Property<string>("Descripcion")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("LaboratorioId")
-                        .HasColumnType("int");
+                b.Property<bool>("Estado")
+                    .HasColumnType("bit");
 
-                    b.Property<string>("Marca")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Marca")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Modelo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Modelo")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Nombre")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("AulaId");
+                b.HasIndex("AulaId");
+                b.HasIndex("LaboratorioId");
 
-                    b.HasIndex("LaboratorioId");
+                b.ToTable("Herramientas");
+            });
 
-                    b.ToTable("Herramientas");
-                });
+            // Categorias
+            modelBuilder.Entity("Proyecto_de_practicas.Models.Categorias", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
 
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                b.Property<string>("Descripcion")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
+
+                b.Property<string>("Nombre")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
+
+                b.HasKey("Id");
+
+                b.ToTable("Categorias");
+            });
+
+            // Equipos
+            modelBuilder.Entity("Proyecto_de_practicas.Models.Equipos", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
+
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                b.Property<int>("CategoriaId")
+                    .HasColumnType("int");
+
+                b.Property<int>("CodigoInventario")
+                    .HasColumnType("int");
+
+                b.Property<string>("Descripcion")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
+
+                b.Property<string>("Marca")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
+
+                b.Property<string>("Modelo")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
+
+                b.Property<string>("Nombre")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
+
+                b.Property<string>("Responsable")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
+
+                b.HasKey("Id");
+                b.HasIndex("CategoriaId");
+
+                b.ToTable("Equipos");
+            });
+
+            // Facultades
+            modelBuilder.Entity("Proyecto_de_practicas.Models.Facultades", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
+
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                b.Property<string>("Nombre")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
+
+                b.HasKey("Id");
+
+                b.ToTable("Facultades");
+            });
+
+            // Pisos
+            modelBuilder.Entity("Proyecto_de_practicas.Models.Pisos", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
+
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                b.Property<int>("FacultadId")
+                    .HasColumnType("int");
+
+                b.Property<int>("Numero")
+                    .HasColumnType("int");
+
+                b.HasKey("Id");
+                b.HasIndex("FacultadId");
+
+                b.ToTable("Pisos");
+            });
+
+            // Laboratorios
             modelBuilder.Entity("Proyecto_de_practicas.Models.Laboratorios", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Estado")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Estado")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Nombre")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Piso")
-                        .HasColumnType("int");
+                b.Property<int>("Piso")
+                    .HasColumnType("int");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("Laboratorios");
-                });
+                b.ToTable("Laboratorios");
+            });
 
+            // Roles
             modelBuilder.Entity("Proyecto_de_practicas.Models.Roles", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Nombre")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("Roles");
-                });
+                b.ToTable("Roles");
+            });
+
+            // Usuarios
+            modelBuilder.Entity("Proyecto_de_practicas.Models.Usuario", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
+
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                b.Property<string>("Apellido")
+                    .HasColumnType("nvarchar(max)");
+
+                b.Property<string>("Correo")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
+
+                b.Property<string>("Estado")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
+
+                b.Property<DateTime>("FechaRegistro")
+                    .HasColumnType("datetime2");
+
+                b.Property<string>("Nombre")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
+
+                b.Property<string>("Password")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
+
+                b.Property<int>("RolId")
+                    .HasColumnType("int");
+
+                b.Property<string>("Username")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
+
+                b.HasKey("Id");
+                b.HasIndex("RolId");
+
+                b.ToTable("Usuarios");
+            });
+
+            // Relaciones
+            modelBuilder.Entity("Proyecto_de_practicas.Models.Herramientas", b =>
+            {
+                b.HasOne("Proyecto_de_practicas.Models.Aulas", "Aula")
+                    .WithMany("Herramientas")
+                    .HasForeignKey("AulaId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.HasOne("Proyecto_de_practicas.Models.Laboratorios", "Laboratorio")
+                    .WithMany("Herramientas")
+                    .HasForeignKey("LaboratorioId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.Navigation("Aula");
+                b.Navigation("Laboratorio");
+            });
 
             modelBuilder.Entity("Proyecto_de_practicas.Models.Usuario", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+            {
+                b.HasOne("Proyecto_de_practicas.Models.Roles", "Rol")
+                    .WithMany("Usuarios")
+                    .HasForeignKey("RolId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Apellido")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Correo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Estado")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("FechaRegistro")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("RolId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RolId");
-
-                    b.ToTable("Usuarios");
-                });
-
-            modelBuilder.Entity("Proyecto_de_practicas.Models.Herramientas", b =>
-                {
-                    b.HasOne("Proyecto_de_practicas.Models.Aulas", "Aula")
-                        .WithMany("Herramientas")
-                        .HasForeignKey("AulaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Proyecto_de_practicas.Models.Laboratorios", "Laboratorio")
-                        .WithMany("Herramientas")
-                        .HasForeignKey("LaboratorioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Aula");
-
-                    b.Navigation("Laboratorio");
-                });
-
-            modelBuilder.Entity("Proyecto_de_practicas.Models.Usuario", b =>
-                {
-                    b.HasOne("Proyecto_de_practicas.Models.Roles", "Rol")
-                        .WithMany("Usuarios")
-                        .HasForeignKey("RolId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Rol");
-                });
+                b.Navigation("Rol");
+            });
 
             modelBuilder.Entity("Proyecto_de_practicas.Models.Aulas", b =>
-                {
-                    b.Navigation("Herramientas");
-                });
+            {
+                b.Navigation("Herramientas");
+            });
 
             modelBuilder.Entity("Proyecto_de_practicas.Models.Laboratorios", b =>
-                {
-                    b.Navigation("Herramientas");
-                });
+            {
+                b.Navigation("Herramientas");
+            });
 
-            modelBuilder.Entity("Proyecto_de_practicas.Models.Roles", b =>
-                {
-                    b.Navigation("Usuarios");
-                });
+            modelBuilder.Entity("Proyecto_de_practicas.Models.Categorias", b =>
+            {
+                b.Navigation("Equipos");
+            });
+
+            modelBuilder.Entity("Proyecto_de_practicas.Models.Facultades", b =>
+            {
+                b.Navigation("Pisos");
+            });
+
+            modelBuilder.Entity("Proyecto_de_practicas.Models.Pisos", b =>
+            {
+                b.HasOne("Proyecto_de_practicas.Models.Facultades", "Facultad")
+                    .WithMany("Pisos")
+                    .HasForeignKey("FacultadId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.Navigation("Facultad");
+            });
+
+            modelBuilder.Entity("Proyecto_de_practicas.Models.Equipos", b =>
+            {
+                b.HasOne("Proyecto_de_practicas.Models.Categorias", "Categoria")
+                    .WithMany("Equipos")
+                    .HasForeignKey("CategoriaId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.Navigation("Categoria");
+            });
 #pragma warning restore 612, 618
         }
     }
