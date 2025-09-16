@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Proyecto_de_practicas.Models;
 using Proyecto_de_practicas.Service;
+using SistemaInventario.DTO;
 
 namespace Proyecto_de_practicas.Controllers
 {
@@ -32,17 +33,29 @@ namespace Proyecto_de_practicas.Controllers
             }
 
             [HttpPost]
-            public async Task<IActionResult> Create([FromBody] Aulas lab)
+            public async Task<IActionResult> Create([FromBody] AulasDto aulaDto)
             {
-                try
+            try
+            {
+                var aula = new Aulas
                 {
-                    var nuevo = await _service.AddAula(lab);
-                    return CreatedAtAction(nameof(Get), new { id = nuevo.Id }, nuevo);
-                }
-                catch (Exception ex)
+                    Nombre = aulaDto.Nombre,
+                    Estado = aulaDto.Estado,
+                    PisosId = aulaDto.PisosId
+                };
+                var nuevo = await _service.AddAula(aula);
+                var nuevoDto = new AulasDto
                 {
-                    return BadRequest(ex.Message);
-                }
+                    Id = nuevo.Id,
+                    Nombre = nuevo.Nombre,
+                    Estado = nuevo.Estado,
+                    PisosId = nuevo.PisosId
+                };
+                return CreatedAtAction(nameof(Get), new { id = nuevo.Id }, nuevoDto);
+            }catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }               
             }
 
             [HttpPut("{id}")]

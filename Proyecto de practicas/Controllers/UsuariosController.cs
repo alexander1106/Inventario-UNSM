@@ -1,7 +1,8 @@
-﻿using System.Threading.Tasks;
-using global::Proyecto_de_practicas.Models;
-using global::Proyecto_de_practicas.Service;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Proyecto_de_practicas.DTO;
+using Proyecto_de_practicas.Models;
+using Proyecto_de_practicas.Service;
 
 namespace Proyecto_de_practicas.Controllers
 {
@@ -16,6 +17,7 @@ namespace Proyecto_de_practicas.Controllers
             _usuariosService = usuariosService;
         }
 
+        // GET: api/usuarios
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -23,7 +25,6 @@ namespace Proyecto_de_practicas.Controllers
             return Ok(usuarios);
         }
 
-        // GET: api/usuarios/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -32,33 +33,34 @@ namespace Proyecto_de_practicas.Controllers
             return Ok(usuario);
         }
 
-        // POST: api/usuarios
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] Usuario usuario)
+        public async Task<IActionResult> Add([FromBody] UsuariosDto usuarioDto)
         {
             try
             {
-                var nuevoUsuario = await _usuariosService.AddAsync(usuario);
-                return CreatedAtAction(nameof(GetById), new { id = nuevoUsuario.Id }, nuevoUsuario);
+                var nuevoUsuario = await _usuariosService.AddAsync(usuarioDto);
+                return CreatedAtAction(nameof(GetById), new { id = nuevoUsuario.Username }, nuevoUsuario);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(new { message = ex.Message });
             }
         }
 
+  
         // PUT: api/usuarios/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] Usuario usuario)
+        public async Task<IActionResult> Update(int id, [FromBody] UsuariosDto usuarioDto)
         {
-            if (id != usuario.Id) return BadRequest("ID no coincide");
+            if (id != usuarioDto.EstadoInt) // 👈 aquí deberías usar el ID real de Usuario
+                return BadRequest("ID no coincide");
 
             try
             {
-                var actualizado = await _usuariosService.UpdateAsync(usuario);
+                var actualizado = await _usuariosService.UpdateAsync(usuarioDto);
                 return Ok(actualizado);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(new { message = ex.Message });
             }
@@ -69,8 +71,11 @@ namespace Proyecto_de_practicas.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var eliminado = await _usuariosService.DeleteAsync(id);
-            if (!eliminado) return NotFound();
-            return NoContent();
+
+            if (!eliminado)
+                return NotFound(new { mensaje = "Usuario no encontrado" });
+
+            return Ok(new { mensaje = "Usuario eliminado exitosamente" });
         }
 
         // POST: api/usuarios/login
@@ -80,9 +85,8 @@ namespace Proyecto_de_practicas.Controllers
             var valido = await _usuariosService.ValidateLoginAsync(request.Username, request.Password);
             if (!valido) return Unauthorized(new { message = "Usuario o contraseña incorrecta" });
 
-            // Aquí podrías generar JWT si quieres autenticación
+            // Aquí podrías generar un JWT si implementas autenticación
             return Ok(new { message = "Login exitoso" });
         }
     }
-
 }

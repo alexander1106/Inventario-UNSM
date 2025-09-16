@@ -2,10 +2,19 @@
 {
     public class Roles
     {
-        public int Id { get; set; } // EF Core lo hará autoincrementable
-        public string Nombre { get; set; }
+        public int Id { get; set; }
+        public string Nombre { get; set; } = string.Empty;
+        public int Estado { get; set; } = 1; 
+        public ICollection<UsuarioFacultadRol> UsuariosFacultadesRoles { get; set; }
 
-        // Relación inversa
-        public ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
+        // Constructor opcional solo con propiedades simples
+        public Roles(string nombre, int estado)
+        {
+            Nombre = nombre;
+            Estado = estado; 
+        }
+
+        // Constructor vacío para EF Core
+        public Roles() { }
     }
 }

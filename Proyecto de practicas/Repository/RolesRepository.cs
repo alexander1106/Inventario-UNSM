@@ -24,7 +24,7 @@ namespace Proyecto_de_practicas.Repository
         {
             var rol = await _context.Roles.FindAsync(id);
             if (rol == null) return false;
-
+            rol.Estado = 0;
             _context.Roles.Remove(rol);
             await _context.SaveChangesAsync();
             return true;
@@ -32,17 +32,17 @@ namespace Proyecto_de_practicas.Repository
 
         public async Task<List<Roles>> GetAllAsync()
         {
-            return await _context.Roles.ToListAsync();
+            return await _context.Roles.Where(r=>r.Estado==1).ToListAsync();
         }
 
         public async Task<Roles?> GetByIdAsync(int id)
         {
-            return await _context.Roles.FindAsync(id);
+            return await _context.Roles.FirstOrDefaultAsync(r=> r.Id == id && r.Estado==1);
         }
 
         public async Task<Roles?> GetByNombreAsync(string nombre)
         {
-            return await _context.Roles.FirstOrDefaultAsync(r => r.Nombre == nombre);
+            return await _context.Roles.FirstOrDefaultAsync(r => r.Nombre == nombre && r.Estado==1);
         }
 
         public async Task<Roles> UpdateAsync(Roles rol)

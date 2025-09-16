@@ -45,14 +45,19 @@ namespace Proyecto_de_practicas.Service
                 throw new Exception("El nombre no puede estar vacío");
 
             existente.Nombre = laboratorio.Nombre;
-            existente.Piso = laboratorio.Piso;
+
+            // Actualizar todo el objeto Pisos
+            existente.Pisos = laboratorio.Pisos;
+
+            // O si solo quieres cambiar el número del piso:
+            // existente.Pisos.Numero = laboratorio.Pisos.Numero;
 
             return await _repository.UpdateAsync(existente);
         }
 
-        public async Task<bool> EliminarLaboratorioAsync(int id)
+        public Task<bool> EliminarLaboratorioAsync(int id)
         {
-            return await _repository.DeleteAsync(id);
+            throw new NotImplementedException();
         }
     }
 }

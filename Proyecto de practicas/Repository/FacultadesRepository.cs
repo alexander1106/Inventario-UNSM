@@ -14,20 +14,21 @@ namespace Proyecto_de_practicas.Repository
         {
             _context = context;
         }
-
         public async Task<List<Facultades>> GetAllAsync()
         {
-            return await _context.Facultades.ToListAsync();
+            return await _context.Facultades.Where(f => f.Estado == 1).ToListAsync();
         }
 
         public async Task<Facultades?> GetByIdAsync(int id)
         {
-            return await _context.Facultades.FindAsync(id);
+            return await _context.Facultades.FirstOrDefaultAsync(f => f.Id == id && f.Estado == 1); // 👈 filtrar activas
+            ;
         }
 
         public async Task<Facultades?> GetByNombreAsync(string nombre)
         {
-            return await _context.Facultades.FirstOrDefaultAsync(l => l.Nombre == nombre);
+            return await _context.Facultades
+                            .FirstOrDefaultAsync(f => f.Nombre == nombre && f.Estado == 1);
         }
 
         public async Task<Facultades> AddAsync(Facultades facultad)
@@ -46,12 +47,18 @@ namespace Proyecto_de_practicas.Repository
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var fac = await _context.Facultades.FindAsync(id);
-            if (fac == null) return false;
+            var facultad = await _context.Facultades.FindAsync(id);
+            if (facultad == null) return false;
 
-            _context.Facultades.Remove(fac);
+            // 👇 aquí el borrado lógico
+            facultad.Estado = 0;
+            _context.Facultades.Update(facultad);
             await _context.SaveChangesAsync();
+
             return true;
         }
     }
+
 }
+
+

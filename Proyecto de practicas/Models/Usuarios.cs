@@ -2,17 +2,26 @@
 {
     public class Usuario
     {
-        public int Id { get; set; } // EF Core por convención lo hace autoincrementable
+        public int Id { get; set; } // EF Core autoincrementable
         public string Nombre { get; set; }
         public string? Apellido { get; set; }
         public string Correo { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
-        public string Estado { get; set; } = "Activo";
+        public string Estado { get; set; }
+        public int EstadoInt { get; set; } = 1; 
         public DateTime FechaRegistro { get; set; } = DateTime.Now;
+        public ICollection<UsuarioFacultadRol> UsuariosFacultadesRoles { get; set; }
+        public Usuario() { }
 
-        // Relación con Roles
-        public int RolId { get; set; }  // FK
-        public Roles Rol { get; set; }   // Navegación
+        public Usuario(string nombre, string correo, string username, string password, string estado = "Activo", string? apellido = null)
+        {
+            Nombre = nombre;
+            Correo = correo;
+            Username = username;
+            Password = password;
+            Estado = estado;
+            Apellido = apellido;
+        }
     }
 }

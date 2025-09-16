@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Proyecto_de_practicas.Models;
 using Proyecto_de_practicas.Service;
+using SistemaInventario.DTO;
 using System;
 
 namespace Proyecto_de_practicas.Controller
@@ -32,12 +33,25 @@ namespace Proyecto_de_practicas.Controller
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Laboratorios lab)
+        public async Task<IActionResult> Create([FromBody] LaboratoriosDto laboratoriosDto)
         {
             try
             {
+                var lab = new Laboratorios
+                {
+                    Nombre = laboratoriosDto.Nombre,
+                    Estado = laboratoriosDto.Estado,
+                    PisosId = laboratoriosDto.PisosId
+                };
                 var nuevo = await _service.AddLaboratorios(lab);
-                return CreatedAtAction(nameof(Get), new { id = nuevo.Id }, nuevo);
+                var nuevoDto = new AulasDto
+                {
+                    Id = nuevo.Id,
+                    Nombre = nuevo.Nombre,
+                    Estado = nuevo.Estado,
+                    PisosId = nuevo.PisosId
+                };
+                return CreatedAtAction(nameof(Get), new { id = nuevo.Id }, nuevoDto);
             }
             catch (Exception ex)
             {
@@ -65,8 +79,10 @@ namespace Proyecto_de_practicas.Controller
         public async Task<IActionResult> Delete(int id)
         {
             var eliminado = await _service.EliminarLaboratorioAsync(id);
-            if (!eliminado) return NotFound();
-            return NoContent();
+            if (!eliminado)
+                return NotFound(new { message = "No se encontró el laboratorio con ese ID" });
+
+            return Ok(new { message = "Laboratorio eliminado exitosamente" });
         }
     }
 }

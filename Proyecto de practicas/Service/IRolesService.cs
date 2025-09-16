@@ -1,10 +1,13 @@
-﻿namespace Proyecto_de_practicas.Service
+﻿using Proyecto_de_practicas.DTO;
+using Proyecto_de_practicas.Models;
+
+namespace Proyecto_de_practicas.Service
 {
     public interface IRolesService
     {
-        Task<List<string>> GetAllRolesAsync();
+        Task<List<RolesDTO>> GetAllRolesAsync();
         Task<bool> RoleExistsAsync(string roleName);
-        Task AddRoleAsync(string roleName);
-        Task DeleteRoleAsync(string roleName);
+        Task<RolesDTO> AddRoleAsync(RolesDTO roles);
+        Task<bool> DeleteRol(int id);
     }
 }

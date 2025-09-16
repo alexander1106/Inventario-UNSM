@@ -17,7 +17,8 @@ namespace Proyecto_de_practicas.Repository
 
         public async Task<List<Pisos>> GetAllAsync()
         {
-            return await _context.Pisos.ToListAsync();
+            return await _context.Pisos.Include(f => f.Ubicaciones)   // 👈 Esto carga los pisos
+        .ToListAsync(); ;
         }
 
         public async Task<Pisos?> GetByIdAsync(int id)

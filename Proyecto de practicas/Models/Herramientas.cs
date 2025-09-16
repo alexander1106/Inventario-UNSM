@@ -1,19 +1,13 @@
 ﻿namespace Proyecto_de_practicas.Models
 {
-    public class Herramientas
+    public class Herramientas : Articulo
     {
-        public int Id { get; set; }
-        public string Nombre { get; set; }
-        public string Descripcion { get; set; }
-        public string Marca { get; set; }
-        public string Modelo { get; set; }
-        public bool Estado { get; set; } = true; // true = Activo, false = Inactivo
+        public string Color { get; set; }
 
-        // Relaciones
-        public int LaboratorioId { get; set; }
-        public Laboratorios Laboratorio { get; set; }
-
-        public int AulaId { get; set; }
-        public Aulas Aula { get; set; }
+        // Constructor
+        public Herramientas(string nombre, string color, string estado = "Activo") : base(nombre, estado)
+        {
+            Color = color;
+        }
     }
 }

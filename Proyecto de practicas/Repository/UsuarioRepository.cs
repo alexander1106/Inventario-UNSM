@@ -11,6 +11,7 @@ namespace Proyecto_de_practicas.Repository
         {
             _context = context;
         }
+
         public async Task<Usuario> AddAsync(Usuario usuario)
         {
             _context.Usuarios.Add(usuario);
@@ -20,29 +21,28 @@ namespace Proyecto_de_practicas.Repository
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var lab = await _context.Usuarios.FindAsync(id);
-            if (lab == null) return false;
-
-            _context.Usuarios.Remove(lab);
+            var user = await _context.Usuarios.FindAsync(id);
+            if (user == null) return false;
+            user.EstadoInt = 0;
+            _context.Usuarios.Update(user);
             await _context.SaveChangesAsync();
             return true;
         }
 
         public async Task<List<Usuario>> GetAllAsync()
         {
-            return await  _context.Usuarios.ToListAsync();
-
+            return await  _context.Usuarios.Where(u=>u.EstadoInt == 1).ToListAsync();
         }
 
         public async Task<Usuario?> GetByIdAsync(int id)
         {
-            return await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
+            return await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == id && u.EstadoInt==1 );
 
         }
 
         public async Task<Usuario?> GetByNombreAsync(string nombre)
         {
-            return await _context.Usuarios.FirstOrDefaultAsync(u => u.Nombre == nombre);
+            return await _context.Usuarios.FirstOrDefaultAsync(u => u.Nombre == nombre && u.EstadoInt ==1);
 
         }
 

@@ -1,13 +1,12 @@
 ﻿namespace Proyecto_de_practicas.Models
 {
-    public class Aulas
+    public class Aulas : Ubicacion
     {
-        public int Id { get; set; }
-        public string? Nombre { get; set; }
-        public int? Piso { get; set; }
-        public string Estado { get; set; } = "Activo"; // Borrado lógico
+        public Aulas() { } // para EF Core
 
-        // Relación con Herramientas
-        public ICollection<Herramientas> Herramientas { get; set; } = new List<Herramientas>();
+        public Aulas(string nombre, int pisosId, string estado = "Activo")
+            : base(nombre, pisosId, estado)
+        {
+        }
     }
 }

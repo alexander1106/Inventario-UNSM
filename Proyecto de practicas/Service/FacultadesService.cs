@@ -1,49 +1,57 @@
-﻿using Proyecto_de_practicas.Models;
+﻿using AutoMapper;
+using Proyecto_de_practicas.DTO;
+using Proyecto_de_practicas.Models;
 using Proyecto_de_practicas.Repository;
-using Proyecto_de_practicas.Service;
 
 namespace Proyecto_de_practicas.Service
 {
     public class FacultadesService : IFacultadesService
     {
         private readonly IFacultadesRepository _repository;
+        private readonly IMapper _mapper;
 
-        public FacultadesService(IFacultadesRepository repository)
+        public FacultadesService(IFacultadesRepository repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
 
-        public async Task<List<Facultades>> GetListFacultades()
+        public async Task<List<FacultadesDto>> GetListFacultades()
         {
-            return await _repository.GetAllAsync();
+            var facs = await _repository.GetAllAsync();
+            return _mapper.Map<List<FacultadesDto>>(facs);
         }
 
-        public async Task<Facultades?> GetFacultades(int id)
+        public async Task<FacultadesDto?> GetFacultades(int id)
         {
-            return await _repository.GetByIdAsync(id);
+            var fac = await _repository.GetByIdAsync(id);
+            return _mapper.Map<FacultadesDto?>(fac);
         }
 
-        public async Task<Facultades> AddFacultades(Facultades facultad)
+        public async Task<FacultadesDto> AddFacultades(FacultadesDto facultadDto)
         {
-            // Lógica de negocio: nombre único
-            var existente = await _repository.GetByNombreAsync(facultad.Nombre);
+            var existente = await _repository.GetByNombreAsync(facultadDto.Nombre);
             if (existente != null)
                 throw new Exception("Ya existe una facultad con ese nombre");
 
-            return await _repository.AddAsync(facultad);
+            var entity = _mapper.Map<Facultades>(facultadDto);
+            var nuevo = await _repository.AddAsync(entity);
+
+            return _mapper.Map<FacultadesDto>(nuevo);
         }
 
-        public async Task<Facultades?> ActualizarFacultadAsync(Facultades facultad)
+        public async Task<FacultadesDto?> ActualizarFacultadAsync(FacultadesDto facultadDto)
         {
-            var existente = await _repository.GetByIdAsync(facultad.Id);
+            var existente = await _repository.GetByIdAsync(facultadDto.Id);
             if (existente == null) return null;
 
-            if (string.IsNullOrEmpty(facultad.Nombre))
+            if (string.IsNullOrEmpty(facultadDto.Nombre))
                 throw new Exception("El nombre no puede estar vacío");
 
-            existente.Nombre = facultad.Nombre;
+            existente.Nombre = facultadDto.Nombre;
+            var actualizado = await _repository.UpdateAsync(existente);
 
-            return await _repository.UpdateAsync(existente);
+            return _mapper.Map<FacultadesDto>(actualizado);
         }
 
         public async Task<bool> EliminarFacultadAsync(int id)

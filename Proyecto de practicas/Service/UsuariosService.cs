@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Proyecto_de_practicas.DTO;
 using Proyecto_de_practicas.Models;
 using Proyecto_de_practicas.Repository;
 
@@ -8,78 +11,83 @@ namespace Proyecto_de_practicas.Service
     {
         private readonly IUsuariosRepository usuariosRepository;
         private readonly PasswordHasher<Usuario> passwordHasher;
-
-        public UsuariosService(IUsuariosRepository usuariosRepository)
+        private readonly IMapper mapper;
+        
+        public UsuariosService(IUsuariosRepository usuariosRepository, IMapper mapper)
         {
             this.usuariosRepository = usuariosRepository;
             this.passwordHasher = new PasswordHasher<Usuario>();
+            this.mapper = mapper;
         }
 
-        // Agregar usuario con contraseña hasheada
-        public async Task<Usuario> AddAsync(Usuario usuario)
+        // 📌 Obtener todos los usuarios
+        public async Task<List<UsuariosDto>> GetAllAsync()
         {
-            // Validar nombre único
-            var existente = await usuariosRepository.GetByNombreAsync(usuario.Username);
+            var usuarios = await usuariosRepository.GetAllAsync();
+            return mapper.Map<List<UsuariosDto>>(usuarios);
+        }
+
+        // 📌 Obtener usuario por ID
+        public async Task<UsuariosDto?> GetByIdAsync(int id)
+        {
+            var usuario = await usuariosRepository.GetByIdAsync(id);
+            return mapper.Map<UsuariosDto?>(usuario);
+        }
+
+        // 📌 Crear usuario con contraseña hasheada
+        public async Task<UsuariosDto> AddAsync(UsuariosDto usuarioDto)
+        {
+            // Validar username único
+            var existente = await usuariosRepository.GetByNombreAsync(usuarioDto.Username);
             if (existente != null)
                 throw new Exception("Ya existe un usuario con ese nombre");
 
-            // Hashear la contraseña
+            var usuario = mapper.Map<Usuario>(usuarioDto);
             usuario.Password = passwordHasher.HashPassword(usuario, usuario.Password);
 
-            return await usuariosRepository.AddAsync(usuario);
+            var nuevo = await usuariosRepository.AddAsync(usuario);
+            return mapper.Map<UsuariosDto>(nuevo);
         }
 
-        // Eliminar usuario por ID
+        // 📌 Actualizar usuario
+        public async Task<UsuariosDto> UpdateAsync(UsuariosDto usuarioDto)
+        {
+            var usuario = mapper.Map<Usuario>(usuarioDto);
+            var existente = await usuariosRepository.GetByIdAsync(usuario.Id);
+
+            if (existente == null)
+                throw new Exception("Usuario no encontrado");
+
+            // Si la contraseña cambió → rehashear
+            if (!string.IsNullOrEmpty(usuario.Password) && usuario.Password != existente.Password)
+                usuario.Password = passwordHasher.HashPassword(usuario, usuario.Password);
+            else
+                usuario.Password = existente.Password;
+
+            var actualizado = await usuariosRepository.UpdateAsync(usuario);
+            return mapper.Map<UsuariosDto>(actualizado);
+        }
+
+        // 📌 Obtener usuario por nombre de usuario
+        public async Task<UsuariosDto?> GetByNombreAsync(string nombre)
+        {
+            var usuario = await usuariosRepository.GetByNombreAsync(nombre);
+            return mapper.Map<UsuariosDto?>(usuario);
+        }
+
+        // 📌 Eliminar usuario
         public async Task<bool> DeleteAsync(int id)
         {
             return await usuariosRepository.DeleteAsync(id);
         }
 
-        // Obtener todos los usuarios
-        public async Task<List<Usuario>> GetAllAsync()
-        {
-            return await usuariosRepository.GetAllAsync();
-        }
 
-        // Obtener usuario por ID
-        public async Task<Usuario?> GetByIdAsync(int id)
-        {
-            return await usuariosRepository.GetByIdAsync(id);
-        }
 
-        // Obtener usuario por nombre de usuario
-        public async Task<Usuario?> GetByNombreAsync(string nombre)
-        {
-            return await usuariosRepository.GetByNombreAsync(nombre);
-        }
-
-        // Actualizar usuario
-        public async Task<Usuario> UpdateAsync(Usuario usuario)
-        {
-            var existente = await usuariosRepository.GetByIdAsync(usuario.Id);
-            if (existente == null)
-                throw new Exception("Usuario no encontrado");
-
-            // Si la contraseña cambió, la re-hasheamos
-            if (!string.IsNullOrEmpty(usuario.Password) && usuario.Password != existente.Password)
-            {
-                usuario.Password = passwordHasher.HashPassword(usuario, usuario.Password);
-            }
-            else
-            {
-                // Mantener la contraseña actual si no se cambió
-                usuario.Password = existente.Password;
-            }
-
-            return await usuariosRepository.UpdateAsync(usuario);
-        }
-
-        // Verificar login
+        // 📌 Validar login
         public async Task<bool> ValidateLoginAsync(string username, string passwordIngresado)
         {
             var usuario = await usuariosRepository.GetByNombreAsync(username);
-            if (usuario == null)
-                return false;
+            if (usuario == null) return false;
 
             var result = passwordHasher.VerifyHashedPassword(usuario, usuario.Password, passwordIngresado);
             return result == PasswordVerificationResult.Success;

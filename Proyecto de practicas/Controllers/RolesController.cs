@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Proyecto_de_practicas.DTO;
 using Proyecto_de_practicas.Service;
 
 namespace Proyecto_de_practicas.Controllers
@@ -19,8 +19,8 @@ namespace Proyecto_de_practicas.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var roles = await _rolesService.GetAllRolesAsync();
-            return Ok(roles);
+            var rolesDto = await _rolesService.GetAllRolesAsync();
+            return Ok(rolesDto);
         }
 
         // GET: api/roles/existe/{nombre}
@@ -33,26 +33,30 @@ namespace Proyecto_de_practicas.Controllers
 
         // POST: api/roles
         [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> Create([FromBody] string nombre)
+        public async Task<IActionResult> Create([FromBody] RolesDTO dto)
         {
-            if (string.IsNullOrWhiteSpace(nombre))
-                return BadRequest("El nombre del rol no puede estar vacío.");
+            if (string.IsNullOrWhiteSpace(dto.Nombre))
+                return BadRequest(new { message = "El nombre del rol no puede estar vacío." });
 
-            await _rolesService.AddRoleAsync(nombre);
-            return CreatedAtAction(nameof(RoleExists), new { nombre = nombre }, new { nombre });
+            try
+            {
+                var result = await _rolesService.AddRoleAsync(dto);
+                return CreatedAtAction(nameof(RoleExists), new { nombre = dto.Nombre }, result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
-        // DELETE: api/roles/{nombre}
-        [HttpDelete("{nombre}")]
-        [Authorize]
-        public async Task<IActionResult> Delete(string nombre)
+        // DELETE: api/roles/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
-            var exists = await _rolesService.RoleExistsAsync(nombre);
-            if (!exists) return NotFound($"El rol '{nombre}' no existe.");
-
-            await _rolesService.DeleteRoleAsync(nombre);
-            return NoContent();
+            var eliminado = await _rolesService.DeleteRol(id);
+            if (!eliminado)
+                return NotFound(new { message = $"El rol con id {id} no existe." });
+            return Ok(new { message = $"El rol con id {id} fue eliminado exitosamente." });
         }
     }
 }
