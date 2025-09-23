@@ -4,11 +4,11 @@ namespace Proyecto_de_practicas.Repository
 {
     public interface IUsuariosRepository
     {
-        Task<List<Usuario>> GetAllAsync();
-        Task<Usuario?> GetByIdAsync(int id);
-        Task<Usuario?> GetByNombreAsync(string nombre);
-        Task<Usuario> AddAsync(Usuario usuario);
-        Task<Usuario> UpdateAsync(Usuario usuario);
+        Task<List<Usuario>> GetAllAsync();              // 🔹 Ahora devuelve usuarios
+        Task<Usuario?> GetByIdAsync(int id);            // 🔹 Usuario
+        Task<Usuario> AddAsync(Usuario usuario);        // 🔹 Usuario
+        Task<Usuario> UpdateAsync(Usuario usuario);     // 🔹 Usuario
         Task<bool> DeleteAsync(int id);
+        Task<Usuario?> GetByNombreAsync(string username);
     }
 }

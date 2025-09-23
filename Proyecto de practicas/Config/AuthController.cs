@@ -1,38 +1,34 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Proyecto_de_practicas.Models; // donde tengas tu clase Usuario
-using Proyecto_de_practicas.Data;   // donde tengas tu DbContext
+using Proyecto_de_practicas.Service;
 
 [ApiController]
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
+    private readonly IUsuariosServices _usuariosService;
     private readonly IConfiguration _config;
-    private readonly AplicationDBContext _context;
 
-    public AuthController(IConfiguration config, AplicationDBContext context)
+    public AuthController(IUsuariosServices usuariosService, IConfiguration config)
     {
+        _usuariosService = usuariosService;
         _config = config;
-        _context = context;
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        // Buscar el usuario en la base de datos
-        var user = await _context.Usuarios
-            .FirstOrDefaultAsync(u => u.Username == request.Username && u.Password == request.Password);
+        // Validar login usando tu servicio
+        var valido = await _usuariosService.ValidateLoginAsync(request.Username, request.Password);
 
-        if (user == null)
+        if (!valido)
             return Unauthorized(new { message = "Usuario o contraseña incorrectos" });
 
-        // Generar token
-        var token = GenerateToken(user.Username);
+        // Generar token JWT
+        var token = GenerateToken(request.Username);
 
         return Ok(new { token });
     }
@@ -59,7 +55,7 @@ public class AuthController : ControllerBase
     }
 }
 
-// Clase auxiliar para recibir el login
+// DTO para login
 public class LoginRequest
 {
     public string Username { get; set; } = null!;
