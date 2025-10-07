@@ -56,6 +56,18 @@ internal class Program
         });
 
 
+        // Permitir cualquier origen
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll",
+                policy =>
+                {
+                    policy.AllowAnyOrigin()   // cualquiera puede consumir
+                          .AllowAnyMethod()   // GET, POST, PUT, DELETE, etc.
+                          .AllowAnyHeader();  // todos los headers
+                });
+        });
+        builder.Services.AddControllers();
 
 
         // ✅ Configuración de JWT
@@ -88,14 +100,7 @@ internal class Program
         // AutoMapper
         builder.Services.AddAutoMapper(typeof(Program));
 
-        // Servicios
-        builder.Services.AddScoped<ILaboratoriosRepository, LaboratoriosRepository>();
-        builder.Services.AddScoped<ILaboratoriosService, LaboratoriosService>();
 
-        // Aulas
-        builder.Services.AddScoped<IAulasRepository, AulaRepository>();
-        builder.Services.AddScoped<IAulasService, AulasServie>();
-            
         //Usuarios 
         builder.Services.AddScoped<IUsuariosRepository, UsuarioRepository>();
         builder.Services.AddScoped<IUsuariosServices, UsuariosService>();
@@ -103,24 +108,37 @@ internal class Program
         // Roles
         builder.Services.AddScoped<IRolesRepository, RolesRepository>();
         builder.Services.AddScoped<IRolesService, RolesService>();
-        builder.Services.AddScoped<IEquiposRepository, EquiposRepository>();
 
-        builder.Services.AddScoped<IEquiposService, EquiposService>();
 
         builder.Services.AddScoped<IPisosRepository, PisosRepository>();
         builder.Services.AddScoped<IPisosService, PisosService>();
 
-        builder.Services.AddScoped<ICategoriasRepository, CategoriasRepository>();
-        builder.Services.AddScoped<ICategoriasService, CategoriasService>();
-
         builder.Services.AddScoped<IFacultadesRepository, FacultadesRepository>();
         builder.Services.AddScoped<IFacultadesService, FacultadesService>();
+        // Reemplaza la línea incorrecta:
+        // builder.Services.AddScoped<ITipoArtículosRepository, TipoArticulosRepository();
+
+        builder.Services.AddScoped<ITipoArticuloRepository, TipoArticuloRepository>();
+        builder.Services.AddScoped<ITipoArticuloService, TipoArticuloService>();
+
+        builder.Services.AddScoped<IUbicacionRepository, UbicacionRepository>();
+        builder.Services.AddScoped<IUbicacionService, UbicacionService>();
+        builder.Services.AddScoped<IArticuloRepository, ArticuloRepository>();
+        builder.Services.AddScoped<IArticuloService, ArticuloService>();
+        builder.Services.AddScoped<ICampoArticuloRepository, CampoArticuloRepository>();
+        builder.Services.AddScoped<ICampoArticuloService, CampoArticuloService>();
+     
+        builder.Services.AddScoped<IArticuloCampoValorRepository, ArticuloCampoValorRepository>();
+        builder.Services.AddScoped<IArticuloCampoValorService, ArticuloCampoValorService>();
 
         builder.Services.AddScoped<IUsuarioFacultadRolService, UsuarioFacultadRolService>();
 
         builder.Services.AddAutoMapper(typeof(Program));
         
         builder.Services.AddScoped<IUsuarioFacultadRolRepository, UsuarioFacultadRolRepository>();
+
+        builder.Services.AddScoped<ITipoUbicacionRepository, TipoUbicacionRepository>();
+        builder.Services.AddScoped<ITipoUbicacionService, TipoUbicacionService>();
 
         // Herramientas
         var app = builder.Build(); 
@@ -132,7 +150,11 @@ internal class Program
             app.UseSwaggerUI();
         }
 
-        app.UseHttpsRedirection();
+        // 👇 Esto habilita wwwroot como carpeta pública
+        app.UseStaticFiles();
+
+        //app.UseHttpsRedirection();
+        app.UseCors("AllowAll");
 
         // ✅ IMPORTANTE: primero Authentication, luego Authorization
         app.UseAuthentication();

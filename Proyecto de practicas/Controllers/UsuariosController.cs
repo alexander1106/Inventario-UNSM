@@ -64,7 +64,24 @@ namespace Proyecto_de_practicas.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
+
         }
+        // GET: api/usuarios/usuario-actual
+        [HttpGet("usuario-actual")]
+        public async Task<IActionResult> GetUsuarioActual()
+        {
+            var username = User?.Identity?.Name;
+
+            if (string.IsNullOrEmpty(username))
+                return Unauthorized(new { message = "No hay usuario autenticado" });
+
+            var usuario = await _usuariosService.GetByUsernameAsync(username);
+            if (usuario == null)
+                return NotFound(new { message = "Usuario no encontrado" });
+
+            return Ok(usuario);
+        }
+
 
         // DELETE: api/usuarios/5
         [HttpDelete("{id}")]

@@ -2,27 +2,16 @@
 
 namespace Proyecto_de_practicas.Models
 {
-    public abstract class Ubicacion
+    public  class Ubicacion
     {
         public int Id { get; set; }
-        public string Nombre { get; set; } = string.Empty;
-        public string Estado { get; set; } = "Activo";
+        public string Nombre { get; set; } = null!;
+        public string Descripcion { get; set; } = null!;
 
-        // FK a Pisos
-        public int PisosId { get; set; }
-        [JsonIgnore]
+        // Relación con TipoUbicacion
+        public int TipoUbicacionId { get; set; }
+        public virtual TipoUbicacion TipoUbicacion { get; set; } = null!;
+        public virtual ICollection<Articulo> Articulos { get; set; } = new List<Articulo>();
 
-        public Pisos Pisos { get; set; } = null!; // navegación
-
-        // Constructor requerido por EF Core
-        protected Ubicacion() { }
-
-        // Constructor de conveniencia (solo datos simples)
-        public Ubicacion(string nombre, int pisosId, string estado = "Activo")
-        {
-            Nombre = nombre;
-            PisosId = pisosId;
-            Estado = estado;
-        }
     }
 }

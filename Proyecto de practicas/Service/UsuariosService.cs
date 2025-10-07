@@ -92,5 +92,18 @@ namespace Proyecto_de_practicas.Service
             var result = passwordHasher.VerifyHashedPassword(usuario, usuario.Password, passwordIngresado);
             return result == PasswordVerificationResult.Success;
         }
+
+        // 📌 Obtener usuario por username
+        public async Task<UsuariosDto?> GetByUsernameAsync(string username)
+        {
+            // Llamamos al repositorio que ya tiene GetByNombreAsync
+            var usuario = await usuariosRepository.GetByNombreAsync(username);
+
+            if (usuario == null)
+                return null;
+
+            // Mapear a DTO usando AutoMapper
+            return mapper.Map<UsuariosDto>(usuario);
+        }
     }
 }

@@ -11,6 +11,17 @@ namespace Proyecto_de_practicas.Repository
         {
             _context = context;
         }
+        public async Task<List<Usuario>> GetAllAsync()
+        {
+            return await _context.Usuarios.ToListAsync();
+
+        }
+
+        public async Task<Usuario?> GetByIdAsync(int id)
+        { 
+           return await _context.Usuarios
+                .FirstOrDefaultAsync(u => u.Id == id);
+        }
 
         public async Task<Usuario> AddAsync(Usuario usuario)
         {
@@ -19,38 +30,29 @@ namespace Proyecto_de_practicas.Repository
             return usuario;
         }
 
-        public async Task<bool> DeleteAsync(int id)
-        {
-            var user = await _context.Usuarios.FindAsync(id);
-            if (user == null) return false;
-            user.EstadoInt = 0;
-            _context.Usuarios.Update(user);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<List<Usuario>> GetAllAsync()
-        {
-            return await  _context.Usuarios.Where(u=>u.EstadoInt == 1).ToListAsync();
-        }
-
-        public async Task<Usuario?> GetByIdAsync(int id)
-        {
-            return await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == id && u.EstadoInt==1 );
-
-        }
-
-        public async Task<Usuario?> GetByNombreAsync(string nombre)
-        {
-            return await _context.Usuarios.FirstOrDefaultAsync(u => u.Nombre == nombre && u.EstadoInt ==1);
-
-        }
-
         public async Task<Usuario> UpdateAsync(Usuario usuario)
         {
             _context.Usuarios.Update(usuario);
             await _context.SaveChangesAsync();
             return usuario;
         }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var entity = await _context.Ubicaciones.FindAsync(id);
+            if (entity == null) return false;
+
+            _context.Ubicaciones.Remove(entity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<Usuario?> GetByNombreAsync(string username)
+        {
+            return await _context.Usuarios
+                .FirstOrDefaultAsync(u => u.Username == username);
+        }
+
+       
     }
 }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Proyecto_de_practicas.DTO;
+using Proyecto_de_practicas.Models;
 using Proyecto_de_practicas.Service;
+using System;
 
 namespace Proyecto_de_practicas.Controllers
 {
@@ -10,10 +12,8 @@ namespace Proyecto_de_practicas.Controllers
     {
         private readonly IFacultadesService _service;
 
-        public FacultadesController(IFacultadesService service)
-         {
-            _service = service;
-        }
+        public FacultadesController(IFacultadesService service) => _service = service;
+
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
