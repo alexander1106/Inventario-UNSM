@@ -22,13 +22,14 @@ namespace Proyecto_de_practicas.Repository
         {
             return await _context.ArticuloCamposValores.FindAsync(id);
         }
-
-        public async Task<IEnumerable<ArticuloCampoValor>> GetByArticuloIdAsync(int articuloId)
+        public async Task<IEnumerable<ArticuloCampoValor>> GetByTipoArticuloIdAsync(int tipoArticuloId)
         {
             return await _context.ArticuloCamposValores
-                .Where(x => x.ArticuloId == articuloId)
+                .Include(acv => acv.CampoArticulo) // incluir la relación
+                .Where(acv => acv.CampoArticulo.TipoArticuloId == tipoArticuloId)
                 .ToListAsync();
         }
+
 
         public async Task AddAsync(ArticuloCampoValor entity)
         {
@@ -50,6 +51,11 @@ namespace Proyecto_de_practicas.Repository
                 _context.ArticuloCamposValores.Remove(entity);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public Task<IEnumerable<ArticuloCampoValor>> GetByArticuloIdAsync(int articuloId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

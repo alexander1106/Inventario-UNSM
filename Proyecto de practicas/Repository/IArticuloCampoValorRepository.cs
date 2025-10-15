@@ -9,6 +9,8 @@ namespace Proyecto_de_practicas.Repository
         Task<IEnumerable<ArticuloCampoValor>> GetByArticuloIdAsync(int articuloId);
         Task AddAsync(ArticuloCampoValor entity);
         Task UpdateAsync(ArticuloCampoValor entity);
+        Task<IEnumerable<ArticuloCampoValor>> GetByTipoArticuloIdAsync(int tipoArticuloId);
         Task DeleteAsync(int id);
+
     }
 }

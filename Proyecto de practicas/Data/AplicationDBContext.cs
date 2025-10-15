@@ -29,11 +29,7 @@ namespace Proyecto_de_practicas.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ArticuloCampoValor>()
-               .HasOne(acv => acv.Articulo)
-               .WithMany(a => a.CamposValores)
-               .HasForeignKey(acv => acv.ArticuloId)
-               .OnDelete(DeleteBehavior.Cascade); // Mantener CASCADE aquí
+     
 
             modelBuilder.Entity<ArticuloCampoValor>()
                 .HasOne(acv => acv.CampoArticulo)

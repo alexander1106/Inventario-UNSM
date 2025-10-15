@@ -7,10 +7,8 @@ namespace Proyecto_de_practicas.Models
 
         public int Id { get; set; }
 
-        [MaxLength(50)]
         public string NombreCampo { get; set; } = null!;
 
-        [MaxLength(20)]
         public string TipoDato { get; set; } = "string"; // string, number, boolean, date
 
 

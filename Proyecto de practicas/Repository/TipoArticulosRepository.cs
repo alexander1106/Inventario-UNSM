@@ -18,10 +18,10 @@ namespace Proyecto_de_practicas.Repository
         {
             _context = context;
         }
-
         public async Task<List<TipoArticulo>> GetAllAsync()
         {
             return await _context.TipoArticulos
+                .Where(t => t.Estado == 1) // Solo registros con estado 1
                 .Include(t => t.Campos)
                 .ToListAsync();
         }
@@ -39,7 +39,10 @@ namespace Proyecto_de_practicas.Repository
             await _context.SaveChangesAsync();
             return tipoArticulo;
         }
-
+        public async Task<bool> TieneRelacionConArticulosAsync(int id)
+        {
+            return await _context.Articulos.AnyAsync(a => a.TipoArticuloId == id);
+        }
         public async Task<TipoArticulo> UpdateAsync(TipoArticulo tipoArticulo)
         {
             _context.TipoArticulos.Update(tipoArticulo);
@@ -50,12 +53,18 @@ namespace Proyecto_de_practicas.Repository
         public async Task<bool> DeleteAsync(int id)
         {
             var entity = await _context.TipoArticulos.FindAsync(id);
-            if (entity == null) return false;
+            if (entity == null)
+                return false;
 
-            _context.TipoArticulos.Remove(entity);
+            // 🔹 Marcar como inactivo en lugar de eliminar
+            entity.Estado = 0;
+
+            _context.TipoArticulos.Update(entity);
             await _context.SaveChangesAsync();
+
             return true;
         }
+
         public async Task<TipoArticulo?> GetByIdWithArticulosAsync(int id)
         {
             return await _context.TipoArticulos

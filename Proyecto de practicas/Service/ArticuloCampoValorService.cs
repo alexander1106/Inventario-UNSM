@@ -33,6 +33,13 @@ namespace Proyecto_de_practicas.Service
             var entities = await _repository.GetByArticuloIdAsync(articuloId);
             return _mapper.Map<IEnumerable<ArticuloCampoValorDto>>(entities);
         }
+        
+        public async Task<IEnumerable<ArticuloCampoValorDto>> GetByTipoArticuloIdAsync(int tipoArticuloId)
+        {
+            var entities = await _repository.GetByTipoArticuloIdAsync(tipoArticuloId);
+            return _mapper.Map<IEnumerable<ArticuloCampoValorDto>>(entities);
+        }
+
 
         public async Task AddAsync(ArticuloCampoValorDto dto)
         {
@@ -50,5 +57,7 @@ namespace Proyecto_de_practicas.Service
         {
             await _repository.DeleteAsync(id);
         }
+
+
     }
 }

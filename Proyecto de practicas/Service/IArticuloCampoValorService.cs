@@ -1,4 +1,5 @@
 ﻿using Proyecto_de_practicas.DTO;
+using Proyecto_de_practicas.Models;
 
 namespace Proyecto_de_practicas.Service
 {
@@ -10,6 +11,9 @@ namespace Proyecto_de_practicas.Service
         Task AddAsync(ArticuloCampoValorDto dto);
         Task UpdateAsync(ArticuloCampoValorDto dto);
         Task DeleteAsync(int id);
-        
+        // Nuevo método para filtrar por TipoArticuloId
+        Task<IEnumerable<ArticuloCampoValorDto>> GetByTipoArticuloIdAsync(int tipoArticuloId);
+
+
     }
 }

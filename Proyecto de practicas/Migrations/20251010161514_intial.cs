@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Proyecto_de_practicas.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class intial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -47,7 +47,8 @@ namespace Proyecto_de_practicas.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Estado = table.Column<int>(type: "int", nullable: false)
+                    Estado = table.Column<int>(type: "int", nullable: false),
+                    ImagenPath = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -113,8 +114,8 @@ namespace Proyecto_de_practicas.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    NombreCampo = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    TipoDato = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    NombreCampo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TipoDato = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TipoArticuloId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -187,6 +188,26 @@ namespace Proyecto_de_practicas.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ArticuloCamposValores",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CampoArticuloId = table.Column<int>(type: "int", nullable: false),
+                    Valor = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ArticuloCamposValores", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ArticuloCamposValores_CamposArticulos_CampoArticuloId",
+                        column: x => x.CampoArticuloId,
+                        principalTable: "CamposArticulos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Articulos",
                 columns: table => new
                 {
@@ -211,33 +232,6 @@ namespace Proyecto_de_practicas.Migrations
                         column: x => x.UbicacionId,
                         principalTable: "Ubicaciones",
                         principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ArticuloCamposValores",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ArticuloId = table.Column<int>(type: "int", nullable: false),
-                    CampoArticuloId = table.Column<int>(type: "int", nullable: false),
-                    Valor = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ArticuloCamposValores", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ArticuloCamposValores_Articulos_ArticuloId",
-                        column: x => x.ArticuloId,
-                        principalTable: "Articulos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ArticuloCamposValores_CamposArticulos_CampoArticuloId",
-                        column: x => x.CampoArticuloId,
-                        principalTable: "CamposArticulos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -311,11 +305,6 @@ namespace Proyecto_de_practicas.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ArticuloCamposValores_ArticuloId",
-                table: "ArticuloCamposValores",
-                column: "ArticuloId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ArticuloCamposValores_CampoArticuloId",

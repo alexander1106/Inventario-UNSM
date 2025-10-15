@@ -10,6 +10,7 @@ namespace Proyecto_de_practicas.Repository
         Task<TipoArticulo> AddAsync(TipoArticulo tipoArticulo);
         Task<TipoArticulo> UpdateAsync(TipoArticulo tipoArticulo);
         Task<bool> DeleteAsync(int id);
+        Task<bool> TieneRelacionConArticulosAsync(int id);
         Task<TipoArticulo> GetByIdWithArticulosAsync(int id);
     }
 }

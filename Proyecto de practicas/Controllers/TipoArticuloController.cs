@@ -33,7 +33,7 @@ namespace Proyecto_de_practicas.Controllers
         [HttpGet("{id}/articulo")]
         public async Task<ActionResult<TipoArticuloDTO>> filtrarPorTipoArticulo(int id)
         {
-            var dto = await _service.ObtenerPorIdAsync(id);
+            TipoArticuloDTO dto = await _service.ObtenerPorIdAsync(id);
             if (dto == null) return NotFound();
 
             return Ok(dto);
@@ -84,16 +84,30 @@ namespace Proyecto_de_practicas.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<TipoArticuloDTO>> Update(int id, [FromBody] TipoArticuloDTO dto)
         {
-            var result = await _service.UpdateAsync(id, dto);
-            return Ok(result);
+            try
+            {
+                var result = await _service.UpdateAsync(id, dto);
+                return Ok(result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var success = await _service.DeleteAsync(id);
-            if (!success) return NotFound();
-            return NoContent();
+            try
+            {
+                var success = await _service.DeleteAsync(id);
+                if (!success) return NotFound();
+                return NoContent();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

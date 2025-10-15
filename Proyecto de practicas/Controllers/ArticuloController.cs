@@ -4,15 +4,17 @@ using Proyecto_de_practicas.Service;
 
 namespace Proyecto_de_practicas.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/articulos")]
     [ApiController]
     public class ArticuloController : ControllerBase
     {
         private readonly IArticuloService _service;
+                    private readonly IArticuloCampoValorService _serviceCamposValor;
 
-        public ArticuloController(IArticuloService service)
+        public ArticuloController(IArticuloService service, IArticuloCampoValorService _serviceCampos)
         {
             _service = service;
+            _serviceCamposValor = _serviceCampos;
         }
 
         [HttpGet]
@@ -45,10 +47,14 @@ namespace Proyecto_de_practicas.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ArticuloDto>> Create(ArticuloDto dto)
+        public async Task<ActionResult<ArticuloDto>> Create([FromBody] ArticuloDto dto)
         {
-            var result = await _service.AddAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+            // 1. Guardar el artículo
+            var articulo = await _service.AddAsync(dto);
+
+
+
+            return CreatedAtAction(nameof(GetById), new { id = articulo.Id }, articulo);
         }
 
         [HttpPut("{id}")]

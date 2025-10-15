@@ -30,12 +30,13 @@ namespace Proyecto_de_practicas.Controllers
             return Ok(result);
         }
 
-        [HttpGet("articulo/{articuloId}")]
-        public async Task<IActionResult> GetByArticuloId(int articuloId)
+        [HttpGet("tipo-articulos/{tipoArticuloId}")]
+        public async Task<IActionResult> GetByTipoArticuloId(int tipoArticuloId)
         {
-            var result = await _service.GetByArticuloIdAsync(articuloId);
+            var result = await _service.GetByTipoArticuloIdAsync(tipoArticuloId);
             return Ok(result);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] ArticuloCampoValorDto dto)

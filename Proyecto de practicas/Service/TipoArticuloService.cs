@@ -6,8 +6,7 @@ using Proyecto_de_practicas.Repository;
 namespace Proyecto_de_practicas.Service
 {
     public class TipoArticuloService : ITipoArticuloService
-    
-      {
+    {
         private readonly ITipoArticuloRepository _repo;
         private readonly IMapper _mapper;
 
@@ -38,16 +37,28 @@ namespace Proyecto_de_practicas.Service
 
         public async Task<TipoArticuloDTO> UpdateAsync(int id, TipoArticuloDTO dto)
         {
+            // Validar relación
+            bool tieneRelacion = await _repo.TieneRelacionConArticulosAsync(id);
+            if (tieneRelacion)
+                throw new InvalidOperationException("No se puede editar este tipo de artículo porque tiene artículos relacionados.");
+
             var entity = _mapper.Map<TipoArticulo>(dto);
             entity.Id = id;
             var result = await _repo.UpdateAsync(entity);
             return _mapper.Map<TipoArticuloDTO>(result);
         }
 
+
         public async Task<bool> DeleteAsync(int id)
         {
+            // Validar relación
+            bool tieneRelacion = await _repo.TieneRelacionConArticulosAsync(id);
+            if (tieneRelacion)
+                throw new InvalidOperationException("No se puede eliminar este tipo de artículo porque tiene artículos relacionados.");
+
             return await _repo.DeleteAsync(id);
         }
+
 
         public async Task<TipoArticuloDTO?> ObtenerPorIdAsync(int id)
         {

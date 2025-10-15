@@ -4,7 +4,7 @@ using Proyecto_de_practicas.Service;
 
 namespace Proyecto_de_practicas.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/campos-articulo")]
     [ApiController]
     public class CampoArticuloController : ControllerBase
     {
@@ -30,7 +30,9 @@ namespace Proyecto_de_practicas.Controllers
             return Ok(result);
         }
 
-        [HttpGet("tipo/{tipoArticuloId}")]
+        
+
+        [HttpGet("tipo-articulo/{tipoArticuloId}")]
         public async Task<ActionResult<List<CampoArticuloDto>>> GetByTipoArticulo(int tipoArticuloId)
         {
             var result = await _service.GetByTipoArticuloIdAsync(tipoArticuloId);
@@ -58,5 +60,16 @@ namespace Proyecto_de_practicas.Controllers
             if (!success) return NotFound();
             return NoContent();
         }
+
+        [HttpPost("lote")]
+        public async Task<ActionResult> CreateMultiple(List<CampoArticuloDto> campos)
+        {
+            foreach (var campo in campos)
+            {
+                await _service.AddAsync(campo);
+            }
+            return Ok();
+        }
+
     }
 }

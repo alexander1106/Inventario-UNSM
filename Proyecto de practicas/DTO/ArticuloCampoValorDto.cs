@@ -5,7 +5,6 @@
         public int Id { get; set; }
         public int ArticuloId { get; set; }
         public int CampoArticuloId { get; set; }
-
         public string Valor { get; set; } = null!; // se guarda en texto y luego lo conviertes si necesitas
     }
 }
