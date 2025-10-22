@@ -485,7 +485,7 @@ namespace Proyecto_de_practicas.Migrations
                         .HasForeignKey("PisosId");
 
                     b.HasOne("Proyecto_de_practicas.Models.TipoUbicacion", "TipoUbicacion")
-                        .WithMany()
+                        .WithMany("Ubicaciones")
                         .HasForeignKey("TipoUbicacionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -545,6 +545,11 @@ namespace Proyecto_de_practicas.Migrations
                     b.Navigation("Articulos");
 
                     b.Navigation("Campos");
+                });
+
+            modelBuilder.Entity("Proyecto_de_practicas.Models.TipoUbicacion", b =>
+                {
+                    b.Navigation("Ubicaciones");
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Models.Ubicacion", b =>

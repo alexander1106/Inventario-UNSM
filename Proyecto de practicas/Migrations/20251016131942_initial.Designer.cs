@@ -12,8 +12,8 @@ using Proyecto_de_practicas.Data;
 namespace Proyecto_de_practicas.Migrations
 {
     [DbContext(typeof(AplicationDBContext))]
-    [Migration("20251010161514_intial")]
-    partial class intial
+    [Migration("20251016131942_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -488,7 +488,7 @@ namespace Proyecto_de_practicas.Migrations
                         .HasForeignKey("PisosId");
 
                     b.HasOne("Proyecto_de_practicas.Models.TipoUbicacion", "TipoUbicacion")
-                        .WithMany()
+                        .WithMany("Ubicaciones")
                         .HasForeignKey("TipoUbicacionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -548,6 +548,11 @@ namespace Proyecto_de_practicas.Migrations
                     b.Navigation("Articulos");
 
                     b.Navigation("Campos");
+                });
+
+            modelBuilder.Entity("Proyecto_de_practicas.Models.TipoUbicacion", b =>
+                {
+                    b.Navigation("Ubicaciones");
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Models.Ubicacion", b =>

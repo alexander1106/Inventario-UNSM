@@ -137,6 +137,9 @@ internal class Program
         
         builder.Services.AddScoped<IUsuarioFacultadRolRepository, UsuarioFacultadRolRepository>();
 
+        builder.Services.AddScoped<ITipoUbicacionRepository, TipoUbicacionRepository>();
+        builder.Services.AddScoped<ITipoUbicacionService, TipoUbicacionService>();
+
         // Herramientas
         var app = builder.Build(); 
             

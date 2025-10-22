@@ -33,7 +33,10 @@ namespace Proyecto_de_practicas.Mappings
             CreateMap<ArticuloDto, Articulo>();
 
             CreateMap<Ubicacion, UbicacionDto>();
-            CreateMap<UbicacionDto, Ubicacion>();
+
+            CreateMap<UbicacionDto, Ubicacion>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore()); // 👈 clave
+
 
             CreateMap<CampoArticulo, CampoArticuloDto>();
             CreateMap<CampoArticuloDto, CampoArticulo>();

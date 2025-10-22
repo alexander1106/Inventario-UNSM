@@ -15,9 +15,7 @@ namespace Proyecto_de_practicas.Controllers
             _service = service;
         }
 
-        /// <summary>
-        /// Asigna un rol a un usuario dentro de una facultad.
-        /// </summary>
+  
         [HttpPost("asignar")]
         public async Task<IActionResult> AsignarUsuarioFacultadRol([FromBody] UsuarioFacultadRolDTO dto)
         {

@@ -10,6 +10,7 @@ namespace Proyecto_de_practicas.Models
 
         // Relación con TipoUbicacion
         public int TipoUbicacionId { get; set; }
+        [JsonIgnore] // 👈 evita el ciclo
         public virtual TipoUbicacion TipoUbicacion { get; set; } = null!;
         public virtual ICollection<Articulo> Articulos { get; set; } = new List<Articulo>();
 
