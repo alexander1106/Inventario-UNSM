@@ -8,6 +8,7 @@ namespace Proyecto_de_practicas.DTOs
         public int Id { get; set; }
         public string Nombre { get; set; } = null!;
         public string Descripcion { get; set; } = null!;
+        public int Piso { get; set; } = 0; 
 
         // Información del tipo de ubicación
         public int TipoUbicacionId { get; set; }

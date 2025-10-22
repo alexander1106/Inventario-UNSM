@@ -12,7 +12,6 @@ namespace Proyecto_de_practicas.Data
   
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Roles> Roles { get; set; }
-        public DbSet<Pisos> Pisos { get; set; }
         public DbSet<Facultades> Facultades { get; set; }
 
         public DbSet<Inventario> Inventario { get; set; }

@@ -110,9 +110,6 @@ internal class Program
         builder.Services.AddScoped<IRolesService, RolesService>();
 
 
-        builder.Services.AddScoped<IPisosRepository, PisosRepository>();
-        builder.Services.AddScoped<IPisosService, PisosService>();
-
         builder.Services.AddScoped<IFacultadesRepository, FacultadesRepository>();
         builder.Services.AddScoped<IFacultadesService, FacultadesService>();
         // Reemplaza la línea incorrecta:

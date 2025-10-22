@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Proyecto_de_practicas.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class intial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -89,26 +89,6 @@ namespace Proyecto_de_practicas.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Pisos",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Numero = table.Column<int>(type: "int", nullable: false),
-                    FacultadId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Pisos", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Pisos_Facultades_FacultadId",
-                        column: x => x.FacultadId,
-                        principalTable: "Facultades",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "CamposArticulos",
                 columns: table => new
                 {
@@ -125,6 +105,28 @@ namespace Proyecto_de_practicas.Migrations
                         name: "FK_CamposArticulos_TipoArticulos_TipoArticuloId",
                         column: x => x.TipoArticuloId,
                         principalTable: "TipoArticulos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Ubicaciones",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Pisos = table.Column<int>(type: "int", nullable: false),
+                    TipoUbicacionId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ubicaciones", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Ubicaciones_TipoUbicacion_TipoUbicacionId",
+                        column: x => x.TipoUbicacionId,
+                        principalTable: "TipoUbicacion",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -156,33 +158,6 @@ namespace Proyecto_de_practicas.Migrations
                         name: "FK_UsuarioFacultadRol_Usuarios_IdUsuario",
                         column: x => x.IdUsuario,
                         principalTable: "Usuarios",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Ubicaciones",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TipoUbicacionId = table.Column<int>(type: "int", nullable: false),
-                    PisosId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Ubicaciones", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Ubicaciones_Pisos_PisosId",
-                        column: x => x.PisosId,
-                        principalTable: "Pisos",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Ubicaciones_TipoUbicacion_TipoUbicacionId",
-                        column: x => x.TipoUbicacionId,
-                        principalTable: "TipoUbicacion",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -337,11 +312,6 @@ namespace Proyecto_de_practicas.Migrations
                 column: "UbicacionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Pisos_FacultadId",
-                table: "Pisos",
-                column: "FacultadId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Traslado_ArticuloId",
                 table: "Traslado",
                 column: "ArticuloId");
@@ -360,11 +330,6 @@ namespace Proyecto_de_practicas.Migrations
                 name: "IX_Traslado_UsuarioId",
                 table: "Traslado",
                 column: "UsuarioId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Ubicaciones_PisosId",
-                table: "Ubicaciones",
-                column: "PisosId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Ubicaciones_TipoUbicacionId",
@@ -404,6 +369,9 @@ namespace Proyecto_de_practicas.Migrations
                 name: "Articulos");
 
             migrationBuilder.DropTable(
+                name: "Facultades");
+
+            migrationBuilder.DropTable(
                 name: "Roles");
 
             migrationBuilder.DropTable(
@@ -416,13 +384,7 @@ namespace Proyecto_de_practicas.Migrations
                 name: "Ubicaciones");
 
             migrationBuilder.DropTable(
-                name: "Pisos");
-
-            migrationBuilder.DropTable(
                 name: "TipoUbicacion");
-
-            migrationBuilder.DropTable(
-                name: "Facultades");
         }
     }
 }

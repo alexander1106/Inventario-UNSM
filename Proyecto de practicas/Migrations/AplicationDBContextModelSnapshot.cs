@@ -153,27 +153,6 @@ namespace Proyecto_de_practicas.Migrations
                     b.ToTable("Inventario");
                 });
 
-            modelBuilder.Entity("Proyecto_de_practicas.Models.Pisos", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("FacultadId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Numero")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FacultadId");
-
-                    b.ToTable("Pisos");
-                });
-
             modelBuilder.Entity("Proyecto_de_practicas.Models.Roles", b =>
                 {
                     b.Property<int>("Id")
@@ -297,15 +276,13 @@ namespace Proyecto_de_practicas.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PisosId")
+                    b.Property<int>("Pisos")
                         .HasColumnType("int");
 
                     b.Property<int>("TipoUbicacionId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PisosId");
 
                     b.HasIndex("TipoUbicacionId");
 
@@ -432,17 +409,6 @@ namespace Proyecto_de_practicas.Migrations
                     b.Navigation("Ubicacion");
                 });
 
-            modelBuilder.Entity("Proyecto_de_practicas.Models.Pisos", b =>
-                {
-                    b.HasOne("Proyecto_de_practicas.Models.Facultades", "Facultad")
-                        .WithMany()
-                        .HasForeignKey("FacultadId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Facultad");
-                });
-
             modelBuilder.Entity("Proyecto_de_practicas.Models.Traslado", b =>
                 {
                     b.HasOne("Proyecto_de_practicas.Models.Articulo", "Articulo")
@@ -480,10 +446,6 @@ namespace Proyecto_de_practicas.Migrations
 
             modelBuilder.Entity("Proyecto_de_practicas.Models.Ubicacion", b =>
                 {
-                    b.HasOne("Proyecto_de_practicas.Models.Pisos", null)
-                        .WithMany("Ubicaciones")
-                        .HasForeignKey("PisosId");
-
                     b.HasOne("Proyecto_de_practicas.Models.TipoUbicacion", "TipoUbicacion")
                         .WithMany("Ubicaciones")
                         .HasForeignKey("TipoUbicacionId")
@@ -528,11 +490,6 @@ namespace Proyecto_de_practicas.Migrations
             modelBuilder.Entity("Proyecto_de_practicas.Models.Facultades", b =>
                 {
                     b.Navigation("UsuariosFacultadesRoles");
-                });
-
-            modelBuilder.Entity("Proyecto_de_practicas.Models.Pisos", b =>
-                {
-                    b.Navigation("Ubicaciones");
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Models.Roles", b =>

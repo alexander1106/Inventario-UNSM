@@ -19,9 +19,6 @@ namespace Proyecto_de_practicas.Mappings
             CreateMap<Roles, RolesDTO>();
             CreateMap<RolesDTO, Roles>();
 
-            CreateMap<Pisos, PisosDto>();
-            CreateMap<PisosDto, Pisos>();
-
 
             CreateMap<UsuarioFacultadRol, UsuarioFacultadRolDTO>();
             CreateMap<UsuarioFacultadRolDTO, UsuarioFacultadRol>();
