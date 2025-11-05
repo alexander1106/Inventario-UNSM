@@ -7,6 +7,7 @@ using Proyecto_de_practicas.Models;
 using Proyecto_de_practicas.Repository;
 using Proyecto_de_practicas.Service;
 using Microsoft.OpenApi.Models;
+using Proyecto_de_practicas.Repository.IRepository;
 
 internal class Program
 {

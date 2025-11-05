@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Proyecto_de_practicas.Data;
 using Proyecto_de_practicas.Models;
+using Proyecto_de_practicas.Repository.IRepository;
 
 namespace Proyecto_de_practicas.Repository
 {
@@ -20,7 +21,6 @@ namespace Proyecto_de_practicas.Repository
                     .ThenInclude(u => u.Articulos)
                         .ThenInclude(a => a.TipoArticulo)
                             .ThenInclude(ta => ta.Campos)
-                                .ThenInclude(c => c.CamposValores)
                 .ToListAsync();
         }
 
@@ -32,7 +32,6 @@ namespace Proyecto_de_practicas.Repository
                     .ThenInclude(u => u.Articulos)
                         .ThenInclude(a => a.TipoArticulo)
                             .ThenInclude(ta => ta.Campos)
-                                .ThenInclude(c => c.CamposValores)
                 .FirstOrDefaultAsync(t => t.Id == id);
         }
 

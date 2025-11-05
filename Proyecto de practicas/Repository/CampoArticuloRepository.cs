@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Proyecto_de_practicas.Data;
 using Proyecto_de_practicas.Models;
+using Proyecto_de_practicas.Repository.IRepository;
 
 namespace Proyecto_de_practicas.Repository
 {
@@ -54,5 +55,22 @@ namespace Proyecto_de_practicas.Repository
                 .Where(c => c.TipoArticuloId == tipoArticuloId)
                 .ToListAsync();
         }
+
+        public async Task<bool> ExistsDuplicateAsync(string nombreCampo, int tipoArticuloId, int? excludeId = null)
+        {
+            return await _context.CamposArticulos
+                .AnyAsync(c =>
+                    c.NombreCampo.ToLower() == nombreCampo.ToLower() &&
+                    c.TipoArticuloId == tipoArticuloId &&
+                    (!excludeId.HasValue || c.Id != excludeId.Value));
+        }
+
+        public async Task<bool> HasRelationsAsync(int campoArticuloId)
+        {
+            return await _context.ArticuloCamposValores
+                .AnyAsync(v => v.CampoArticuloId == campoArticuloId);
+        }
+
+
     }
 }

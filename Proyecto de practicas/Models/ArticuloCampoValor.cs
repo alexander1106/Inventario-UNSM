@@ -2,10 +2,17 @@
 {
     public class ArticuloCampoValor
     {
-     public int Id { get; set; }
-    public int CampoArticuloId { get; set; }
-    public CampoArticulo CampoArticulo { get; set; } = null!;
+        public int Id { get; set; }
 
-    public string Valor { get; set; } = null!; // Se guarda como string y se interpreta según TipoDato
-}
+        // 🔗 Relación con Articulo
+        public int ArticuloId { get; set; }
+        public virtual Articulo Articulo { get; set; } = null!;
+
+        // 🔗 Relación con CampoArticulo
+        public int CampoArticuloId { get; set; }
+        public virtual CampoArticulo CampoArticulo { get; set; } = null!;
+
+        // 🔢 Se guarda como texto y se interpreta según TipoDato
+        public string Valor { get; set; } = null!;
+    }
 }

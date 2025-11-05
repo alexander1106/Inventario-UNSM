@@ -1,6 +1,7 @@
 ﻿using Proyecto_de_practicas.Data;
 using Proyecto_de_practicas.Models;
 using Microsoft.EntityFrameworkCore;
+using Proyecto_de_practicas.Repository.IRepository;
 
 
 namespace Proyecto_de_practicas.Repository

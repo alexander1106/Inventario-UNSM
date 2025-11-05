@@ -29,14 +29,24 @@ namespace Proyecto_de_practicas.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-     
+            base.OnModelCreating(modelBuilder);
 
+            // ❌ Evitar cascada en CampoArticulo → ArticuloCamposValores
             modelBuilder.Entity<ArticuloCampoValor>()
                 .HasOne(acv => acv.CampoArticulo)
-                .WithMany(ca => ca.CamposValores)
+                .WithMany()
                 .HasForeignKey(acv => acv.CampoArticuloId)
-                .OnDelete(DeleteBehavior.Restrict); // Evita cascada aquí
-            modelBuilder.Entity<Traslado>()
+                .OnDelete(DeleteBehavior.Restrict); // 🔒 Evita el error
+
+            // ✅ Puedes mantener la cascada en Articulo → ArticuloCamposValores
+            modelBuilder.Entity<ArticuloCampoValor>()
+                .HasOne(acv => acv.Articulo)
+                .WithMany()
+                .HasForeignKey(acv => acv.ArticuloId)
+                .OnDelete(DeleteBehavior.Cascade);
+        
+
+        modelBuilder.Entity<Traslado>()
                 .HasOne(t => t.Articulo)
                 .WithMany()
                 .HasForeignKey(t => t.ArticuloId)

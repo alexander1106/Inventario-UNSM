@@ -1,8 +1,8 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Proyecto_de_practicas.Models;
-using Proyecto_de_practicas.Repository;
 using Proyecto_de_practicas.Data;
+using Proyecto_de_practicas.Repository.IRepository;
 
 namespace Proyecto_de_practicas.Repository
 {

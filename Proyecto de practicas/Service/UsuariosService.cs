@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Proyecto_de_practicas.DTO;
 using Proyecto_de_practicas.Models;
-using Proyecto_de_practicas.Repository;
+using Proyecto_de_practicas.Repository.IRepository;
 
 namespace Proyecto_de_practicas.Service
 {

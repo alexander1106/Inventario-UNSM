@@ -12,7 +12,7 @@ using Proyecto_de_practicas.Data;
 namespace Proyecto_de_practicas.Migrations
 {
     [DbContext(typeof(AplicationDBContext))]
-    [Migration("20251022153644_intial")]
+    [Migration("20251105132339_intial")]
     partial class intial
     {
         /// <inheritdoc />
@@ -35,10 +35,6 @@ namespace Proyecto_de_practicas.Migrations
 
                     b.Property<int>("Estado")
                         .HasColumnType("int");
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TipoArticuloId")
                         .HasColumnType("int");
@@ -63,6 +59,9 @@ namespace Proyecto_de_practicas.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("ArticuloId")
+                        .HasColumnType("int");
+
                     b.Property<int>("CampoArticuloId")
                         .HasColumnType("int");
 
@@ -71,6 +70,8 @@ namespace Proyecto_de_practicas.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ArticuloId");
 
                     b.HasIndex("CampoArticuloId");
 
@@ -279,7 +280,7 @@ namespace Proyecto_de_practicas.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Pisos")
+                    b.Property<int>("Piso")
                         .HasColumnType("int");
 
                     b.Property<int>("TipoUbicacionId")
@@ -373,11 +374,19 @@ namespace Proyecto_de_practicas.Migrations
 
             modelBuilder.Entity("Proyecto_de_practicas.Models.ArticuloCampoValor", b =>
                 {
+                    b.HasOne("Proyecto_de_practicas.Models.Articulo", "Articulo")
+                        .WithMany()
+                        .HasForeignKey("ArticuloId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Proyecto_de_practicas.Models.CampoArticulo", "CampoArticulo")
-                        .WithMany("CamposValores")
+                        .WithMany()
                         .HasForeignKey("CampoArticuloId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Articulo");
 
                     b.Navigation("CampoArticulo");
                 });
@@ -483,11 +492,6 @@ namespace Proyecto_de_practicas.Migrations
                     b.Navigation("Rol");
 
                     b.Navigation("Usuario");
-                });
-
-            modelBuilder.Entity("Proyecto_de_practicas.Models.CampoArticulo", b =>
-                {
-                    b.Navigation("CamposValores");
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Models.Facultades", b =>

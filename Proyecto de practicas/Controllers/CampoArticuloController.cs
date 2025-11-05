@@ -38,27 +38,50 @@ namespace Proyecto_de_practicas.Controllers
             var result = await _service.GetByTipoArticuloIdAsync(tipoArticuloId);
             return Ok(result);
         }
-
         [HttpPost]
         public async Task<ActionResult<CampoArticuloDto>> Create(CampoArticuloDto dto)
         {
-            var result = await _service.AddAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+            try
+            {
+                var result = await _service.AddAsync(dto);
+                return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
+
+
 
         [HttpPut("{id}")]
         public async Task<ActionResult<CampoArticuloDto>> Update(int id, CampoArticuloDto dto)
         {
-            var result = await _service.UpdateAsync(id, dto);
-            return Ok(result);
+            try
+            {
+                var result = await _service.UpdateAsync(id, dto);
+                return Ok(result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
+
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var success = await _service.DeleteAsync(id);
-            if (!success) return NotFound();
-            return NoContent();
+            try
+            {
+                var success = await _service.DeleteAsync(id);
+                if (!success) return NotFound();
+                return NoContent();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpPost("lote")]

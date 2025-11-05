@@ -1,6 +1,6 @@
 ﻿using Proyecto_de_practicas.Models;
 
-namespace Proyecto_de_practicas.Repository
+namespace Proyecto_de_practicas.Repository.IRepository
 {
     public interface ICampoArticuloRepository
     {
@@ -10,5 +10,10 @@ namespace Proyecto_de_practicas.Repository
         Task<CampoArticulo> UpdateAsync(CampoArticulo campoArticulo);
         Task<bool> DeleteAsync(int id);
         Task<List<CampoArticulo>> GetByTipoArticuloIdAsync(int tipoArticuloId);
+
+        Task<bool> ExistsDuplicateAsync(string nombreCampo, int tipoArticuloId, int? excludeId = null);
+         Task<bool> HasRelationsAsync(int campoArticuloId);
+
+
     }
 }

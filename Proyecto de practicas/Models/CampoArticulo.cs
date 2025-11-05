@@ -15,7 +15,6 @@ namespace Proyecto_de_practicas.Models
         // Relación con TipoArticulo
         public int TipoArticuloId { get; set; }
         public virtual TipoArticulo TipoArticulo { get; set; } = null!;
-        public virtual ICollection<ArticuloCampoValor> CamposValores { get; set; } = new List<ArticuloCampoValor>();
 
     }
 }

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Proyecto_de_practicas.Models;
-using Proyecto_de_practicas.Repository;
+using Proyecto_de_practicas.Repository.IRepository;
 
 namespace Proyecto_de_practicas.Service
 {

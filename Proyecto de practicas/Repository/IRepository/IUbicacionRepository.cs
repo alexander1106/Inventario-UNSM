@@ -1,6 +1,6 @@
 ﻿using Proyecto_de_practicas.Models;
 
-namespace Proyecto_de_practicas.Repository
+namespace Proyecto_de_practicas.Repository.IRepository
 {
     public interface IUbicacionRepository
     {
