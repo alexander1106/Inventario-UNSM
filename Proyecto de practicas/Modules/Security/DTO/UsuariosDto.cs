@@ -12,8 +12,6 @@ namespace Proyecto_de_practicas.Modules.Security.DTO
         public string Estado { get; set; }
 
         public int RolId { get; set; }
-        public Roles Rol { get; set; }
-
 
 
     }
