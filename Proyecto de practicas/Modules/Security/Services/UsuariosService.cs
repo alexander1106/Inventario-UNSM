@@ -73,4 +73,28 @@ public class UsuariosService : IUsuariosServices
         var result = _passwordHasher.VerifyHashedPassword(usuario, usuario.Password, passwordIngresado);
         return result == PasswordVerificationResult.Success;
     }
+    public async Task<UsuariosDto?> GetUsuarioActualAsync(string username)
+    {
+        if (string.IsNullOrEmpty(username))
+            return null;
+
+        var usuario = await _usuariosRepository.GetByUsernameAsync(username);
+        if (usuario == null)
+            return null;
+
+        return _mapper.Map<UsuariosDto>(usuario);
+    }
+
+    public async Task<UsuariosDto?> GetByUsernameAsync(string usernameActual)
+    {
+        if (string.IsNullOrEmpty(usernameActual))
+            return null;
+
+        var usuario = await _usuariosRepository.GetByUsernameAsync(usernameActual);
+        if (usuario == null)
+            return null;
+
+        return _mapper.Map<UsuariosDto>(usuario);
+    }
+
 }

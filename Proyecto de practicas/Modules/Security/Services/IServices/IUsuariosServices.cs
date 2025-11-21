@@ -21,5 +21,8 @@ namespace Proyecto_de_practicas.Modules.Security.Services.IServices
 
         // Validar login
         Task<bool> ValidateLoginAsync(string username, string passwordIngresado);
+        Task<UsuariosDto?> GetByUsernameAsync(string usernameActual);
+
+        Task<UsuariosDto?> GetUsuarioActualAsync(string username);
     }
 }
