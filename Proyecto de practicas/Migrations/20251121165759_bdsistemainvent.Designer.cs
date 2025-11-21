@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Proyecto_de_practicas.Data;
 
@@ -11,9 +12,11 @@ using Proyecto_de_practicas.Data;
 namespace Proyecto_de_practicas.Migrations
 {
     [DbContext(typeof(AplicationDBContext))]
-    partial class AplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20251121165759_bdsistemainvent")]
+    partial class bdsistemainvent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -278,14 +281,6 @@ namespace Proyecto_de_practicas.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 7,
-                            Estado = 1,
-                            Icon = "fa-solid fa-home",
-                            Nombre = "Dashboard",
-                            Ruta = "/dashboard"
-                        },
-                        new
-                        {
                             Id = 1,
                             Estado = 1,
                             Icon = "fa-solid fa-box",
@@ -511,7 +506,7 @@ namespace Proyecto_de_practicas.Migrations
                             Icon = "fa-solid fa-user",
                             ModuloId = 6,
                             Nombre = "Usuarios",
-                            Ruta = "/usuarios"
+                            Ruta = "/seguridad/usuarios"
                         },
                         new
                         {
@@ -520,7 +515,7 @@ namespace Proyecto_de_practicas.Migrations
                             Icon = "fa-solid fa-user-shield",
                             ModuloId = 6,
                             Nombre = "Roles",
-                            Ruta = "/roles"
+                            Ruta = "/seguridad/roles"
                         },
                         new
                         {
@@ -529,7 +524,7 @@ namespace Proyecto_de_practicas.Migrations
                             Icon = "fa-solid fa-key",
                             ModuloId = 6,
                             Nombre = "Permisos",
-                            Ruta = "/permisos"
+                            Ruta = "/seguridad/permisos"
                         });
                 });
 

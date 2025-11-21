@@ -36,7 +36,8 @@ public class AuthController : ControllerBase
     private string GenerateToken(string username)
     {
         var claims = new[]
-        {
+           {
+            new Claim(ClaimTypes.NameIdentifier, username), // NECESARIO
             new Claim(ClaimTypes.Name, username)
         };
 

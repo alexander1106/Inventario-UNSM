@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Proyecto_de_practicas.Data;
 
@@ -11,9 +12,11 @@ using Proyecto_de_practicas.Data;
 namespace Proyecto_de_practicas.Migrations
 {
     [DbContext(typeof(AplicationDBContext))]
-    partial class AplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20251121155735_bdsistemainv")]
+    partial class bdsistemainv
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -278,17 +281,8 @@ namespace Proyecto_de_practicas.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 7,
-                            Estado = 1,
-                            Icon = "fa-solid fa-home",
-                            Nombre = "Dashboard",
-                            Ruta = "/dashboard"
-                        },
-                        new
-                        {
                             Id = 1,
                             Estado = 1,
-                            Icon = "fa-solid fa-box",
                             Nombre = "Artículos",
                             Ruta = "/articulos"
                         },
@@ -296,7 +290,6 @@ namespace Proyecto_de_practicas.Migrations
                         {
                             Id = 2,
                             Estado = 1,
-                            Icon = "fa-solid fa-map-marker-alt",
                             Nombre = "Ubicaciones",
                             Ruta = "/ubicaciones"
                         },
@@ -304,7 +297,6 @@ namespace Proyecto_de_practicas.Migrations
                         {
                             Id = 3,
                             Estado = 1,
-                            Icon = "fa-solid fa-exchange-alt",
                             Nombre = "Traslados",
                             Ruta = "/traslados"
                         },
@@ -312,7 +304,6 @@ namespace Proyecto_de_practicas.Migrations
                         {
                             Id = 4,
                             Estado = 1,
-                            Icon = "fa-solid fa-warehouse",
                             Nombre = "Inventario",
                             Ruta = "/inventario"
                         },
@@ -320,7 +311,6 @@ namespace Proyecto_de_practicas.Migrations
                         {
                             Id = 5,
                             Estado = 1,
-                            Icon = "fa-solid fa-chart-line",
                             Nombre = "Reportes",
                             Ruta = "/reportes"
                         },
@@ -328,7 +318,6 @@ namespace Proyecto_de_practicas.Migrations
                         {
                             Id = 6,
                             Estado = 1,
-                            Icon = "fa-solid fa-shield-alt",
                             Nombre = "Seguridad",
                             Ruta = "/seguridad"
                         });
@@ -472,64 +461,57 @@ namespace Proyecto_de_practicas.Migrations
                         {
                             Id = 1,
                             Estado = 1,
-                            Icon = "fa-solid fa-box-open",
                             ModuloId = 1,
                             Nombre = "Artículos",
-                            Ruta = "/articulos"
+                            Ruta = "/articulos/lista"
                         },
                         new
                         {
                             Id = 2,
                             Estado = 1,
-                            Icon = "fa-solid fa-tags",
                             ModuloId = 1,
                             Nombre = "Tipos de Artículo",
-                            Ruta = "/tipos-articulos"
+                            Ruta = "/articulos/tipos"
                         },
                         new
                         {
                             Id = 3,
                             Estado = 1,
-                            Icon = "fa-solid fa-map-marker",
                             ModuloId = 2,
                             Nombre = "Ubicaciones",
-                            Ruta = "/ubicaciones"
+                            Ruta = "/ubicaciones/lista"
                         },
                         new
                         {
                             Id = 4,
                             Estado = 1,
-                            Icon = "fa-solid fa-layer-group",
                             ModuloId = 2,
                             Nombre = "Tipos de Ubicación",
-                            Ruta = "/tipo-ubicacion"
+                            Ruta = "/ubicaciones/tipos"
                         },
                         new
                         {
                             Id = 5,
                             Estado = 1,
-                            Icon = "fa-solid fa-user",
                             ModuloId = 6,
                             Nombre = "Usuarios",
-                            Ruta = "/usuarios"
+                            Ruta = "/seguridad/usuarios"
                         },
                         new
                         {
                             Id = 6,
                             Estado = 1,
-                            Icon = "fa-solid fa-user-shield",
                             ModuloId = 6,
                             Nombre = "Roles",
-                            Ruta = "/roles"
+                            Ruta = "/seguridad/roles"
                         },
                         new
                         {
                             Id = 7,
                             Estado = 1,
-                            Icon = "fa-solid fa-key",
                             ModuloId = 6,
                             Nombre = "Permisos",
-                            Ruta = "/permisos"
+                            Ruta = "/seguridad/permisos"
                         });
                 });
 

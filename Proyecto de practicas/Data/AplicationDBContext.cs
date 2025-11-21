@@ -35,13 +35,14 @@ namespace Proyecto_de_practicas.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Modulo>().HasData(
-              new Modulo { Id = 1, Nombre = "Artículos", Ruta = "/articulos" },
-              new Modulo { Id = 2, Nombre = "Ubicaciones", Ruta = "/ubicaciones" },
-              new Modulo { Id = 3, Nombre = "Traslados", Ruta = "/traslados" },
-              new Modulo { Id = 4, Nombre = "Inventario", Ruta = "/inventario" },
-              new Modulo { Id = 5, Nombre = "Reportes", Ruta = "/reportes" },
-              new Modulo { Id = 6, Nombre = "Seguridad", Ruta = "/seguridad" }
-          );
+                new Modulo { Id = 7, Nombre = "Dashboard", Ruta = "/dashboard", Icon = "fa-solid fa-home" },
+                new Modulo { Id = 1, Nombre = "Artículos", Ruta = "/articulos", Icon = "fa-solid fa-box" },
+                new Modulo { Id = 2, Nombre = "Ubicaciones", Ruta = "/ubicaciones", Icon = "fa-solid fa-map-marker-alt" },
+                new Modulo { Id = 3, Nombre = "Traslados", Ruta = "/traslados", Icon = "fa-solid fa-exchange-alt" },
+                new Modulo { Id = 4, Nombre = "Inventario", Ruta = "/inventario", Icon = "fa-solid fa-warehouse" },
+                new Modulo { Id = 5, Nombre = "Reportes", Ruta = "/reportes", Icon = "fa-solid fa-chart-line" },
+                new Modulo { Id = 6, Nombre = "Seguridad", Ruta = "/seguridad", Icon = "fa-solid fa-shield-alt" }
+            );
 
             // =============================
             // 🚀 SEED DE ROLES
@@ -50,24 +51,25 @@ namespace Proyecto_de_practicas.Data
                 new Roles { Id = 1, Nombre = "Administrador",Estado=1},
                 new Roles { Id = 2, Nombre = "Usuario", Estado=1}
             );
-            
-          // ============================ 
-          // 🚀 SEED DE SUBMODULOS
-          // ============================
-          modelBuilder.Entity<SubModulo>().HasData(
-            // ARTÍCULOS
-            new SubModulo { Id = 1, Nombre = "Artículos", Ruta = "/articulos/lista", ModuloId = 1 },
-            new SubModulo { Id = 2, Nombre = "Tipos de Artículo", Ruta = "/articulos/tipos", ModuloId = 1 },
 
-            // UBICACIONES
-            new SubModulo { Id = 3, Nombre = "Ubicaciones", Ruta = "/ubicaciones/lista", ModuloId = 2 },
-            new SubModulo { Id = 4, Nombre = "Tipos de Ubicación", Ruta = "/ubicaciones/tipos", ModuloId = 2 },
+            // ============================ 
+            // 🚀 SEED DE SUBMODULOS
+            // ============================
+            modelBuilder.Entity<SubModulo>().HasData(
+              // ARTÍCULOS
+              new SubModulo { Id = 1, Nombre = "Artículos", Ruta = "/articulos", ModuloId = 1, Icon = "fa-solid fa-box-open" },
+              new SubModulo { Id = 2, Nombre = "Tipos de Artículo", Ruta = "/tipos-articulos", ModuloId = 1, Icon = "fa-solid fa-tags" },
 
-            // SEGURIDAD
-            new SubModulo { Id = 5, Nombre = "Usuarios", Ruta = "/seguridad/usuarios", ModuloId = 6 },
-            new SubModulo { Id = 6, Nombre = "Roles", Ruta = "/seguridad/roles", ModuloId = 6 },
-            new SubModulo { Id = 7, Nombre = "Permisos", Ruta = "/seguridad/permisos", ModuloId = 6 }
-        );
+              // UBICACIONES
+              new SubModulo { Id = 3, Nombre = "Ubicaciones", Ruta = "/ubicaciones", ModuloId = 2, Icon = "fa-solid fa-map-marker" },
+              new SubModulo { Id = 4, Nombre = "Tipos de Ubicación", Ruta = "/tipo-ubicacion", ModuloId = 2, Icon = "fa-solid fa-layer-group" },
+
+              // SEGURIDAD
+              new SubModulo { Id = 5, Nombre = "Usuarios", Ruta = "/usuarios", ModuloId = 6, Icon = "fa-solid fa-user" },
+              new SubModulo { Id = 6, Nombre = "Roles", Ruta = "/roles", ModuloId = 6, Icon = "fa-solid fa-user-shield" },
+              new SubModulo { Id = 7, Nombre = "Permisos", Ruta = "/permisos", ModuloId = 6, Icon = "fa-solid fa-key" }
+          );
+        
             modelBuilder.Entity<Permiso>().HasData(
                 new Permiso { Id = 1, Nombre = "Crear", Activo = true },
                 new Permiso { Id = 2, Nombre = "Editar", Activo = true },
