@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using Proyecto_de_practicas.Modules.Security.DTO;
 using Proyecto_de_practicas.Modules.Security.Services.IServices;
 
@@ -13,6 +14,7 @@ public class UsuariosController : ControllerBase
         _usuariosService = usuariosService;
     }
 
+    // 📌 Obtener todos los usuarios
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
@@ -20,14 +22,16 @@ public class UsuariosController : ControllerBase
         return Ok(usuarios);
     }
 
+    // 📌 Obtener usuario por ID
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
         var usuario = await _usuariosService.GetByIdAsync(id);
-        if (usuario == null) return NotFound();
+        if (usuario == null) return NotFound(new { mensaje = "Usuario no encontrado" });
         return Ok(usuario);
     }
 
+    // 📌 Crear usuario
     [HttpPost]
     public async Task<IActionResult> Add([FromBody] UsuarioCreateDTO usuarioDto)
     {
@@ -35,6 +39,7 @@ public class UsuariosController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = nuevo.Id }, nuevo);
     }
 
+    // 📌 Actualizar usuario
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, [FromBody] UsuariosDto usuarioDto)
     {
@@ -43,11 +48,26 @@ public class UsuariosController : ControllerBase
         return Ok(actualizado);
     }
 
+    // 📌 Eliminar usuario
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
         var eliminado = await _usuariosService.DeleteAsync(id);
         if (!eliminado) return NotFound(new { mensaje = "Usuario no encontrado" });
         return Ok(new { mensaje = "Usuario eliminado exitosamente" });
+    }
+
+    // 📌 Obtener usuario actual pasando username en query
+    [HttpGet("usuario-actual")]
+    public async Task<IActionResult> GetUsuarioActual([FromQuery] string username)
+    {
+        if (string.IsNullOrEmpty(username))
+            return BadRequest(new { mensaje = "El username es obligatorio" });
+
+        var usuario = await _usuariosService.GetByUsernameAsync(username);
+        if (usuario == null)
+            return NotFound(new { mensaje = "Usuario no encontrado" });
+
+        return Ok(usuario);
     }
 }
