@@ -1,47 +1,36 @@
 ﻿using AutoMapper;
-using Proyecto_de_practicas.DTO;
-using Proyecto_de_practicas.DTOs;
 using Proyecto_de_practicas.Models;
-using SistemaInventario.DTO;
+using Proyecto_de_practicas.Modules.Security.DTO;
+using Proyecto_de_practicas.Modules.Security.Entities;
+using Proyecto_de_practicas.Modules.Security.Security;
 
-namespace Proyecto_de_practicas.Mappings
-{
-    public class MappingProfile:Profile
+public class MappingProfile : Profile
+{   
+    public MappingProfile()
     {
-        public MappingProfile()
-        {
-            CreateMap<Usuario, UsuariosDto>();
-            CreateMap<UsuariosDto, Usuario>();
+        // 🧍 USUARIOS
+        CreateMap<Usuario, UsuariosDto>();
+        CreateMap<UsuariosDto, Usuario>(); 
 
-            CreateMap<Facultades, FacultadesDto>();
-            CreateMap<FacultadesDto, Facultades>();
+        // 👥 ROLES
+        CreateMap<Roles, RolesDTO>();
+        CreateMap<RolesDTO, Roles>();
 
-            CreateMap<Roles, RolesDTO>();
-            CreateMap<RolesDTO, Roles>();
+        // 🧩 MÓDULOS
+        CreateMap<Modulo, ModuloDTO>();
+        CreateMap<ModuloDTO, Modulo>();
 
+        // 🧱 SUBMÓDULOS
+        CreateMap<SubModulo, SubModuloDTO>();
+        CreateMap<SubModuloDTO, SubModulo>();
 
-            CreateMap<UsuarioFacultadRol, UsuarioFacultadRolDTO>();
-            CreateMap<UsuarioFacultadRolDTO, UsuarioFacultadRol>();
+        // 🎯 PERMISOS POR SUBMÓDULO
+        CreateMap<RolSubModulo, RolSubModuloDTO>();
+        CreateMap<RolSubModuloDTO, RolSubModulo>();
 
-            CreateMap<TipoArticulo, TipoArticuloDTO>();
-            CreateMap<TipoArticuloDTO, TipoArticulo>()
-                .ForMember(dest => dest.Articulos, opt => opt.Ignore());
-            CreateMap<Articulo, ArticuloDto>();
-            CreateMap<ArticuloDto, Articulo>();
-
-            CreateMap<Ubicacion, UbicacionDto>();
-
-            CreateMap<UbicacionDto, Ubicacion>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore()); // 👈 clave
+        CreateMap<SubModulo, SubModuloDTO>();
+        CreateMap<Modulo, ModuloDTO>();
 
 
-            CreateMap<CampoArticulo, CampoArticuloDto>();
-            CreateMap<CampoArticuloDto, CampoArticulo>();
-
-            CreateMap<ArticuloCampoValor, ArticuloCampoValorDto>();
-            CreateMap<ArticuloCampoValorDto, ArticuloCampoValor>();
-
-
-        }
     }
 }

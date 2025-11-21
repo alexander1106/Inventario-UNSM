@@ -2,12 +2,17 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Proyecto_de_practicas.Data;
 using Proyecto_de_practicas.Models;
+using Proyecto_de_practicas.Modules.Security.Entities;
+using Proyecto_de_practicas.Modules.Security.Repositories;
+using Proyecto_de_practicas.Modules.Security.Repositories.IRepositories;
+using Proyecto_de_practicas.Modules.Security.Services;
+using Proyecto_de_practicas.Modules.Security.Services.IServices;
 using Proyecto_de_practicas.Repository;
-using Proyecto_de_practicas.Service;
-using Microsoft.OpenApi.Models;
 using Proyecto_de_practicas.Repository.IRepository;
+using Proyecto_de_practicas.Service;
 
 internal class Program
 {
@@ -111,9 +116,6 @@ internal class Program
         builder.Services.AddScoped<IRolesService, RolesService>();
 
 
-        builder.Services.AddScoped<IFacultadesRepository, FacultadesRepository>();
-        builder.Services.AddScoped<IFacultadesService, FacultadesService>();
-        // Reemplaza la línea incorrecta:
         // builder.Services.AddScoped<ITipoArtículosRepository, TipoArticulosRepository();
 
         builder.Services.AddScoped<ITipoArticuloRepository, TipoArticuloRepository>();
@@ -129,14 +131,25 @@ internal class Program
         builder.Services.AddScoped<IArticuloCampoValorRepository, ArticuloCampoValorRepository>();
         builder.Services.AddScoped<IArticuloCampoValorService, ArticuloCampoValorService>();
 
-        builder.Services.AddScoped<IUsuarioFacultadRolService, UsuarioFacultadRolService>();
 
         builder.Services.AddAutoMapper(typeof(Program));
         
-        builder.Services.AddScoped<IUsuarioFacultadRolRepository, UsuarioFacultadRolRepository>();
 
         builder.Services.AddScoped<ITipoUbicacionRepository, TipoUbicacionRepository>();
         builder.Services.AddScoped<ITipoUbicacionService, TipoUbicacionService>();
+
+
+        // ===============================
+        //     🚀 NUEVOS REGISTROS
+        // ===============================
+
+        // Modulos
+        builder.Services.AddScoped<IModulosRepository, ModulosRepository>();
+        builder.Services.AddScoped<IModulosService, ModulosService>();
+
+        // SubModulos
+        builder.Services.AddScoped<ISubModulosRepository, SubModulosRepository>();
+        builder.Services.AddScoped<ISubModulosService, SubModulosService>();
 
         // Herramientas
         var app = builder.Build(); 

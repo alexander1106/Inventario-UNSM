@@ -3,7 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using Proyecto_de_practicas.Service;
+using Proyecto_de_practicas.Modules.Security.Services.IServices;
 
 [ApiController]
 [Route("api/[controller]")]
