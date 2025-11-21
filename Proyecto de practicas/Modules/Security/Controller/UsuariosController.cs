@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Proyecto_de_practicas.Modules.Security.DTO;
 using Proyecto_de_practicas.Modules.Security.Services.IServices;
@@ -57,14 +58,17 @@ public class UsuariosController : ControllerBase
         return Ok(new { mensaje = "Usuario eliminado exitosamente" });
     }
 
-    // 📌 Obtener usuario actual pasando username en query
+    [Authorize]   // ✔ Este sí
     [HttpGet("usuario-actual")]
-    public async Task<IActionResult> GetUsuarioActual([FromQuery] string username)
+    public async Task<IActionResult> GetUsuarioActual()
     {
+        var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
         if (string.IsNullOrEmpty(username))
-            return BadRequest(new { mensaje = "El username es obligatorio" });
+            return Unauthorized(new { mensaje = "Usuario no autenticado" });
 
         var usuario = await _usuariosService.GetByUsernameAsync(username);
+
         if (usuario == null)
             return NotFound(new { mensaje = "Usuario no encontrado" });
 

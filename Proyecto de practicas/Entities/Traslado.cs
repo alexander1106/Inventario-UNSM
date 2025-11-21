@@ -1,4 +1,6 @@
-﻿using Proyecto_de_practicas.Modules.Security.Entities;
+﻿using Proyecto_de_practicas.Modules.Articulos.Entities;
+using Proyecto_de_practicas.Modules.Security.Entities;
+using Proyecto_de_practicas.Modules.Ubicaciones.Entities;
 
 namespace Proyecto_de_practicas.Models
 {

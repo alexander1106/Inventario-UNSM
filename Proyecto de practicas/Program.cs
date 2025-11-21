@@ -10,6 +10,10 @@ using Proyecto_de_practicas.Modules.Security.Repositories;
 using Proyecto_de_practicas.Modules.Security.Repositories.IRepositories;
 using Proyecto_de_practicas.Modules.Security.Services;
 using Proyecto_de_practicas.Modules.Security.Services.IServices;
+using Proyecto_de_practicas.Modules.Ubicaciones.Repository;
+using Proyecto_de_practicas.Modules.Ubicaciones.Repository.IUbicacionesRepository;
+using Proyecto_de_practicas.Modules.Ubicaciones.Services;
+using Proyecto_de_practicas.Modules.Ubicaciones.Services.IUbicacionesServices;
 using Proyecto_de_practicas.Repository;
 using Proyecto_de_practicas.Repository.IRepository;
 using Proyecto_de_practicas.Service;
@@ -151,7 +155,21 @@ internal class Program
         builder.Services.AddScoped<ISubModulosRepository, SubModulosRepository>();
         builder.Services.AddScoped<ISubModulosService, SubModulosService>();
 
+
+        // REPOS Y SERVICES
+        builder.Services.AddScoped<IRolSubModuloRepository, RolSubModuloRepository>();
+        builder.Services.AddScoped<IRolSubModuloService, RolSubModuloService>();
+
+
+        // Registro de servicios y repositorios
+        builder.Services.AddScoped<IRolSubModuloPermisoRepository, RolSubModuloPermisoRepository>();
+        builder.Services.AddScoped<IRolSubModuloPermisoService, RolSubModuloPermisoService>();
         // Herramientas
+
+        builder.Services.AddScoped<IPermisoRepository, PermisoRepository>();
+        builder.Services.AddScoped<IPermisoService, PermisoService>();
+
+            
         var app = builder.Build(); 
             
         // Configure the HTTP request pipeline.

@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Proyecto_de_practicas.Models;
+using Proyecto_de_practicas.Modules.Articulos.Entities;
 using Proyecto_de_practicas.Modules.Security.Entities;
 using Proyecto_de_practicas.Modules.Security.Security;
+using Proyecto_de_practicas.Modules.Ubicaciones.Entities;
 
 
 
@@ -50,18 +52,7 @@ namespace Proyecto_de_practicas.Data
                 new Roles { Id = 1, Nombre = "Administrador",Estado=1},
                 new Roles { Id = 2, Nombre = "Usuario", Estado=1}
             );
-            modelBuilder.Entity<Usuario>().HasData(
-      new Usuario
-      {
-          Id = 1,
-          Nombre = "Admin",
-          Apellido = "Principal",
-          Correo = "admin@empresa.com",
-          Username = "admin",
-          Password = "Admin123!", // contraseña hasheada
-          Estado = "Activo",
-          RolId = 1 // Administrador
-      },
+
           // ============================ 
           // 🚀 SEED DE SUBMODULOS
           // ============================
@@ -78,7 +69,7 @@ namespace Proyecto_de_practicas.Data
             new SubModulo { Id = 5, Nombre = "Usuarios", Ruta = "/seguridad/usuarios", ModuloId = 6 },
             new SubModulo { Id = 6, Nombre = "Roles", Ruta = "/seguridad/roles", ModuloId = 6 },
             new SubModulo { Id = 7, Nombre = "Permisos", Ruta = "/seguridad/permisos", ModuloId = 6 }
-        ));
+        );
             modelBuilder.Entity<Permiso>().HasData(
                 new Permiso { Id = 1, Nombre = "Crear", Activo = true },
                 new Permiso { Id = 2, Nombre = "Editar", Activo = true },

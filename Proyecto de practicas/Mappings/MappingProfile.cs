@@ -25,11 +25,12 @@ public class MappingProfile : Profile
         CreateMap<SubModuloDTO, SubModulo>();
 
         // 🎯 PERMISOS POR SUBMÓDULO
-        CreateMap<RolSubModulo, RolSubModuloDTO>();
-        CreateMap<RolSubModuloDTO, RolSubModulo>();
+        CreateMap<RolSubModulo, RolSubModuloDto>();
+        CreateMap<RolSubModuloDto, RolSubModulo>();
 
         CreateMap<SubModulo, SubModuloDTO>();
         CreateMap<Modulo, ModuloDTO>();
+        CreateMap<RolSubModulo, RolSubModuloDto>();
 
         {
             // Crear usuario

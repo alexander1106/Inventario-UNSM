@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Proyecto_de_practicas.DTO;
-using Proyecto_de_practicas.Models;
+using Proyecto_de_practicas.Modules.Articulos.DTO;
+using Proyecto_de_practicas.Modules.Articulos.Entities;
 using Proyecto_de_practicas.Repository;
 
 namespace Proyecto_de_practicas.Service

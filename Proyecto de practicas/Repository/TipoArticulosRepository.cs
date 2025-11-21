@@ -5,8 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Proyecto_de_practicas.Data; // Aquí va tu DbContext
-using Proyecto_de_practicas.DTO;
-using Proyecto_de_practicas.Models;
+using Proyecto_de_practicas.Modules.Articulos.Entities;
 using Proyecto_de_practicas.Repository.IRepository;
 
 namespace Proyecto_de_practicas.Repository

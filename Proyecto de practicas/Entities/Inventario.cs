@@ -1,4 +1,7 @@
-﻿namespace Proyecto_de_practicas.Models
+﻿using Proyecto_de_practicas.Modules.Articulos.Entities;
+using Proyecto_de_practicas.Modules.Ubicaciones.Entities;
+
+namespace Proyecto_de_practicas.Models
 {
     public class Inventario
     {
