@@ -11,8 +11,9 @@ namespace Proyecto_de_practicas.Modules.Security.Entities
         public string Username { get; set; }
         public string Password { get; set; }
         public string Estado { get; set; }
-
         public int RolId { get; set; }
+
+        [ForeignKey("RolId")]
         public Roles Rol { get; set; }
     }
 }

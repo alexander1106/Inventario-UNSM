@@ -1,20 +1,25 @@
-﻿using Proyecto_de_practicas.Models;
-using Proyecto_de_practicas.Modules.Security.DTO;
+﻿using Proyecto_de_practicas.Modules.Security.DTO;
 
 namespace Proyecto_de_practicas.Modules.Security.Services.IServices
 {
     public interface IUsuariosServices
     {
+        // Obtener todos los usuarios
         Task<List<UsuariosDto>> GetAllAsync();
-        Task<UsuariosDto?> GetByIdAsync(int id);
-        Task<UsuariosDto?> GetByNombreAsync(string nombre);
-        Task<UsuariosDto?> GetByUsernameAsync(string username);
 
-        Task<UsuariosDto> AddAsync(UsuariosDto usuario);
-        Task<UsuariosDto> UpdateAsync(UsuariosDto usuario);
+        // Obtener usuario por ID
+        Task<UsuariosDto?> GetByIdAsync(int id);
+
+        // Crear un usuario
+        Task<UsuariosDto> AddAsync(UsuarioCreateDTO usuarioDto);
+
+        // Actualizar un usuario
+        Task<UsuariosDto> UpdateAsync(UsuariosDto usuarioDto);
+
+        // Eliminar un usuario
         Task<bool> DeleteAsync(int id);
 
+        // Validar login
         Task<bool> ValidateLoginAsync(string username, string passwordIngresado);
-
     }
 }

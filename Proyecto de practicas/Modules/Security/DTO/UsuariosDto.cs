@@ -1,6 +1,4 @@
-﻿using Proyecto_de_practicas.Modules.Security.Entities;
-
-namespace Proyecto_de_practicas.Modules.Security.DTO
+﻿namespace Proyecto_de_practicas.Modules.Security.DTO
 {
     public class UsuariosDto
     {
@@ -10,11 +8,6 @@ namespace Proyecto_de_practicas.Modules.Security.DTO
         public string Correo { get; set; }
         public string Username { get; set; }
         public string Estado { get; set; }
-
         public int RolId { get; set; }
-        public Roles Rol { get; set; }
-
-
-
     }
 }

@@ -1,14 +1,12 @@
-﻿using System.Runtime.InteropServices;
-
-namespace Proyecto_de_practicas.Modules.Security.DTO
+﻿namespace Proyecto_de_practicas.Modules.Security.DTO
 {
     public class UsuarioCreateDTO
     {
-        public String nombres;
-        public String apellidos;
-        public String email;
-        public String username;
-        public String password;
-        public int rolId;
+        public string Nombres { get; set; }
+        public string? Apellidos { get; set; }
+        public string Email { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public int RolId { get; set; }
     }
 }

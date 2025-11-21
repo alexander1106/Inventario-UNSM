@@ -31,6 +31,20 @@ public class MappingProfile : Profile
         CreateMap<SubModulo, SubModuloDTO>();
         CreateMap<Modulo, ModuloDTO>();
 
+        {
+            // Crear usuario
+            CreateMap<UsuarioCreateDTO, Usuario>()
+                .ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.Nombres))
+                .ForMember(dest => dest.Apellido, opt => opt.MapFrom(src => src.Apellidos))
+                .ForMember(dest => dest.Correo, opt => opt.MapFrom(src => src.Email))
+                .ForMember(dest => dest.Estado, opt => opt.MapFrom(src => "Activo"));
 
+            // Usuario → UsuariosDto
+            CreateMap<Usuario, UsuariosDto>();
+                
+
+            // UsuariosDto → Usuario
+            CreateMap<UsuariosDto, Usuario>();
+        }
     }
 }
