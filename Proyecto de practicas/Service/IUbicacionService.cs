@@ -9,5 +9,6 @@ namespace Proyecto_de_practicas.Service
         Task<UbicacionDto> AddAsync(UbicacionDto dto);
         Task<UbicacionDto> UpdateAsync(int id, UbicacionDto dto);
         Task<bool> DeleteAsync(int id);
+        Task<List<UbicacionDto>> GetByTipoAsync(int tipoId);
     }
 }

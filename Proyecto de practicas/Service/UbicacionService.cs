@@ -44,6 +44,7 @@ namespace Proyecto_de_practicas.Service
             return _mapper.Map<UbicacionDto>(result);
         }
 
+
         public async Task<UbicacionDto> UpdateAsync(int id, UbicacionDto dto)
         {
             var existentes = await _repo.GetAllAsync();
@@ -72,5 +73,14 @@ namespace Proyecto_de_practicas.Service
         {
             return await _repo.DeleteAsync(id);
         }
+        public async Task<List<UbicacionDto>> GetByTipoAsync(int tipoId)
+        {
+            var entities = await _repo.GetAllAsync();
+
+            var filtradas = entities.Where(u => u.TipoUbicacionId == tipoId).ToList();
+
+            return _mapper.Map<List<UbicacionDto>>(filtradas);
+        }
     }
+
 }

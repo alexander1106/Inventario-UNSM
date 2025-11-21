@@ -39,6 +39,22 @@ namespace Proyecto_de_practicas.Controllers
             return Ok(result);
         }
 
+        [HttpGet("por-tipo/{tipoId}")]
+        public async Task<ActionResult<List<UbicacionDto>>> GetByTipo(int tipoId)
+        {
+            var result = await _service.GetByTipoAsync(tipoId);
+
+            if (result == null || !result.Any())
+            {
+                return NotFound(new
+                {
+                    message = $"No se encontraron ubicaciones para el tipo con ID {tipoId}.",
+                    status = 404
+                });
+            }
+
+            return Ok(result);
+        }
 
         [HttpPost]
         public async Task<ActionResult<UbicacionDto>> Create(UbicacionDto dto)
