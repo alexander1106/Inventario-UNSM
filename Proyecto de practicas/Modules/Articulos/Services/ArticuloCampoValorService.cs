@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using Proyecto_de_practicas.Modules.Articulos.DTO;
 using Proyecto_de_practicas.Modules.Articulos.Entities;
-using Proyecto_de_practicas.Repository;
+using Proyecto_de_practicas.Modules.Articulos.Repository.IArticulosRepository;
+using Proyecto_de_practicas.Service;
 
-namespace Proyecto_de_practicas.Service
+namespace Proyecto_de_practicas.Modules.Articulos.Services
 {
   public class ArticuloCampoValorService : IArticuloCampoValorService
     {

@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using Proyecto_de_practicas.Data;
 using Proyecto_de_practicas.Modules.Articulos.Entities;
-using Proyecto_de_practicas.Repository.IRepository;
+using Proyecto_de_practicas.Modules.Articulos.Repository.IArticulosRepository;
 
-namespace Proyecto_de_practicas.Repository
+namespace Proyecto_de_practicas.Modules.Articulos.Repository
 {
     public class CampoArticuloRepository : ICampoArticuloRepository
     {

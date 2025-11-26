@@ -5,6 +5,9 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Proyecto_de_practicas.Data;
 using Proyecto_de_practicas.Models;
+using Proyecto_de_practicas.Modules.Articulos.Repository;
+using Proyecto_de_practicas.Modules.Articulos.Repository.IArticulosRepository;
+using Proyecto_de_practicas.Modules.Articulos.Services;
 using Proyecto_de_practicas.Modules.Security.Entities;
 using Proyecto_de_practicas.Modules.Security.Repositories;
 using Proyecto_de_practicas.Modules.Security.Repositories.IRepositories;
@@ -14,8 +17,6 @@ using Proyecto_de_practicas.Modules.Ubicaciones.Repository;
 using Proyecto_de_practicas.Modules.Ubicaciones.Repository.IUbicacionesRepository;
 using Proyecto_de_practicas.Modules.Ubicaciones.Services;
 using Proyecto_de_practicas.Modules.Ubicaciones.Services.IUbicacionesServices;
-using Proyecto_de_practicas.Repository;
-using Proyecto_de_practicas.Repository.IRepository;
 using Proyecto_de_practicas.Service;
 
 internal class Program

@@ -2,7 +2,7 @@
 using Proyecto_de_practicas.Modules.Articulos.DTO;
 using Proyecto_de_practicas.Service;
 
-namespace Proyecto_de_practicas.Controllers
+namespace Proyecto_de_practicas.Modules.Articulos.Controller
 {
     [Route("api/campos-articulo")]
     [ApiController]

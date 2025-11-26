@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http;
 using Proyecto_de_practicas.Modules.Articulos.DTO;
 
@@ -11,14 +12,10 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.DTO
         public string Descripcion { get; set; } = null!;
         public int Estado { get; set; } = 1;
 
-        // 📂 Archivo que recibes desde el formulario (Swagger, Angular, Postman)
-        [JsonIgnore] // No se serializa al devolver JSON
-        public IFormFile? Imagen { get; set; }
+        [NotMapped]
+        public IFormFile? Imagen { get; set; }  // Para subir la imagen
 
-        // 📝 Ruta de la imagen que se guarda en la BD
-        public string? ImagenPath { get; set; }
-
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-        public List<ArticuloDto>? Articulos { get; set; }
+        public string? ImagenPath { get; set; } // Para guardar la ruta en DB
     }
+
 }

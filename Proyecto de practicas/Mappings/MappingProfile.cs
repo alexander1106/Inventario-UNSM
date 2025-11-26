@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Proyecto_de_practicas.Models;
+using Proyecto_de_practicas.Modules.Articulos.Entities;
 using Proyecto_de_practicas.Modules.Security.DTO;
 using Proyecto_de_practicas.Modules.Security.Entities;
 using Proyecto_de_practicas.Modules.Security.Security;
+using Proyecto_de_practicas.Modules.Ubicaciones.DTO;
 
 public class MappingProfile : Profile
 {   
@@ -47,5 +49,16 @@ public class MappingProfile : Profile
             // UsuariosDto → Usuario
             CreateMap<UsuariosDto, Usuario>();
         }
+
+
+        // De entidad a DTO
+        CreateMap<TipoArticulo, TipoArticuloDTO>()
+            .ForMember(dest => dest.Imagen, opt => opt.Ignore());
+
+        // De DTO a entidad
+        CreateMap<TipoArticuloDTO, TipoArticulo>()
+            .ForMember(dest => dest.Imagen, opt => opt.Ignore())
+            .ForMember(dest => dest.ImagenPath, opt => opt.MapFrom(src => src.ImagenPath));
     }
 }
+
