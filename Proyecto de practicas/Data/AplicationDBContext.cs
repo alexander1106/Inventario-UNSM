@@ -21,13 +21,13 @@ namespace Proyecto_de_practicas.Data
         public DbSet<Modulo> Modulos { get; set; }
         public DbSet<RolSubModuloPermiso> RolSubModuloPermisos { get; set; }
         public DbSet<SubModulo> SubModulos { get; set; }
+        public DbSet<CampoArticulo> CamposArticulos { get; set; }
         public DbSet<Permiso> Permisos { get; set; }
         public DbSet<RolSubModulo> RolSubmodulo { get; set; }
         public DbSet<Inventario> Inventario { get; set; }
         public DbSet<Traslado> Traslado { get; set; }
         public DbSet<TipoArticulo> TipoArticulos{ get; set; }
         public DbSet<Articulo> Articulos { get; set; }
-        public DbSet<CampoArticulo> CamposArticulos { get; set; }
         public DbSet<Ubicacion> Ubicaciones { get; set; }
         public DbSet<TipoUbicacion> TipoUbicacion { get; set; }
         public DbSet<ArticuloCampoValor> ArticuloCamposValores { get; set; }
@@ -45,17 +45,13 @@ namespace Proyecto_de_practicas.Data
               new Modulo { Id = 6, Nombre = "Seguridad", Ruta = "/seguridad" }
           );
 
-            // =============================
-            // 🚀 SEED DE ROLES
-            // =============================
+         
             modelBuilder.Entity<Roles>().HasData(
                 new Roles { Id = 1, Nombre = "Administrador",Estado=1},
                 new Roles { Id = 2, Nombre = "Usuario", Estado=1}
             );
 
-          // ============================ 
-          // 🚀 SEED DE SUBMODULOS
-          // ============================
+        
           modelBuilder.Entity<SubModulo>().HasData(
             // ARTÍCULOS
             new SubModulo { Id = 1, Nombre = "Artículos", Ruta = "/articulos/lista", ModuloId = 1 },

@@ -11,5 +11,7 @@ namespace Proyecto_de_practicas.Service
         Task<bool> DeleteAsync(int id);
         Task<List<ArticuloDto>> GetByTipoArticuloIdAsync(int tipoArticuloId);
         Task<List<ArticuloDto>> GetByUbicacionIdAsync(int ubicacionId);
+        Task<string> CreateArticuloConCampos(ArticuloDto request);
+
     }
 }

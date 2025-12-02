@@ -9,14 +9,13 @@ namespace Proyecto_de_practicas.Modules.Articulos.Controller
     public class ArticuloController : ControllerBase
     {
         private readonly IArticuloService _service;
-                    private readonly IArticuloCampoValorService _serviceCamposValor;
 
-        public ArticuloController(IArticuloService service, IArticuloCampoValorService _serviceCampos)
+        public ArticuloController(IArticuloService service)
         {
             _service = service;
-            _serviceCamposValor = _serviceCampos;
         }
 
+        // 🔹 Obtener todos
         [HttpGet]
         public async Task<ActionResult<List<ArticuloDto>>> GetAll()
         {
@@ -24,6 +23,7 @@ namespace Proyecto_de_practicas.Modules.Articulos.Controller
             return Ok(result);
         }
 
+        // 🔹 Obtener por ID
         [HttpGet("{id}")]
         public async Task<ActionResult<ArticuloDto>> GetById(int id)
         {
@@ -32,6 +32,7 @@ namespace Proyecto_de_practicas.Modules.Articulos.Controller
             return Ok(result);
         }
 
+        // 🔹 Por tipo
         [HttpGet("tipo/{tipoArticuloId}")]
         public async Task<ActionResult<List<ArticuloDto>>> GetByTipoArticulo(int tipoArticuloId)
         {
@@ -39,6 +40,7 @@ namespace Proyecto_de_practicas.Modules.Articulos.Controller
             return Ok(result);
         }
 
+        // 🔹 Por ubicación
         [HttpGet("ubicacion/{ubicacionId}")]
         public async Task<ActionResult<List<ArticuloDto>>> GetByUbicacion(int ubicacionId)
         {
@@ -46,17 +48,24 @@ namespace Proyecto_de_practicas.Modules.Articulos.Controller
             return Ok(result);
         }
 
+        // 🔵 Crear SOLO artículo (básico)
         [HttpPost]
         public async Task<ActionResult<ArticuloDto>> Create([FromBody] ArticuloDto dto)
         {
-            // 1. Guardar el artículo
             var articulo = await _service.AddAsync(dto);
-
-
-
             return CreatedAtAction(nameof(GetById), new { id = articulo.Id }, articulo);
         }
 
+        // 🔥 Crear Artículo + sus campos dinámicos
+        [HttpPost("crear-con-campos")]
+        public async Task<ActionResult> CreateArticuloCompleto([FromBody] ArticuloDto request)
+        {
+            var msg = await _service.CreateArticuloConCampos(request);
+            return Ok(new { mensaje = msg });
+        }
+
+
+        // 🔹 Actualizar
         [HttpPut("{id}")]
         public async Task<ActionResult<ArticuloDto>> Update(int id, ArticuloDto dto)
         {
@@ -64,6 +73,7 @@ namespace Proyecto_de_practicas.Modules.Articulos.Controller
             return Ok(result);
         }
 
+        // 🔹 Eliminar
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {

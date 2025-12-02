@@ -1,18 +1,19 @@
 ﻿using AutoMapper;
-using Proyecto_de_practicas.Models;
+using Proyecto_de_practicas.Modules.Articulos.DTO;
 using Proyecto_de_practicas.Modules.Articulos.Entities;
 using Proyecto_de_practicas.Modules.Security.DTO;
 using Proyecto_de_practicas.Modules.Security.Entities;
 using Proyecto_de_practicas.Modules.Security.Security;
 using Proyecto_de_practicas.Modules.Ubicaciones.DTO;
+using Proyecto_de_practicas.Modules.Ubicaciones.Entities;
 
 public class MappingProfile : Profile
-{   
+{
     public MappingProfile()
     {
         // 🧍 USUARIOS
         CreateMap<Usuario, UsuariosDto>();
-        CreateMap<UsuariosDto, Usuario>(); 
+        CreateMap<UsuariosDto, Usuario>();
 
         // 👥 ROLES
         CreateMap<Roles, RolesDTO>();
@@ -34,9 +35,17 @@ public class MappingProfile : Profile
         CreateMap<Modulo, ModuloDTO>();
         CreateMap<RolSubModulo, RolSubModuloDto>();
 
-        {
-            // Crear usuario
-            CreateMap<UsuarioCreateDTO, Usuario>()
+        CreateMap<CampoArticuloDto, CampoArticulo>();
+        CreateMap<CampoArticulo, CampoArticuloDto>();
+        // 📝 ARTICULOS
+        CreateMap<Articulo, ArticuloDto>();
+        CreateMap<ArticuloDto, Articulo>();
+
+        // Ubicaciones
+        CreateMap<UbicacionDto, Ubicacion>();
+        CreateMap<Ubicacion, UbicacionDto>();
+        // Crear usuario
+        CreateMap<UsuarioCreateDTO, Usuario>()
                 .ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.Nombres))
                 .ForMember(dest => dest.Apellido, opt => opt.MapFrom(src => src.Apellidos))
                 .ForMember(dest => dest.Correo, opt => opt.MapFrom(src => src.Email))
@@ -48,11 +57,10 @@ public class MappingProfile : Profile
 
             // UsuariosDto → Usuario
             CreateMap<UsuariosDto, Usuario>();
-        }
-
-
+        
+      
         // De entidad a DTO
-        CreateMap<TipoArticulo, TipoArticuloDTO>()
+               CreateMap<TipoArticulo, TipoArticuloDTO>()
             .ForMember(dest => dest.Imagen, opt => opt.Ignore());
 
         // De DTO a entidad
