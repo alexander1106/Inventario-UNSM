@@ -1,4 +1,5 @@
-﻿using Proyecto_de_practicas.Modules.Articulos.Entities;
+﻿using Proyecto_de_practicas.Modules.Articulos.DTO;
+using Proyecto_de_practicas.Modules.Articulos.Entities;
 
 namespace Proyecto_de_practicas.Modules.Articulos.Repository.IArticulosRepository
 {
@@ -11,5 +12,7 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository.IArticulosRepositor
         Task<bool> DeleteAsync(int id);
         Task<List<Articulo>> GetByTipoArticuloIdAsync(int tipoArticuloId);
         Task<List<Articulo>> GetByUbicacionIdAsync(int ubicacionId);
+
+        Task<string> CreateArticuloConCampos(ArticuloDto request);
     }
 }

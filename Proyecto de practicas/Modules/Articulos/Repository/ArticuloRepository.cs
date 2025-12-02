@@ -1,6 +1,6 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Proyecto_de_practicas.Data;
+using Proyecto_de_practicas.Modules.Articulos.DTO;
 using Proyecto_de_practicas.Modules.Articulos.Entities;
 using Proyecto_de_practicas.Modules.Articulos.Repository.IArticulosRepository;
 
@@ -17,18 +17,12 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
 
         public async Task<List<Articulo>> GetAllAsync()
         {
-            return await _context.Articulos
-                .Include(a => a.TipoArticulo)
-                .Include(a => a.Ubicacion)
-                .ToListAsync();
+            return await _context.Articulos.ToListAsync();
         }
 
         public async Task<Articulo?> GetByIdAsync(int id)
         {
-            return await _context.Articulos
-                .Include(a => a.TipoArticulo)
-                .Include(a => a.Ubicacion)
-                .FirstOrDefaultAsync(a => a.Id == id);
+            return await _context.Articulos.FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<Articulo> AddAsync(Articulo articulo)
@@ -59,7 +53,6 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
         {
             return await _context.Articulos
                 .Where(a => a.TipoArticuloId == tipoArticuloId)
-                .Include(a => a.Ubicacion)
                 .ToListAsync();
         }
 
@@ -67,8 +60,39 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
         {
             return await _context.Articulos
                 .Where(a => a.UbicacionId == ubicacionId)
-                .Include(a => a.TipoArticulo)
                 .ToListAsync();
+        }
+
+        // ⭐⭐⭐ ESTE ES EL MÉTODO IMPORTANTE ⭐⭐⭐
+        public async Task<string> CreateArticuloConCampos(ArticuloDto request)
+        {
+            // 1. Crear el artículo
+            var articulo = new Articulo
+            {
+                TipoArticuloId = request.TipoArticuloId,
+                UbicacionId = request.UbicacionId,
+                Estado = 1
+            };
+
+            _context.Articulos.Add(articulo);
+            await _context.SaveChangesAsync(); // ← Aquí obtiene el ID
+
+            // 2. Guardar sus campos dinámicos
+            foreach (var campo in request.CamposValores)
+            {
+                var entity = new ArticuloCampoValor
+                {
+                    ArticuloId = articulo.Id,
+                    CampoArticuloId = campo.CampoArticuloId,
+                    Valor = campo.Valor
+                };
+
+                _context.ArticuloCamposValores.Add(entity);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return $"Artículo {articulo.Id} creado con {request.CamposValores.Count} campos dinámicos.";
         }
     }
 }

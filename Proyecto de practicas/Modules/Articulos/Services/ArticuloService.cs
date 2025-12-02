@@ -60,5 +60,10 @@ namespace Proyecto_de_practicas.Modules.Articulos.Services
             var entities = await _repo.GetByUbicacionIdAsync(ubicacionId);
             return _mapper.Map<List<ArticuloDto>>(entities);
         }
+
+        public async Task<string> CreateArticuloConCampos(ArticuloDto request)
+        {
+            return await _repo.CreateArticuloConCampos(request);
+        }
     }
 }

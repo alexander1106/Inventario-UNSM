@@ -75,14 +75,18 @@ namespace Proyecto_de_practicas.Modules.Articulos.Controller
             try
             {
                 var success = await _service.DeleteAsync(id);
-                if (!success) return NotFound();
-                return NoContent();
+
+                if (!success)
+                    return NotFound(new { message = "El campo del artículo no existe o ya fue eliminado." });
+
+                return Ok(new { message = "El campo del artículo ha sido eliminado correctamente." });
             }
             catch (InvalidOperationException ex)
             {
                 return BadRequest(new { message = ex.Message });
             }
         }
+
 
         [HttpPost("lote")]
         public async Task<ActionResult> CreateMultiple(List<CampoArticuloDto> campos)

@@ -44,6 +44,17 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
             var entity = await _context.CamposArticulos.FindAsync(id);
             if (entity == null) return false;
 
+            // 🔥 Verificar si está relacionado con otra tabla
+            bool hasRelations = await _context.ArticuloCamposValores
+                .AnyAsync(v => v.CampoArticuloId == id);
+
+            if (hasRelations)
+            {
+                // ❌ No se elimina porque tiene relaciones
+                return false;
+            }
+
+            // ✔️ Se elimina porque NO tiene relaciones
             _context.CamposArticulos.Remove(entity);
             await _context.SaveChangesAsync();
             return true;
