@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Proyecto_de_practicas.Models;
+using Proyecto_de_practicas.Modules.Articulos.Entities;
 using Proyecto_de_practicas.Modules.Security.Entities;
 using Proyecto_de_practicas.Modules.Security.Security;
+using Proyecto_de_practicas.Modules.Ubicaciones.Entities;
 
 
 
@@ -67,7 +69,8 @@ namespace Proyecto_de_practicas.Data
               // SEGURIDAD
               new SubModulo { Id = 5, Nombre = "Usuarios", Ruta = "/usuarios", ModuloId = 6, Icon = "fa-solid fa-user" },
               new SubModulo { Id = 6, Nombre = "Roles", Ruta = "/roles", ModuloId = 6, Icon = "fa-solid fa-user-shield" },
-              new SubModulo { Id = 7, Nombre = "Permisos", Ruta = "/permisos", ModuloId = 6, Icon = "fa-solid fa-key" }
+              new SubModulo { Id = 7, Nombre = "Permisos", Ruta = "/permisos", ModuloId = 6, Icon = "fa-solid fa-key" },
+              new SubModulo { Id = 8, Nombre = "Modulos", Ruta = "/modulos", ModuloId = 6, Icon = "fa-solid fa-layer-group" }
           );
         
             modelBuilder.Entity<Permiso>().HasData(

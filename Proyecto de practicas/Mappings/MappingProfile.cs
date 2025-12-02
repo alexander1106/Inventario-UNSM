@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
-using Proyecto_de_practicas.DTOs;
 using Proyecto_de_practicas.Models;
+using Proyecto_de_practicas.Modules.Articulos.DTO;
+using Proyecto_de_practicas.Modules.Articulos.Entities;
 using Proyecto_de_practicas.Modules.Security.DTO;
 using Proyecto_de_practicas.Modules.Security.Entities;
 using Proyecto_de_practicas.Modules.Security.Security;
+using Proyecto_de_practicas.Modules.Ubicaciones.DTO;
+using Proyecto_de_practicas.Modules.Ubicaciones.Entities;
 
 public class MappingProfile : Profile
 {
@@ -26,8 +29,8 @@ public class MappingProfile : Profile
         CreateMap<SubModuloDTO, SubModulo>();
 
         // PERMISOS POR SUBMÓDULO
-        CreateMap<RolSubModulo, RolSubModuloDTO>();
-        CreateMap<RolSubModuloDTO, RolSubModulo>();
+        CreateMap<RolSubModulo, RolSubModuloDto>();
+        CreateMap<RolSubModuloDto, RolSubModulo>();
 
         // CREAR USUARIO
         CreateMap<UsuarioCreateDTO, Usuario>()
@@ -44,5 +47,11 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.TipoUbicacion, opt => opt.Ignore()); // evita errores
 
         CreateMap<Ubicacion, UbicacionDto>();
+
+        CreateMap<TipoArticuloDTO, TipoArticulo>().ReverseMap();
+        CreateMap<CampoArticuloDto, CampoArticulo>();
+        CreateMap<CampoArticulo, CampoArticuloDto>();
+        CreateMap<ArticuloDto, Articulo>();
+        CreateMap<Articulo, ArticuloDto>();
     }
 }

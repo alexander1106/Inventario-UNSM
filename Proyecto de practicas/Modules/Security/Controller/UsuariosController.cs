@@ -75,5 +75,4 @@ public class UsuariosController : ControllerBase
 
         return Ok(usuario);
     }
-
 }

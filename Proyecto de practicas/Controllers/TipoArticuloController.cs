@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Proyecto_de_practicas.DTO;
+using Proyecto_de_practicas.Modules.Ubicaciones.DTO;
 using Proyecto_de_practicas.Service;
 
 namespace Proyecto_de_practicas.Controllers

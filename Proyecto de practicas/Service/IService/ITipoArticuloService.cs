@@ -1,4 +1,4 @@
-﻿using Proyecto_de_practicas.DTO;
+﻿using Proyecto_de_practicas.Modules.Ubicaciones.DTO;
 
 namespace Proyecto_de_practicas.Service
 {

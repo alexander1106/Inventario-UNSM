@@ -9,5 +9,10 @@ namespace Proyecto_de_practicas.Modules.Security.Repositories.IRepositories
         Task AddAsync(RolSubModulo entity);
         Task UpdateAsync(RolSubModulo entity);
         Task DeleteAsync(int rolId, int subModuloId);
+
+        Task DeleteByRolIdAsync(int rolId);
+
+        // Agregar varios submódulos a la vez
+        Task AddRangeAsync(List<RolSubModulo> list);
     }
 }
