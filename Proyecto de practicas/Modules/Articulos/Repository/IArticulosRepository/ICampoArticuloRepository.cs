@@ -1,6 +1,6 @@
 ﻿using Proyecto_de_practicas.Modules.Articulos.Entities;
 
-namespace Proyecto_de_practicas.Repository.IRepository
+namespace Proyecto_de_practicas.Modules.Articulos.Repository.IArticulosRepository
 {
     public interface ICampoArticuloRepository
     {
