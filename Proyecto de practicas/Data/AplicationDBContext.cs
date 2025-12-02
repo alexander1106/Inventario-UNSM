@@ -37,13 +37,13 @@ namespace Proyecto_de_practicas.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Modulo>().HasData(
-                new Modulo { Id = 7, Nombre = "Dashboard", Ruta = "/dashboard", Icon = "fa-solid fa-home" },
-                new Modulo { Id = 1, Nombre = "Artículos", Ruta = "/articulos", Icon = "fa-solid fa-box" },
-                new Modulo { Id = 2, Nombre = "Ubicaciones", Ruta = "/ubicaciones", Icon = "fa-solid fa-map-marker-alt" },
-                new Modulo { Id = 3, Nombre = "Traslados", Ruta = "/traslados", Icon = "fa-solid fa-exchange-alt" },
-                new Modulo { Id = 4, Nombre = "Inventario", Ruta = "/inventario", Icon = "fa-solid fa-warehouse" },
-                new Modulo { Id = 5, Nombre = "Reportes", Ruta = "/reportes", Icon = "fa-solid fa-chart-line" },
-                new Modulo { Id = 6, Nombre = "Seguridad", Ruta = "/seguridad", Icon = "fa-solid fa-shield-alt" }
+                new Modulo { Id = 1, Nombre = "Dashboard", Ruta = "/dashboard", Icon = "fa-solid fa-home" },
+                new Modulo { Id = 2, Nombre = "Artículos", Ruta = "/articulos", Icon = "fa-solid fa-box" },
+                new Modulo { Id = 3, Nombre = "Ubicaciones", Ruta = "/ubicaciones", Icon = "fa-solid fa-map-marker-alt" },
+                new Modulo { Id = 4, Nombre = "Traslados", Ruta = "/traslados", Icon = "fa-solid fa-exchange-alt" },
+                new Modulo { Id = 5, Nombre = "Inventario", Ruta = "/inventario", Icon = "fa-solid fa-warehouse" },
+                new Modulo { Id = 6, Nombre = "Reportes", Ruta = "/reportes", Icon = "fa-solid fa-chart-line" },
+                new Modulo { Id = 7, Nombre = "Seguridad", Ruta = "/seguridad", Icon = "fa-solid fa-shield-alt" }
             );
 
             // =============================
@@ -59,18 +59,18 @@ namespace Proyecto_de_practicas.Data
             // ============================
             modelBuilder.Entity<SubModulo>().HasData(
               // ARTÍCULOS
-              new SubModulo { Id = 1, Nombre = "Artículos", Ruta = "/articulos", ModuloId = 1, Icon = "fa-solid fa-box-open" },
-              new SubModulo { Id = 2, Nombre = "Tipos de Artículo", Ruta = "/tipos-articulos", ModuloId = 1, Icon = "fa-solid fa-tags" },
+              new SubModulo { Id = 1, Nombre = "Artículos", Ruta = "/articulos", ModuloId = 2, Icon = "fa-solid fa-box-open" },
+              new SubModulo { Id = 2, Nombre = "Tipos de Artículo", Ruta = "/tipos-articulos", ModuloId = 2, Icon = "fa-solid fa-tags" },
 
               // UBICACIONES
-              new SubModulo { Id = 3, Nombre = "Ubicaciones", Ruta = "/ubicaciones", ModuloId = 2, Icon = "fa-solid fa-map-marker" },
-              new SubModulo { Id = 4, Nombre = "Tipos de Ubicación", Ruta = "/tipo-ubicacion", ModuloId = 2, Icon = "fa-solid fa-layer-group" },
+              new SubModulo { Id = 3, Nombre = "Ubicaciones", Ruta = "/ubicaciones", ModuloId = 3, Icon = "fa-solid fa-map-marker" },
+              new SubModulo { Id = 4, Nombre = "Tipos de Ubicación", Ruta = "/tipo-ubicacion", ModuloId = 3, Icon = "fa-solid fa-layer-group" },
 
               // SEGURIDAD
-              new SubModulo { Id = 5, Nombre = "Usuarios", Ruta = "/usuarios", ModuloId = 6, Icon = "fa-solid fa-user" },
-              new SubModulo { Id = 6, Nombre = "Roles", Ruta = "/roles", ModuloId = 6, Icon = "fa-solid fa-user-shield" },
-              new SubModulo { Id = 7, Nombre = "Permisos", Ruta = "/permisos", ModuloId = 6, Icon = "fa-solid fa-key" },
-              new SubModulo { Id = 8, Nombre = "Modulos", Ruta = "/modulos", ModuloId = 6, Icon = "fa-solid fa-layer-group" }
+              new SubModulo { Id = 5, Nombre = "Usuarios", Ruta = "/usuarios", ModuloId = 7, Icon = "fa-solid fa-user" },
+              new SubModulo { Id = 6, Nombre = "Roles", Ruta = "/roles", ModuloId = 7, Icon = "fa-solid fa-user-shield" },
+              new SubModulo { Id = 7, Nombre = "Permisos", Ruta = "/permisos", ModuloId = 7, Icon = "fa-solid fa-key" },
+              new SubModulo { Id = 8, Nombre = "Modulos", Ruta = "/modulos", ModuloId = 7, Icon = "fa-solid fa-layer-group" }
           );
         
             modelBuilder.Entity<Permiso>().HasData(

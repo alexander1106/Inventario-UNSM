@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Proyecto_de_practicas.Data;
@@ -182,6 +183,21 @@ internal class Program
 
         // 👇 Esto habilita wwwroot como carpeta pública
         app.UseStaticFiles();
+
+        // Carpeta IMAGENES dentro de WWWROOT
+        var imagenesPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "imagenes");
+
+        if (!Directory.Exists(imagenesPath))
+        {
+            Directory.CreateDirectory(imagenesPath);
+        }
+
+        app.UseStaticFiles(new StaticFileOptions
+        {
+            FileProvider = new PhysicalFileProvider(imagenesPath),
+            RequestPath = "/imagenes"
+        });
+
 
         //app.UseHttpsRedirection();
         app.UseCors("AllowAll");

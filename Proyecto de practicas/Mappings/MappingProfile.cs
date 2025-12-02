@@ -53,6 +53,9 @@ public class MappingProfile : Profile
         CreateMap<CampoArticulo, CampoArticuloDto>();
         CreateMap<ArticuloDto, Articulo>();
         CreateMap<Articulo, ArticuloDto>();
+        CreateMap<TipoArticulo, TipoArticuloDTO>().ReverseMap()
+    .ForMember(dest => dest.Imagen, opt => opt.Ignore());
+
     }
 }
 
