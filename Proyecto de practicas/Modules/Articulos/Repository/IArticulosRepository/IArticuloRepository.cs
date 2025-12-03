@@ -14,5 +14,7 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository.IArticulosRepositor
         Task<List<Articulo>> GetByUbicacionIdAsync(int ubicacionId);
 
         Task<string> CreateArticuloConCampos(ArticuloDto request);
+        Task<List<Dictionary<string, object>>> GetArticulosPivotPorTipoAsync(int tipoArticuloId);
+
     }
 }

@@ -73,6 +73,14 @@ namespace Proyecto_de_practicas.Modules.Articulos.Controller
             return Ok(result);
         }
 
+        // 🔹 Obtener artículos pivot por tipo
+        [HttpGet("pivot/tipo/{tipoArticuloId}")]
+        public async Task<ActionResult<List<Dictionary<string, object>>>> GetPivotPorTipoArticulo(int tipoArticuloId)
+        {
+            var result = await _service.GetArticulosPivotPorTipoAsync(tipoArticuloId);
+            return Ok(result);
+        }
+
         // 🔹 Eliminar
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)

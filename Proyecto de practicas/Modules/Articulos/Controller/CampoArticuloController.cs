@@ -95,7 +95,7 @@ namespace Proyecto_de_practicas.Modules.Articulos.Controller
             {
                 await _service.AddAsync(campo);
             }
-            return Ok();
+            return Ok(new { message = "Campos creados correctamente" });
         }
 
     }

@@ -59,7 +59,7 @@ namespace Proyecto_de_practicas.Modules.Articulos.Services
 
             return await _repo.DeleteAsync(id);
         }
-
+        
 
         public async Task<TipoArticuloDTO?> ObtenerPorIdAsync(int id)
         {

@@ -8,4 +8,7 @@ public class ArticuloDto
     public int Estado { get; set; } = 1;
 
     public List<ArticuloCampoValorDto> CamposValores { get; set; } = new();
+    public string QRCodeBase64 { get; set; }
+    public int Stock { get; set; }
+
 }

@@ -94,5 +94,39 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
 
             return $"Artículo {articulo.Id} creado con {request.CamposValores.Count} campos dinámicos.";
         }
-    }
-}
+    
+
+    public async Task<List<Dictionary<string, object>>> GetArticulosPivotPorTipoAsync(int tipoArticuloId)
+        {
+            var result = new List<Dictionary<string, object>>();
+
+            using (var command = _context.Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandText = "sp_ObtenerArticulosPorTipoPivot";
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                var param = command.CreateParameter();
+                param.ParameterName = "@TipoArticuloId";
+                param.Value = tipoArticuloId;
+                command.Parameters.Add(param);
+
+                await _context.Database.OpenConnectionAsync();
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        var row = new Dictionary<string, object>();
+                        for (int i = 0; i < reader.FieldCount; i++)
+                        {
+                            row[reader.GetName(i)] = reader.IsDBNull(i) ? null : reader.GetValue(i);
+                        }
+                        result.Add(row);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+    } }
