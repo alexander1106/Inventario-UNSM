@@ -18,6 +18,8 @@ namespace Proyecto_de_practicas.Modules.Articulos.Entities
 
         public int Estado { get; set; } = 1; // Borrado lógico
 
+        public virtual List<ArticuloCampoValor> CamposValores { get; set; } = new List<ArticuloCampoValor>();
+
     }
 
 }

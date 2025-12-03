@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Proyecto_de_practicas.Models;
 using Proyecto_de_practicas.Modules.Articulos.DTO;
-using Proyecto_de_practicas.Modules.Articulos.DTO;
 using Proyecto_de_practicas.Modules.Articulos.Entities;
 using Proyecto_de_practicas.Modules.Security.DTO;
 using Proyecto_de_practicas.Modules.Security.Entities;
@@ -13,70 +12,59 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        // USUARIOS
+        // ====== USUARIOS ======
         CreateMap<Usuario, UsuariosDto>();
         CreateMap<UsuariosDto, Usuario>();
+        CreateMap<UsuarioCreateDTO, Usuario>()
+            .ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.Nombres))
+            .ForMember(dest => dest.Apellido, opt => opt.MapFrom(src => src.Apellidos))
+            .ForMember(dest => dest.Correo, opt => opt.MapFrom(src => src.Email))
+            .ForMember(dest => dest.Estado, opt => opt.MapFrom(src => "Activo"));
 
-        // ROLES
+        // ====== ROLES ======
         CreateMap<Roles, RolesDTO>();
         CreateMap<RolesDTO, Roles>();
 
-        // MÓDULOS
+        // ====== MÓDULOS ======
         CreateMap<Modulo, ModuloDTO>();
         CreateMap<ModuloDTO, Modulo>();
 
-        // SUBMÓDULOS
+        // ====== SUBMÓDULOS ======
         CreateMap<SubModulo, SubModuloDTO>();
         CreateMap<SubModuloDTO, SubModulo>();
 
-        // PERMISOS POR SUBMÓDULO
+        // ====== PERMISOS ======
         CreateMap<RolSubModulo, RolSubModuloDto>();
         CreateMap<RolSubModuloDto, RolSubModulo>();
 
-        CreateMap<SubModulo, SubModuloDTO>();
-        CreateMap<Modulo, ModuloDTO>();
-        CreateMap<RolSubModulo, RolSubModuloDto>();
-
-        CreateMap<CampoArticuloDto, CampoArticulo>();
-        CreateMap<CampoArticulo, CampoArticuloDto>();
-        // 📝 ARTICULOS
-        CreateMap<Articulo, ArticuloDto>();
-        CreateMap<ArticuloDto, Articulo>();
-
-        // Ubicaciones
-        CreateMap<UbicacionDto, Ubicacion>();
+        // ====== UBICACIONES ======
         CreateMap<Ubicacion, UbicacionDto>();
-        // Crear usuario
-        CreateMap<UsuarioCreateDTO, Usuario>()
-                .ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.Nombres))
-                .ForMember(dest => dest.Apellido, opt => opt.MapFrom(src => src.Apellidos))
-                .ForMember(dest => dest.Correo, opt => opt.MapFrom(src => src.Email))
-                .ForMember(dest => dest.Estado, opt => opt.MapFrom(src => "Activo"));
-
-        CreateMap<Usuario, UsuariosDto>();
-        CreateMap<UsuariosDto, Usuario>();
-
-        // 🏢 UBICACIÓN
         CreateMap<UbicacionDto, Ubicacion>()
-            .ForMember(dest => dest.TipoUbicacion, opt => opt.Ignore()); // evita errores
+            .ForMember(dest => dest.TipoUbicacion, opt => opt.Ignore());
 
-        CreateMap<Ubicacion, UbicacionDto>();
+        // ====== TIPOS DE ARTÍCULO ======
+        CreateMap<TipoArticulo, TipoArticuloDTO>()
+            .ForMember(dest => dest.Imagen, opt => opt.Ignore())
+            .ReverseMap();
 
-        CreateMap<TipoArticuloDTO, TipoArticulo>().ReverseMap();
-        CreateMap<CampoArticuloDto, CampoArticulo>();
+        // ====== CAMPOS DE ARTÍCULO ======
         CreateMap<CampoArticulo, CampoArticuloDto>();
-        CreateMap<ArticuloDto, Articulo>();
-        CreateMap<Articulo, ArticuloDto>();
-        CreateMap<TipoArticulo, TipoArticuloDTO>().ReverseMap()
-    .ForMember(dest => dest.Imagen, opt => opt.Ignore());
-            // UsuariosDto → Usuario
-            CreateMap<UsuariosDto, Usuario>();
-        
-      
-        // De entidad a DTO
-               CreateMap<TipoArticulo, TipoArticuloDTO>()
-            .ForMember(dest => dest.Imagen, opt => opt.Ignore());
+        CreateMap<CampoArticuloDto, CampoArticulo>();
 
+        // ====== VALORES DE CAMPOS ======
+        CreateMap<ArticuloCampoValor, ArticuloCampoValorDto>();
+        CreateMap<ArticuloCampoValorDto, ArticuloCampoValor>();
+
+        // ====== ARTÍCULOS ======
+        CreateMap<Articulo, ArticuloDto>()
+            .ForMember(dest => dest.CamposValores, opt => opt.MapFrom(src => src.CamposValores));
+        CreateMap<ArticuloDto, Articulo>()
+            .ForMember(dest => dest.CamposValores, opt => opt.MapFrom(src => src.CamposValores));
+
+        CreateMap<Articulo, ArticuloDto>();
+        CreateMap<ArticuloDto, Articulo>();
+
+        CreateMap<ArticuloCampoValor, ArticuloCampoValorDto>();
+        CreateMap<ArticuloCampoValorDto, ArticuloCampoValor>();
     }
 }
-
