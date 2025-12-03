@@ -65,5 +65,10 @@ namespace Proyecto_de_practicas.Modules.Articulos.Services
         {
             return await _repo.CreateArticuloConCampos(request);
         }
+        public async Task<List<Dictionary<string, object>>> GetArticulosPivotPorTipoAsync(int tipoArticuloId)
+        {
+            return await _repo.GetArticulosPivotPorTipoAsync(tipoArticuloId);
+        }
+
     }
 }

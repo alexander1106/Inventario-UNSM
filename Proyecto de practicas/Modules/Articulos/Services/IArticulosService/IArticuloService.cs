@@ -12,6 +12,8 @@ namespace Proyecto_de_practicas.Service
         Task<List<ArticuloDto>> GetByTipoArticuloIdAsync(int tipoArticuloId);
         Task<List<ArticuloDto>> GetByUbicacionIdAsync(int ubicacionId);
         Task<string> CreateArticuloConCampos(ArticuloDto request);
+        Task<List<Dictionary<string, object>>> GetArticulosPivotPorTipoAsync(int tipoArticuloId);
+
 
     }
 }
