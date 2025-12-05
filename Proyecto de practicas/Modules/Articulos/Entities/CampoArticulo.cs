@@ -16,5 +16,8 @@ namespace Proyecto_de_practicas.Modules.Articulos.Entities
         public int TipoArticuloId { get; set; }
         public virtual TipoArticulo TipoArticulo { get; set; } = null!;
 
+        public List<ArticuloCampoValor> CamposValores { get; set; } = new();
+
+
     }
 }

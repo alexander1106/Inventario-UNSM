@@ -64,6 +64,13 @@ namespace Proyecto_de_practicas.Modules.Articulos.Controller
             return Ok(new { mensaje = msg });
         }
 
+        [HttpPut("update-con-campos/{id}")]
+        public async Task<ActionResult> UpdateArticuloCompleto([FromBody] ArticuloDto request)
+        {
+            var msg = await _service.UpdateArticuloConCampos(request);
+            return Ok(new { mensaje = msg });
+        }
+
 
         // 🔹 Actualizar
         [HttpPut("{id}")]

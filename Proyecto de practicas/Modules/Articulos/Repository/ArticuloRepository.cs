@@ -17,13 +17,19 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
 
         public async Task<List<Articulo>> GetAllAsync()
         {
-            return await _context.Articulos.ToListAsync();
+            return await _context.Articulos
+                                 .Include(a => a.CamposValores)
+                                 .ToListAsync();
         }
+
 
         public async Task<Articulo?> GetByIdAsync(int id)
         {
-            return await _context.Articulos.FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Articulos
+                                 .Include(a => a.CamposValores)
+                                 .FirstOrDefaultAsync(x => x.Id == id);
         }
+
 
         public async Task<Articulo> AddAsync(Articulo articulo)
         {
@@ -71,6 +77,7 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
             {
                 TipoArticuloId = request.TipoArticuloId,
                 UbicacionId = request.UbicacionId,
+                Stock = request.Stock,
                 Estado = 1
             };
 
@@ -94,9 +101,52 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
 
             return $"Artículo {articulo.Id} creado con {request.CamposValores.Count} campos dinámicos.";
         }
-    
 
-    public async Task<List<Dictionary<string, object>>> GetArticulosPivotPorTipoAsync(int tipoArticuloId)
+        public async Task<string> UpdateArticuloConCampos(ArticuloDto request)
+        {
+            // 1. Obtener el artículo existente
+            var articulo = await _context.Articulos
+                                         .Include(a => a.CamposValores)
+                                         .FirstOrDefaultAsync(a => a.Id == request.Id);
+
+            if (articulo == null) return "Artículo no encontrado";
+
+            // 2. Actualizar campos fijos
+            articulo.TipoArticuloId = request.TipoArticuloId;
+            articulo.UbicacionId = request.UbicacionId;
+            articulo.Stock = request.Stock;
+            articulo.Estado = request.Estado;
+
+            // 3. Actualizar campos dinámicos
+            foreach (var campo in request.CamposValores)
+            {
+                if (campo.Id > 0)
+                {
+                    // Existe → actualizar
+                    var existente = articulo.CamposValores.FirstOrDefault(c => c.Id == campo.Id);
+                    if (existente != null)
+                        existente.Valor = campo.Valor;
+                }
+                else
+                {
+                    // Nuevo → agregar
+                    articulo.CamposValores.Add(new ArticuloCampoValor
+                    {
+                        ArticuloId = articulo.Id,
+                        CampoArticuloId = campo.CampoArticuloId,
+                        Valor = campo.Valor
+                    });
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+            return $"Artículo {articulo.Id} actualizado con {request.CamposValores.Count} campos dinámicos.";
+        }
+
+
+
+        public async Task<List<Dictionary<string, object>>> GetArticulosPivotPorTipoAsync(int tipoArticuloId)
         {
             var result = new List<Dictionary<string, object>>();
 

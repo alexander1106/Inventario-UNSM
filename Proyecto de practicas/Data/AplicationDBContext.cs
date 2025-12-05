@@ -106,16 +106,17 @@ namespace Proyecto_de_practicas.Data
 
             // 🔒 Relaciones para evitar cascade errors
             modelBuilder.Entity<ArticuloCampoValor>()
+                .HasOne(acv => acv.Articulo)
+                .WithMany(a => a.CamposValores)
+                .HasForeignKey(acv => acv.ArticuloId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ArticuloCampoValor>()
                 .HasOne(acv => acv.CampoArticulo)
-                .WithMany()
+                .WithMany(c => c.CamposValores)
                 .HasForeignKey(acv => acv.CampoArticuloId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<ArticuloCampoValor>()
-                .HasOne(acv => acv.Articulo)
-                .WithMany()
-                .HasForeignKey(acv => acv.ArticuloId)
-                .OnDelete(DeleteBehavior.Cascade);
         }
 
     }
