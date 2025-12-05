@@ -26,7 +26,7 @@ namespace Proyecto_de_practicas.Modules.Security.Repositories
             var usuario = await _context.Usuarios.FindAsync(id);
             if (usuario == null)
             {
-                return false; // No existe
+                return false;
             }
 
             _context.Usuarios.Remove(usuario);
@@ -38,7 +38,7 @@ namespace Proyecto_de_practicas.Modules.Security.Repositories
         {
             return await _context.Usuarios
                 .AsNoTracking()
-                .Include(x => x.Rol) // Solo si tu entidad tiene relación con Rol
+                .Include(x => x.Rol)
                 .ToListAsync();
         }
 
@@ -46,7 +46,7 @@ namespace Proyecto_de_practicas.Modules.Security.Repositories
         {
             return await _context.Usuarios
                 .AsNoTracking()
-                .Include(x => x.Rol)  // si existe la relación
+                .Include(x => x.Rol)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
@@ -54,11 +54,10 @@ namespace Proyecto_de_practicas.Modules.Security.Repositories
         {
             return await _context.Usuarios
                 .AsNoTracking()
-                .Include(x => x.Rol) // opcional
+                .Include(x => x.Rol)
                 .FirstOrDefaultAsync(x => x.Username == username);
         }
 
-       
         public async Task<Usuario> UpdateAsync(Usuario usuario)
         {
             var exists = await _context.Usuarios.AnyAsync(x => x.Id == usuario.Id);
@@ -70,6 +69,18 @@ namespace Proyecto_de_practicas.Modules.Security.Repositories
             _context.Usuarios.Update(usuario);
             await _context.SaveChangesAsync();
             return usuario;
+        }
+
+        public async Task UpdatePasswordAsync(int idUsuario, string passwordHash)
+        {
+            var usuario = await _context.Usuarios.FindAsync(idUsuario);
+
+            if (usuario == null)
+                throw new Exception("Usuario no encontrado");
+
+            usuario.Password = passwordHash;
+
+            await _context.SaveChangesAsync();
         }
     }
 }

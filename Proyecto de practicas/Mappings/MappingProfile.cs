@@ -18,7 +18,7 @@ public class MappingProfile : Profile
         CreateMap<UsuarioCreateDTO, Usuario>()
             .ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.Nombres))
             .ForMember(dest => dest.Apellido, opt => opt.MapFrom(src => src.Apellidos))
-            .ForMember(dest => dest.Correo, opt => opt.MapFrom(src => src.Email))
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
             .ForMember(dest => dest.Estado, opt => opt.MapFrom(src => "Activo"));
 
         // ====== ROLES ======
@@ -41,6 +41,12 @@ public class MappingProfile : Profile
         CreateMap<Ubicacion, UbicacionDto>();
         CreateMap<UbicacionDto, Ubicacion>()
             .ForMember(dest => dest.TipoUbicacion, opt => opt.Ignore());
+        // Crear usuario
+        CreateMap<UsuarioCreateDTO, Usuario>()
+                .ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.Nombres))
+                .ForMember(dest => dest.Apellido, opt => opt.MapFrom(src => src.Apellidos))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+                .ForMember(dest => dest.Estado, opt => opt.MapFrom(src => "Activo"));
 
         // ====== TIPOS DE ARTÍCULO ======
         CreateMap<TipoArticulo, TipoArticuloDTO>()
