@@ -30,33 +30,41 @@ public class UsuariosService : IUsuariosServices
         return usuario == null ? null : _mapper.Map<UsuariosDto>(usuario);
     }
 
-    public async Task<UsuariosDto> AddAsync(UsuarioCreateDTO usuarioDto)
+    public async Task<UsuariosDto?> AddAsync(UsuarioCreateDTO usuarioDto)
     {
         var existente = await _usuariosRepository.GetByUsernameAsync(usuarioDto.Username);
         if (existente != null)
-            throw new Exception("Ya existe un usuario con ese nombre");
+            throw new Exception("El username ya existe");
 
         var usuario = _mapper.Map<Usuario>(usuarioDto);
+
         usuario.Password = _passwordHasher.HashPassword(usuario, usuario.Password);
 
         var nuevo = await _usuariosRepository.CreateAsync(usuario);
+
         return _mapper.Map<UsuariosDto>(nuevo);
     }
 
-    public async Task<UsuariosDto> UpdateAsync(UsuariosDto usuarioDto)
+    public async Task<UsuariosDto?> UpdateAsync(UsuariosDto usuarioDto)
     {
+        // Obtener el usuario existente
         var existente = await _usuariosRepository.GetByIdAsync(usuarioDto.Id);
         if (existente == null)
-            throw new Exception("Usuario no encontrado");
+            return null;
 
-        var usuario = _mapper.Map<Usuario>(usuarioDto);
+        // Mapear los datos que se pueden actualizar (nombres, apellidos, email, username)
+        existente.Nombre = usuarioDto.Nombre;
+        existente.Apellido = usuarioDto.Apellido;
+        existente.Email = usuarioDto.Email;
+        existente.Username = usuarioDto.Username;
 
-        if (!string.IsNullOrEmpty(usuario.Password) && usuario.Password != existente.Password)
-            usuario.Password = _passwordHasher.HashPassword(usuario, usuario.Password);
-        else
-            usuario.Password = existente.Password;
+        // Mantener campos obligatorios que no vienen en el DTO
+        // existente.Password se mantiene igual
+        // existente.Estado se mantiene igual
+        // existente.RolId se mantiene igual
 
-        var actualizado = await _usuariosRepository.UpdateAsync(usuario);
+        // Guardar cambios
+        var actualizado = await _usuariosRepository.UpdateAsync(existente);
         return _mapper.Map<UsuariosDto>(actualizado);
     }
 
@@ -70,31 +78,45 @@ public class UsuariosService : IUsuariosServices
         var usuario = await _usuariosRepository.GetByUsernameAsync(username);
         if (usuario == null) return false;
 
-        var result = _passwordHasher.VerifyHashedPassword(usuario, usuario.Password, passwordIngresado);
-        return result == PasswordVerificationResult.Success;
+        var resultado = _passwordHasher.VerifyHashedPassword(usuario, usuario.Password, passwordIngresado);
+        return resultado == PasswordVerificationResult.Success;
     }
+
     public async Task<UsuariosDto?> GetUsuarioActualAsync(string username)
     {
-        if (string.IsNullOrEmpty(username))
-            return null;
-
         var usuario = await _usuariosRepository.GetByUsernameAsync(username);
-        if (usuario == null)
-            return null;
-
-        return _mapper.Map<UsuariosDto>(usuario);
+        return usuario == null ? null : _mapper.Map<UsuariosDto>(usuario);
     }
 
     public async Task<UsuariosDto?> GetByUsernameAsync(string usernameActual)
     {
-        if (string.IsNullOrEmpty(usernameActual))
-            return null;
-
         var usuario = await _usuariosRepository.GetByUsernameAsync(usernameActual);
-        if (usuario == null)
-            return null;
-
-        return _mapper.Map<UsuariosDto>(usuario);
+        return usuario == null ? null : _mapper.Map<UsuariosDto>(usuario);
     }
 
+    // ✔ Método para obtener la entidad real
+    public async Task<Usuario?> GetEntityByUsernameAsync(string usernameActual)
+    {
+        return await _usuariosRepository.GetByUsernameAsync(usernameActual);
+    }
+
+    // ✔ Cambiar contraseña correctamente
+    public async Task<bool> CambiarPasswordAsync(int idUsuario, string passwordNueva)
+    {
+        var usuario = await _usuariosRepository.GetByIdAsync(idUsuario);
+        if (usuario == null)
+            return false;
+
+        usuario.Password = _passwordHasher.HashPassword(usuario, passwordNueva);
+
+        await _usuariosRepository.UpdatePasswordAsync(usuario.Id, usuario.Password);
+        return true;
+    }
+
+    // ✔ Verificar password usando entidad Usuario (ya corregido)
+    public bool VerificarPassword(Usuario usuario, string passwordPlano)
+    {
+        var resultado = _passwordHasher.VerifyHashedPassword(usuario, usuario.Password, passwordPlano);
+        return resultado == PasswordVerificationResult.Success;
+    }
 }

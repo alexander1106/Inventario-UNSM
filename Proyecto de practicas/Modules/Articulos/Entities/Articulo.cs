@@ -18,7 +18,7 @@ namespace Proyecto_de_practicas.Modules.Articulos.Entities
         public virtual Ubicacion? Ubicacion { get; set; }
 
         public int Estado { get; set; } = 1; // Borrado lógico
-        public string QRCodeBase64 { get; set; }
+        public string? QRCodeBase64 { get; set; }
 
     }
 
