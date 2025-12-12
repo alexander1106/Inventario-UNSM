@@ -5,6 +5,7 @@ namespace Proyecto_de_practicas.Modules.Security.Entities
     public class Usuario
     {
         public int Id { get; set; }
+
         public string Nombre { get; set; }
         public string? Apellido { get; set; }
         public string Email { get; set; }
@@ -15,5 +16,11 @@ namespace Proyecto_de_practicas.Modules.Security.Entities
 
         [ForeignKey("RolId")]
         public Roles Rol { get; set; }
+
+        [NotMapped]
+        public IFormFile? Imagen { get; set; }
+
+        // 📌 Ruta de la imagen guardada
+        public string? ImagenPath { get; set; }
     }
 }

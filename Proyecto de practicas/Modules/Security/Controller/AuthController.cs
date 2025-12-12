@@ -17,19 +17,31 @@ namespace Proyecto_de_practicas.Modules.Security.Controller
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto login)
         {
-            var valido = await _usuariosService.ValidateLoginAsync(login.Username, login.Password);
-            if (!valido)
+            var usuario = await _usuariosService.GetByUsernameAsync(login.Username);
+
+            if (usuario == null || usuario.Password != login.Password)
                 return Unauthorized(new { message = "Usuario o contraseña incorrectos" });
 
-            // Aquí NO usas JWT, así que simplemente devuelves éxito
-            return Ok(new { message = "Login exitoso", username = login.Username });
+            // DEVUELVE LOS DATOS COMPLETOS DEL USUARIO
+            return Ok(new
+            {
+                message = "Login exitoso",
+                usuario = new
+                {
+                    id = usuario.Id,
+                    nombre = usuario.Nombre,
+                    apellido = usuario.Apellido,
+                    email = usuario.Email,
+                    username = usuario.Username,
+                    rolId = usuario.RolId,
+                    estado = usuario.Estado
+                }
+            });
         }
 
         [HttpPost("logout")]
         public IActionResult Logout()
         {
-            // No hace nada especial porque tu login es manual,
-            // pero existe para que el frontend pueda llamarlo.
             return Ok(new { message = "Sesión cerrada" });
         }
     }

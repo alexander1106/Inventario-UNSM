@@ -25,9 +25,7 @@ namespace Proyecto_de_practicas.Modules.Security.Repositories
         {
             var usuario = await _context.Usuarios.FindAsync(id);
             if (usuario == null)
-            {
                 return false;
-            }
 
             _context.Usuarios.Remove(usuario);
             await _context.SaveChangesAsync();
@@ -60,15 +58,27 @@ namespace Proyecto_de_practicas.Modules.Security.Repositories
 
         public async Task<Usuario> UpdateAsync(Usuario usuario)
         {
-            var exists = await _context.Usuarios.AnyAsync(x => x.Id == usuario.Id);
-            if (!exists)
-            {
-                throw new Exception("El usuario no existe.");
-            }
+            var actual = await _context.Usuarios.FirstOrDefaultAsync(x => x.Id == usuario.Id);
 
-            _context.Usuarios.Update(usuario);
+            if (actual == null)
+                throw new Exception("El usuario no existe.");
+
+            if (string.IsNullOrEmpty(usuario.ImagenPath))
+                usuario.ImagenPath = actual.ImagenPath;
+
+            if (string.IsNullOrEmpty(usuario.Password))
+                usuario.Password = actual.Password;
+
+            if (string.IsNullOrEmpty(usuario.Username))
+                usuario.Username = actual.Username;
+
+            if (string.IsNullOrEmpty(usuario.Estado))
+                usuario.Estado = actual.Estado;
+
+            _context.Entry(actual).CurrentValues.SetValues(usuario);
+
             await _context.SaveChangesAsync();
-            return usuario;
+            return actual;
         }
 
         public async Task UpdatePasswordAsync(int idUsuario, string passwordHash)
@@ -79,8 +89,22 @@ namespace Proyecto_de_practicas.Modules.Security.Repositories
                 throw new Exception("Usuario no encontrado");
 
             usuario.Password = passwordHash;
-
             await _context.SaveChangesAsync();
         }
+
+        public async Task<bool> UpdateImagenAsync(int idUsuario, string imagenPath)
+        {
+            var usuario = await _context.Usuarios.FindAsync(idUsuario);
+            if (usuario == null) return false;
+
+            usuario.ImagenPath = imagenPath;
+
+            // Guardamos solo el cambio de imagen
+            _context.Entry(usuario).Property(u => u.ImagenPath).IsModified = true;
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
+
 }

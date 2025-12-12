@@ -13,13 +13,22 @@ public class MappingProfile : Profile
     public MappingProfile()
     {
         // ====== USUARIOS ======
-        CreateMap<Usuario, UsuariosDto>();
+
+        // Mapear entidad a DTO de salida (para mostrar usuario, incluyendo el nombre del rol)
+        CreateMap<Usuario, UsuariosDto>()
+            .ForMember(dest => dest.Rol, opt => opt.MapFrom(src => src.Rol != null ? src.Rol.Nombre : ""));
+
+        // Mapear DTO de salida a entidad (para actualizaciones si es necesario)
         CreateMap<UsuariosDto, Usuario>();
+
+        // Mapear DTO de creación a entidad (para crear usuario)
         CreateMap<UsuarioCreateDTO, Usuario>()
             .ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.Nombres))
             .ForMember(dest => dest.Apellido, opt => opt.MapFrom(src => src.Apellidos))
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
-            .ForMember(dest => dest.Estado, opt => opt.MapFrom(src => "Activo"));
+            .ForMember(dest => dest.Estado, opt => opt.MapFrom(src => "Activo"))
+            .ForMember(dest => dest.RolId, opt => opt.MapFrom(src => src.RolId)); // << mapear RolId, NO Rol
+
 
         // ====== ROLES ======
         CreateMap<Roles, RolesDTO>();
@@ -41,12 +50,7 @@ public class MappingProfile : Profile
         CreateMap<Ubicacion, UbicacionDto>();
         CreateMap<UbicacionDto, Ubicacion>()
             .ForMember(dest => dest.TipoUbicacion, opt => opt.Ignore());
-        // Crear usuario
-        CreateMap<UsuarioCreateDTO, Usuario>()
-                .ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.Nombres))
-                .ForMember(dest => dest.Apellido, opt => opt.MapFrom(src => src.Apellidos))
-                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
-                .ForMember(dest => dest.Estado, opt => opt.MapFrom(src => "Activo"));
+        
 
         // ====== TIPOS DE ARTÍCULO ======
         CreateMap<TipoArticulo, TipoArticuloDTO>()

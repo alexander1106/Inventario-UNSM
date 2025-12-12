@@ -68,7 +68,10 @@ namespace Proyecto_de_practicas.Data
               new SubModulo { Id = 5, Nombre = "Usuarios", Ruta = "/usuarios", ModuloId = 7, Icon = "fa-solid fa-user" },
               new SubModulo { Id = 6, Nombre = "Roles", Ruta = "/roles", ModuloId = 7, Icon = "fa-solid fa-user-shield" },
               new SubModulo { Id = 7, Nombre = "Permisos", Ruta = "/permisos", ModuloId = 7, Icon = "fa-solid fa-key" },
-              new SubModulo { Id = 8, Nombre = "Modulos", Ruta = "/modulos", ModuloId = 7, Icon = "fa-solid fa-layer-group" }
+              new SubModulo { Id = 8, Nombre = "Modulos", Ruta = "/modulos", ModuloId = 7, Icon = "fa-solid fa-layer-group" },
+
+              // REPORTES
+              new SubModulo { Id = 9, Nombre = "Reportes", Ruta = "/reportes", ModuloId = 6, Icon = "fa-solid fa-chart-line" }
           );
         
             modelBuilder.Entity<Permiso>().HasData(

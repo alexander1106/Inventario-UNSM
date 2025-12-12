@@ -21,5 +21,9 @@ namespace Proyecto_de_practicas.Modules.Security.Services.IServices
 
         // NUEVO ✔
         Task<Usuario?> GetEntityByUsernameAsync(string usernameActual);
+
+        Task<bool> ActualizarImagenAsync(int usuarioId, IFormFile imagen);
+
+
     }
 }

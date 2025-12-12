@@ -8,5 +8,6 @@
         public string Username { get; set; }
         public string Password { get; set; }
         public int RolId { get; set; }
+        public IFormFile? Imagen { get; set; }
     }
 }

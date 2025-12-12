@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Proyecto_de_practicas.Data;
 
@@ -11,9 +12,11 @@ using Proyecto_de_practicas.Data;
 namespace Proyecto_de_practicas.Migrations
 {
     [DbContext(typeof(AplicationDBContext))]
-    partial class AplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20251205155614_Dbactulizada")]
+    partial class Dbactulizada
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -496,15 +499,6 @@ namespace Proyecto_de_practicas.Migrations
                             ModuloId = 7,
                             Nombre = "Modulos",
                             Ruta = "/modulos"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Estado = 1,
-                            Icon = "fa-solid fa-chart-line",
-                            ModuloId = 6,
-                            Nombre = "Reportes",
-                            Ruta = "/reportes"
                         });
                 });
 
@@ -525,9 +519,6 @@ namespace Proyecto_de_practicas.Migrations
 
                     b.Property<string>("Estado")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImagenPath")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nombre")

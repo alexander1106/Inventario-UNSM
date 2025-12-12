@@ -12,6 +12,7 @@ namespace Proyecto_de_practicas.Modules.Security.Repositories.IRepositories
         Task<Usuario> CreateAsync(Usuario usuario);
         Task UpdatePasswordAsync(int idUsuario, string passwordHash);
 
+        Task<bool> UpdateImagenAsync(int idUsuario, string imagenPath);
 
     }
 }

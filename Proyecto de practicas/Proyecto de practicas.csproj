@@ -24,6 +24,7 @@
   <ItemGroup>
     <Folder Include="Mappings\" />
     <Folder Include="Migrations\" />
+    <Folder Include="Modules\Reportes\Entities\" />
   </ItemGroup>
 
 </Project>

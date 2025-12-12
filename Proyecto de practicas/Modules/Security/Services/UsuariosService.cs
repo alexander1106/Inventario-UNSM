@@ -18,6 +18,28 @@ public class UsuariosService : IUsuariosServices
         _passwordHasher = new PasswordHasher<Usuario>();
     }
 
+    // 🟢 Método auxiliar para guardar la imagen en disco
+    private async Task<string?> GuardarImagenAsync(IFormFile? imagen, string carpeta)
+    {
+        if (imagen == null || imagen.Length == 0) return null;
+
+        string nombreArchivo = $"{Guid.NewGuid()}{Path.GetExtension(imagen.FileName)}";
+        string rutaCarpeta = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", carpeta);
+
+        if (!Directory.Exists(rutaCarpeta))
+            Directory.CreateDirectory(rutaCarpeta);
+
+        string rutaCompleta = Path.Combine(rutaCarpeta, nombreArchivo);
+
+        using (var stream = new FileStream(rutaCompleta, FileMode.Create))
+        {
+            await imagen.CopyToAsync(stream);
+        }
+
+        // Retorna la ruta relativa para almacenar en la DB
+        return Path.Combine(carpeta, nombreArchivo).Replace("\\", "/");
+    }
+
     public async Task<List<UsuariosDto>> GetAllAsync()
     {
         var usuarios = await _usuariosRepository.GetAllAsync();
@@ -40,6 +62,9 @@ public class UsuariosService : IUsuariosServices
 
         usuario.Password = _passwordHasher.HashPassword(usuario, usuario.Password);
 
+        // 🟢 Guardar imagen si se envía
+        usuario.ImagenPath = await GuardarImagenAsync(usuarioDto.Imagen, "usuarios");
+
         var nuevo = await _usuariosRepository.CreateAsync(usuario);
 
         return _mapper.Map<UsuariosDto>(nuevo);
@@ -47,23 +72,21 @@ public class UsuariosService : IUsuariosServices
 
     public async Task<UsuariosDto?> UpdateAsync(UsuariosDto usuarioDto)
     {
-        // Obtener el usuario existente
         var existente = await _usuariosRepository.GetByIdAsync(usuarioDto.Id);
         if (existente == null)
             return null;
 
-        // Mapear los datos que se pueden actualizar (nombres, apellidos, email, username)
         existente.Nombre = usuarioDto.Nombre;
         existente.Apellido = usuarioDto.Apellido;
         existente.Email = usuarioDto.Email;
         existente.Username = usuarioDto.Username;
 
-        // Mantener campos obligatorios que no vienen en el DTO
-        // existente.Password se mantiene igual
-        // existente.Estado se mantiene igual
-        // existente.RolId se mantiene igual
+        // 🟢 Guardar nueva imagen si se envía
+        if (usuarioDto.Imagen != null)
+        {
+            existente.ImagenPath = await GuardarImagenAsync(usuarioDto.Imagen, "usuarios");
+        }
 
-        // Guardar cambios
         var actualizado = await _usuariosRepository.UpdateAsync(existente);
         return _mapper.Map<UsuariosDto>(actualizado);
     }
@@ -94,13 +117,11 @@ public class UsuariosService : IUsuariosServices
         return usuario == null ? null : _mapper.Map<UsuariosDto>(usuario);
     }
 
-    // ✔ Método para obtener la entidad real
     public async Task<Usuario?> GetEntityByUsernameAsync(string usernameActual)
     {
         return await _usuariosRepository.GetByUsernameAsync(usernameActual);
     }
 
-    // ✔ Cambiar contraseña correctamente
     public async Task<bool> CambiarPasswordAsync(int idUsuario, string passwordNueva)
     {
         var usuario = await _usuariosRepository.GetByIdAsync(idUsuario);
@@ -113,10 +134,31 @@ public class UsuariosService : IUsuariosServices
         return true;
     }
 
-    // ✔ Verificar password usando entidad Usuario (ya corregido)
     public bool VerificarPassword(Usuario usuario, string passwordPlano)
     {
         var resultado = _passwordHasher.VerifyHashedPassword(usuario, usuario.Password, passwordPlano);
         return resultado == PasswordVerificationResult.Success;
     }
+
+    // 🟢 Actualizar solo imagen del usuario logueado
+    public async Task<bool> ActualizarImagenAsync(int usuarioId, IFormFile imagen)
+    {
+        if (imagen == null || imagen.Length == 0)
+            return false;
+
+        var usuario = await _usuariosRepository.GetByIdAsync(usuarioId);
+        if (usuario == null) return false;
+
+        // Guardar imagen usando tu método existente
+        var nuevaRuta = await GuardarImagenAsync(imagen, "usuarios");
+        if (string.IsNullOrEmpty(nuevaRuta)) return false;
+
+        usuario.ImagenPath = nuevaRuta;
+
+        // Actualizar en la DB
+        await _usuariosRepository.UpdateAsync(usuario);
+
+        return true;
+    }
+
 }

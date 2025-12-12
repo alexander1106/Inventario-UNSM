@@ -33,10 +33,10 @@ public class UsuariosController : ControllerBase
         return Ok(usuario);
     }
 
-    // ✨ Crear usuario con mensaje correcto
-    // ✨ Crear usuario con mensaje correcto
+    // ✨ Crear usuario con imagen
     [HttpPost]
-    public async Task<IActionResult> Add([FromBody] UsuarioCreateDTO usuarioDto)
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> Add([FromForm] UsuarioCreateDTO usuarioDto)
     {
         if (usuarioDto == null)
             return BadRequest(new { mensaje = "El cuerpo de la solicitud es nulo" });
@@ -51,6 +51,7 @@ public class UsuariosController : ControllerBase
             return CreatedAtAction(nameof(GetById), new { id = nuevo.Id }, new
             {
                 mensaje = "Usuario registrado exitosamente",
+                usuario = nuevo
             });
         }
         catch (Exception ex)
@@ -59,9 +60,10 @@ public class UsuariosController : ControllerBase
         }
     }
 
-
+    // ✨ Actualizar usuario con imagen
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, [FromBody] UsuariosDto usuarioDto)
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> Update(int id, [FromForm] UsuariosDto usuarioDto)
     {
         usuarioDto.Id = id;
 
@@ -114,19 +116,16 @@ public class UsuariosController : ControllerBase
         if (string.IsNullOrEmpty(username))
             return Unauthorized(new { mensaje = "Usuario no autenticado" });
 
-        // Obtener usuario entidad
         var usuarioEntidad = await _usuariosService.GetEntityByUsernameAsync(username);
 
         if (usuarioEntidad == null)
             return NotFound(new { mensaje = "Usuario no encontrado" });
 
-        // Verificar contraseña actual
         bool esValida = _usuariosService.VerificarPassword(usuarioEntidad, dto.PasswordActual);
 
         if (!esValida)
             return BadRequest(new { mensaje = "La contraseña actual es incorrecta" });
 
-        // Cambiar contraseña
         bool actualizado = await _usuariosService.CambiarPasswordAsync(usuarioEntidad.Id, dto.PasswordNueva);
 
         if (!actualizado)
@@ -134,4 +133,32 @@ public class UsuariosController : ControllerBase
 
         return Ok(new { mensaje = "Contraseña cambiada exitosamente" });
     }
+    // ✨ Actualizar solo la imagen del usuario autenticado
+    [HttpPatch("actualizar-imagen")]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> ActualizarImagen([FromForm] IFormFile imagen)
+    {
+        if (imagen == null || imagen.Length == 0)
+            return BadRequest(new { mensaje = "No se subió ninguna imagen." });
+
+        var username = User.FindFirst(ClaimTypes.Name)?.Value
+                       ?? User.FindFirst("username")?.Value
+                       ?? User.FindFirst("sub")?.Value;
+
+        if (string.IsNullOrEmpty(username))
+            return Unauthorized(new { mensaje = "Usuario no autenticado" });
+
+        var usuario = await _usuariosService.GetByUsernameAsync(username);
+        if (usuario == null)
+            return NotFound(new { mensaje = "Usuario no encontrado" });
+
+        var resultado = await _usuariosService.ActualizarImagenAsync(usuario.Id, imagen);
+        if (!resultado)
+            return StatusCode(500, new { mensaje = "No se pudo actualizar la imagen" });
+
+        return Ok(new { imagenPath = usuario.ImagenPath });
+    }
+
+
+
 }
