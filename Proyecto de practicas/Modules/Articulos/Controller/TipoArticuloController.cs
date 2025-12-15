@@ -34,35 +34,44 @@ namespace Proyecto_de_practicas.Modules.Articulos.Controller
         [Consumes("multipart/form-data")]
         public async Task<ActionResult<TipoArticuloDTO>> Create([FromForm] TipoArticuloDTO dtoEntrada)
         {
-            // Validar duplicados
-            var existentes = await _service.GetAllAsync();
-            if (existentes.Any(t => t.Nombre.ToLower() == dtoEntrada.Nombre.ToLower()))
-                return BadRequest("Ya existe un tipo de artículo con ese nombre.");
-
-            string? rutaImagen = null;
-
-            if (dtoEntrada.Imagen != null && dtoEntrada.Imagen.Length > 0)
+            try
             {
-                string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "imagenes");
-                if (!Directory.Exists(uploadsFolder))
-                    Directory.CreateDirectory(uploadsFolder);
-
-                string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(dtoEntrada.Imagen.FileName);
-                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                // Validar duplicado
+                var existentes = await _service.GetAllAsync();
+                if (existentes.Any(t => t.Nombre.ToLower() == dtoEntrada.Nombre.ToLower()))
                 {
-                    await dtoEntrada.Imagen.CopyToAsync(stream);
+                    return BadRequest(new
+                    {
+                        message = "Ya existe un tipo de artículo con ese nombre."
+                    });
                 }
 
-                rutaImagen = "/imagenes/" + uniqueFileName;
+                string? rutaImagen = null;
+
+                if (dtoEntrada.Imagen != null && dtoEntrada.Imagen.Length > 0)
+                {
+                    string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "imagenes");
+                    if (!Directory.Exists(uploadsFolder))
+                        Directory.CreateDirectory(uploadsFolder);
+
+                    string uniqueFileName = Guid.NewGuid() + Path.GetExtension(dtoEntrada.Imagen.FileName);
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using var stream = new FileStream(filePath, FileMode.Create);
+                    await dtoEntrada.Imagen.CopyToAsync(stream);
+
+                    rutaImagen = "/imagenes/" + uniqueFileName;
+                }
+
+                dtoEntrada.ImagenPath = rutaImagen;
+
+                var result = await _service.AddAsync(dtoEntrada);
+                return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
             }
-
-            // Asignar ruta de imagen al DTO
-            dtoEntrada.ImagenPath = rutaImagen;
-
-            var result = await _service.AddAsync(dtoEntrada);
-            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpPut("{id}")]
@@ -73,36 +82,30 @@ namespace Proyecto_de_practicas.Modules.Articulos.Controller
             {
                 string? rutaImagen = null;
 
-                // Subida de nueva imagen (opcional)
                 if (dtoEntrada.Imagen != null && dtoEntrada.Imagen.Length > 0)
                 {
                     string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "imagenes");
                     if (!Directory.Exists(uploadsFolder))
                         Directory.CreateDirectory(uploadsFolder);
 
-                    string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(dtoEntrada.Imagen.FileName);
+                    string uniqueFileName = Guid.NewGuid() + Path.GetExtension(dtoEntrada.Imagen.FileName);
                     string filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await dtoEntrada.Imagen.CopyToAsync(stream);
-                    }
+                    using var stream = new FileStream(filePath, FileMode.Create);
+                    await dtoEntrada.Imagen.CopyToAsync(stream);
 
                     rutaImagen = "/imagenes/" + uniqueFileName;
                 }
 
-                // Asignar ruta de imagen si se subió una nueva
                 if (rutaImagen != null)
-                {
                     dtoEntrada.ImagenPath = rutaImagen;
-                }
 
                 var result = await _service.UpdateAsync(id, dtoEntrada);
                 return Ok(result);
             }
             catch (InvalidOperationException ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
         }
 
@@ -123,6 +126,16 @@ namespace Proyecto_de_practicas.Modules.Articulos.Controller
             {
                 return BadRequest(new { message = ex.Message });
             }
+        }
+
+        [HttpGet("{id}/encabezado")]
+        public async Task<ActionResult<List<string>>> GetEncabezado(int id)
+        {
+            var result = await _service.GetEncabezadoArticulosAsync(id);
+            if (result == null || !result.Any())
+                return NotFound(new { message = "No se encontraron encabezados para este tipo." });
+
+            return Ok(result);
         }
 
     }

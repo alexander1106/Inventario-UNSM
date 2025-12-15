@@ -12,7 +12,7 @@ using Proyecto_de_practicas.Data;
 namespace Proyecto_de_practicas.Migrations
 {
     [DbContext(typeof(AplicationDBContext))]
-    [Migration("20251121143001_initial")]
+    [Migration("20251205174511_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -24,85 +24,6 @@ namespace Proyecto_de_practicas.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Proyecto_de_practicas.Models.Articulo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Estado")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TipoArticuloId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UbicacionId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TipoArticuloId");
-
-                    b.HasIndex("UbicacionId");
-
-                    b.ToTable("Articulos");
-                });
-
-            modelBuilder.Entity("Proyecto_de_practicas.Models.ArticuloCampoValor", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ArticuloId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CampoArticuloId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Valor")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ArticuloId");
-
-                    b.HasIndex("CampoArticuloId");
-
-                    b.ToTable("ArticuloCamposValores");
-                });
-
-            modelBuilder.Entity("Proyecto_de_practicas.Models.CampoArticulo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("NombreCampo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TipoArticuloId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TipoDato")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TipoArticuloId");
-
-                    b.ToTable("CamposArticulos");
-                });
 
             modelBuilder.Entity("Proyecto_de_practicas.Models.Inventario", b =>
                 {
@@ -135,50 +56,6 @@ namespace Proyecto_de_practicas.Migrations
                     b.HasIndex("UbicacionId");
 
                     b.ToTable("Inventario");
-                });
-
-            modelBuilder.Entity("Proyecto_de_practicas.Models.TipoArticulo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Descripcion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Estado")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ImagenPath")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TipoArticulos");
-                });
-
-            modelBuilder.Entity("Proyecto_de_practicas.Models.TipoUbicacion", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TipoUbicacion");
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Models.Traslado", b =>
@@ -224,7 +101,113 @@ namespace Proyecto_de_practicas.Migrations
                     b.ToTable("Traslado");
                 });
 
-            modelBuilder.Entity("Proyecto_de_practicas.Models.Ubicacion", b =>
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.Articulo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CodigoPatrimonial")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Condicion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Estado")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("FechaAdquision")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Nombre")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("QRCodeBase64")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TipoArticuloId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UbicacionId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("ValorAdquisitivo")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TipoArticuloId");
+
+                    b.HasIndex("UbicacionId");
+
+                    b.ToTable("Articulos");
+                });
+
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.ArticuloCampoValor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ArticuloId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CampoArticuloId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Valor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ArticuloId");
+
+                    b.HasIndex("CampoArticuloId");
+
+                    b.ToTable("ArticuloCamposValores");
+                });
+
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.CampoArticulo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("NombreCampo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TipoArticuloId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TipoDato")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TipoArticuloId");
+
+                    b.ToTable("CamposArticulos");
+                });
+
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.EncabezadoResult", b =>
+                {
+                    b.Property<string>("Encabezado")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.ToTable("EncabezadoResult");
+                });
+
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.TipoArticulo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -236,21 +219,19 @@ namespace Proyecto_de_practicas.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Estado")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ImagenPath")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Piso")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TipoUbicacionId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("TipoUbicacionId");
-
-                    b.ToTable("Ubicaciones");
+                    b.ToTable("TipoArticulos");
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Security.Entities.Modulo", b =>
@@ -283,41 +264,55 @@ namespace Proyecto_de_practicas.Migrations
                         {
                             Id = 1,
                             Estado = 1,
-                            Nombre = "Artículos",
-                            Ruta = "/articulos"
+                            Icon = "fa-solid fa-home",
+                            Nombre = "Dashboard",
+                            Ruta = "/dashboard"
                         },
                         new
                         {
                             Id = 2,
                             Estado = 1,
-                            Nombre = "Ubicaciones",
-                            Ruta = "/ubicaciones"
+                            Icon = "fa-solid fa-box",
+                            Nombre = "Artículos",
+                            Ruta = "/articulos"
                         },
                         new
                         {
                             Id = 3,
                             Estado = 1,
-                            Nombre = "Traslados",
-                            Ruta = "/traslados"
+                            Icon = "fa-solid fa-map-marker-alt",
+                            Nombre = "Ubicaciones",
+                            Ruta = "/ubicaciones"
                         },
                         new
                         {
                             Id = 4,
                             Estado = 1,
-                            Nombre = "Inventario",
-                            Ruta = "/inventario"
+                            Icon = "fa-solid fa-exchange-alt",
+                            Nombre = "Traslados",
+                            Ruta = "/traslados"
                         },
                         new
                         {
                             Id = 5,
                             Estado = 1,
-                            Nombre = "Reportes",
-                            Ruta = "/reportes"
+                            Icon = "fa-solid fa-warehouse",
+                            Nombre = "Inventario",
+                            Ruta = "/inventario"
                         },
                         new
                         {
                             Id = 6,
                             Estado = 1,
+                            Icon = "fa-solid fa-chart-line",
+                            Nombre = "Reportes",
+                            Ruta = "/reportes"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Estado = 1,
+                            Icon = "fa-solid fa-shield-alt",
                             Nombre = "Seguridad",
                             Ruta = "/seguridad"
                         });
@@ -410,6 +405,20 @@ namespace Proyecto_de_practicas.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Estado = 1,
+                            Nombre = "Administrador"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Estado = 1,
+                            Nombre = "Usuario"
+                        });
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Security.Entities.SubModulo", b =>
@@ -447,57 +456,73 @@ namespace Proyecto_de_practicas.Migrations
                         {
                             Id = 1,
                             Estado = 1,
-                            ModuloId = 1,
+                            Icon = "fa-solid fa-box-open",
+                            ModuloId = 2,
                             Nombre = "Artículos",
-                            Ruta = "/articulos/lista"
+                            Ruta = "/articulos"
                         },
                         new
                         {
                             Id = 2,
                             Estado = 1,
-                            ModuloId = 1,
+                            Icon = "fa-solid fa-tags",
+                            ModuloId = 2,
                             Nombre = "Tipos de Artículo",
-                            Ruta = "/articulos/tipos"
+                            Ruta = "/tipos-articulos"
                         },
                         new
                         {
                             Id = 3,
                             Estado = 1,
-                            ModuloId = 2,
+                            Icon = "fa-solid fa-map-marker",
+                            ModuloId = 3,
                             Nombre = "Ubicaciones",
-                            Ruta = "/ubicaciones/lista"
+                            Ruta = "/ubicaciones"
                         },
                         new
                         {
                             Id = 4,
                             Estado = 1,
-                            ModuloId = 2,
+                            Icon = "fa-solid fa-layer-group",
+                            ModuloId = 3,
                             Nombre = "Tipos de Ubicación",
-                            Ruta = "/ubicaciones/tipos"
+                            Ruta = "/tipo-ubicacion"
                         },
                         new
                         {
                             Id = 5,
                             Estado = 1,
-                            ModuloId = 6,
+                            Icon = "fa-solid fa-user",
+                            ModuloId = 7,
                             Nombre = "Usuarios",
-                            Ruta = "/seguridad/usuarios"
+                            Ruta = "/usuarios"
                         },
                         new
                         {
                             Id = 6,
                             Estado = 1,
-                            ModuloId = 6,
+                            Icon = "fa-solid fa-user-shield",
+                            ModuloId = 7,
                             Nombre = "Roles",
-                            Ruta = "/seguridad/roles"
+                            Ruta = "/roles"
                         },
                         new
                         {
                             Id = 7,
                             Estado = 1,
-                            ModuloId = 6,
+                            Icon = "fa-solid fa-key",
+                            ModuloId = 7,
                             Nombre = "Permisos",
-                            Ruta = "/seguridad/permisos"
+                            Ruta = "/permisos"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Estado = 1,
+                            Icon = "fa-solid fa-layer-group",
+                            ModuloId = 7,
+                            Nombre = "Modulos",
+                            Ruta = "/modulos"
                         });
                 });
 
@@ -512,7 +537,7 @@ namespace Proyecto_de_practicas.Migrations
                     b.Property<string>("Apellido")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Correo")
+                    b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -565,62 +590,61 @@ namespace Proyecto_de_practicas.Migrations
                     b.ToTable("RolSubmodulo");
                 });
 
-            modelBuilder.Entity("Proyecto_de_practicas.Models.Articulo", b =>
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Ubicaciones.Entities.TipoUbicacion", b =>
                 {
-                    b.HasOne("Proyecto_de_practicas.Models.TipoArticulo", "TipoArticulo")
-                        .WithMany("Articulos")
-                        .HasForeignKey("TipoArticuloId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.HasOne("Proyecto_de_practicas.Models.Ubicacion", "Ubicacion")
-                        .WithMany("Articulos")
-                        .HasForeignKey("UbicacionId");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Navigation("TipoArticulo");
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Navigation("Ubicacion");
+                    b.HasKey("Id");
+
+                    b.ToTable("TipoUbicacion");
                 });
 
-            modelBuilder.Entity("Proyecto_de_practicas.Models.ArticuloCampoValor", b =>
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Ubicacion", b =>
                 {
-                    b.HasOne("Proyecto_de_practicas.Models.Articulo", "Articulo")
-                        .WithMany()
-                        .HasForeignKey("ArticuloId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.HasOne("Proyecto_de_practicas.Models.CampoArticulo", "CampoArticulo")
-                        .WithMany()
-                        .HasForeignKey("CampoArticuloId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Navigation("Articulo");
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Navigation("CampoArticulo");
-                });
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-            modelBuilder.Entity("Proyecto_de_practicas.Models.CampoArticulo", b =>
-                {
-                    b.HasOne("Proyecto_de_practicas.Models.TipoArticulo", "TipoArticulo")
-                        .WithMany("Campos")
-                        .HasForeignKey("TipoArticuloId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("Piso")
+                        .HasColumnType("int");
 
-                    b.Navigation("TipoArticulo");
+                    b.Property<int>("TipoUbicacionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TipoUbicacionId");
+
+                    b.ToTable("Ubicaciones");
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Models.Inventario", b =>
                 {
-                    b.HasOne("Proyecto_de_practicas.Models.Articulo", "Articulo")
+                    b.HasOne("Proyecto_de_practicas.Modules.Articulos.Entities.Articulo", "Articulo")
                         .WithMany()
                         .HasForeignKey("ArticuloId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Proyecto_de_practicas.Models.Ubicacion", "Ubicacion")
+                    b.HasOne("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Ubicacion", "Ubicacion")
                         .WithMany()
                         .HasForeignKey("UbicacionId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -633,19 +657,19 @@ namespace Proyecto_de_practicas.Migrations
 
             modelBuilder.Entity("Proyecto_de_practicas.Models.Traslado", b =>
                 {
-                    b.HasOne("Proyecto_de_practicas.Models.Articulo", "Articulo")
+                    b.HasOne("Proyecto_de_practicas.Modules.Articulos.Entities.Articulo", "Articulo")
                         .WithMany()
                         .HasForeignKey("ArticuloId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Proyecto_de_practicas.Models.Ubicacion", "UbicacionDestino")
+                    b.HasOne("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Ubicacion", "UbicacionDestino")
                         .WithMany()
                         .HasForeignKey("UbicacionDestinoId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Proyecto_de_practicas.Models.Ubicacion", "UbicacionOrigen")
+                    b.HasOne("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Ubicacion", "UbicacionOrigen")
                         .WithMany()
                         .HasForeignKey("UbicacionOrigenId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -666,15 +690,51 @@ namespace Proyecto_de_practicas.Migrations
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("Proyecto_de_practicas.Models.Ubicacion", b =>
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.Articulo", b =>
                 {
-                    b.HasOne("Proyecto_de_practicas.Models.TipoUbicacion", "TipoUbicacion")
-                        .WithMany("Ubicaciones")
-                        .HasForeignKey("TipoUbicacionId")
+                    b.HasOne("Proyecto_de_practicas.Modules.Articulos.Entities.TipoArticulo", "TipoArticulo")
+                        .WithMany("Articulos")
+                        .HasForeignKey("TipoArticuloId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("TipoUbicacion");
+                    b.HasOne("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Ubicacion", "Ubicacion")
+                        .WithMany("Articulos")
+                        .HasForeignKey("UbicacionId");
+
+                    b.Navigation("TipoArticulo");
+
+                    b.Navigation("Ubicacion");
+                });
+
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.ArticuloCampoValor", b =>
+                {
+                    b.HasOne("Proyecto_de_practicas.Modules.Articulos.Entities.Articulo", "Articulo")
+                        .WithMany()
+                        .HasForeignKey("ArticuloId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Proyecto_de_practicas.Modules.Articulos.Entities.CampoArticulo", "CampoArticulo")
+                        .WithMany()
+                        .HasForeignKey("CampoArticuloId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Articulo");
+
+                    b.Navigation("CampoArticulo");
+                });
+
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.CampoArticulo", b =>
+                {
+                    b.HasOne("Proyecto_de_practicas.Modules.Articulos.Entities.TipoArticulo", "TipoArticulo")
+                        .WithMany("Campos")
+                        .HasForeignKey("TipoArticuloId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TipoArticulo");
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Security.Entities.RolSubModuloPermiso", b =>
@@ -737,21 +797,22 @@ namespace Proyecto_de_practicas.Migrations
                     b.Navigation("SubModulo");
                 });
 
-            modelBuilder.Entity("Proyecto_de_practicas.Models.TipoArticulo", b =>
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Ubicacion", b =>
+                {
+                    b.HasOne("Proyecto_de_practicas.Modules.Ubicaciones.Entities.TipoUbicacion", "TipoUbicacion")
+                        .WithMany("Ubicaciones")
+                        .HasForeignKey("TipoUbicacionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TipoUbicacion");
+                });
+
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.TipoArticulo", b =>
                 {
                     b.Navigation("Articulos");
 
                     b.Navigation("Campos");
-                });
-
-            modelBuilder.Entity("Proyecto_de_practicas.Models.TipoUbicacion", b =>
-                {
-                    b.Navigation("Ubicaciones");
-                });
-
-            modelBuilder.Entity("Proyecto_de_practicas.Models.Ubicacion", b =>
-                {
-                    b.Navigation("Articulos");
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Security.Entities.Modulo", b =>
@@ -767,6 +828,16 @@ namespace Proyecto_de_practicas.Migrations
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Security.Security.RolSubModulo", b =>
                 {
                     b.Navigation("Permisos");
+                });
+
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Ubicaciones.Entities.TipoUbicacion", b =>
+                {
+                    b.Navigation("Ubicaciones");
+                });
+
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Ubicacion", b =>
+                {
+                    b.Navigation("Articulos");
                 });
 #pragma warning restore 612, 618
         }

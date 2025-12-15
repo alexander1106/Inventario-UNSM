@@ -14,6 +14,16 @@ namespace Proyecto_de_practicas.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "EncabezadoResult",
+                columns: table => new
+                {
+                    Encabezado = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Modulos",
                 columns: table => new
                 {
@@ -117,7 +127,7 @@ namespace Proyecto_de_practicas.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Apellido = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Correo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Estado = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -209,6 +219,12 @@ namespace Proyecto_de_practicas.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    QRCodeBase64 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CodigoPatrimonial = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FechaAdquision = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ValorAdquisitivo = table.Column<double>(type: "float", nullable: false),
+                    Condicion = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TipoArticuloId = table.Column<int>(type: "int", nullable: false),
                     UbicacionId = table.Column<int>(type: "int", nullable: true),
                     Estado = table.Column<int>(type: "int", nullable: false)
@@ -355,12 +371,13 @@ namespace Proyecto_de_practicas.Migrations
                 columns: new[] { "Id", "Estado", "Icon", "Nombre", "Ruta" },
                 values: new object[,]
                 {
-                    { 1, 1, null, "Artículos", "/articulos" },
-                    { 2, 1, null, "Ubicaciones", "/ubicaciones" },
-                    { 3, 1, null, "Traslados", "/traslados" },
-                    { 4, 1, null, "Inventario", "/inventario" },
-                    { 5, 1, null, "Reportes", "/reportes" },
-                    { 6, 1, null, "Seguridad", "/seguridad" }
+                    { 1, 1, "fa-solid fa-home", "Dashboard", "/dashboard" },
+                    { 2, 1, "fa-solid fa-box", "Artículos", "/articulos" },
+                    { 3, 1, "fa-solid fa-map-marker-alt", "Ubicaciones", "/ubicaciones" },
+                    { 4, 1, "fa-solid fa-exchange-alt", "Traslados", "/traslados" },
+                    { 5, 1, "fa-solid fa-warehouse", "Inventario", "/inventario" },
+                    { 6, 1, "fa-solid fa-chart-line", "Reportes", "/reportes" },
+                    { 7, 1, "fa-solid fa-shield-alt", "Seguridad", "/seguridad" }
                 });
 
             migrationBuilder.InsertData(
@@ -375,17 +392,27 @@ namespace Proyecto_de_practicas.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "Id", "Estado", "Nombre" },
+                values: new object[,]
+                {
+                    { 1, 1, "Administrador" },
+                    { 2, 1, "Usuario" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "SubModulos",
                 columns: new[] { "Id", "Estado", "Icon", "ModuloId", "Nombre", "Ruta" },
                 values: new object[,]
                 {
-                    { 1, 1, null, 1, "Artículos", "/articulos/lista" },
-                    { 2, 1, null, 1, "Tipos de Artículo", "/articulos/tipos" },
-                    { 3, 1, null, 2, "Ubicaciones", "/ubicaciones/lista" },
-                    { 4, 1, null, 2, "Tipos de Ubicación", "/ubicaciones/tipos" },
-                    { 5, 1, null, 6, "Usuarios", "/seguridad/usuarios" },
-                    { 6, 1, null, 6, "Roles", "/seguridad/roles" },
-                    { 7, 1, null, 6, "Permisos", "/seguridad/permisos" }
+                    { 1, 1, "fa-solid fa-box-open", 2, "Artículos", "/articulos" },
+                    { 2, 1, "fa-solid fa-tags", 2, "Tipos de Artículo", "/tipos-articulos" },
+                    { 3, 1, "fa-solid fa-map-marker", 3, "Ubicaciones", "/ubicaciones" },
+                    { 4, 1, "fa-solid fa-layer-group", 3, "Tipos de Ubicación", "/tipo-ubicacion" },
+                    { 5, 1, "fa-solid fa-user", 7, "Usuarios", "/usuarios" },
+                    { 6, 1, "fa-solid fa-user-shield", 7, "Roles", "/roles" },
+                    { 7, 1, "fa-solid fa-key", 7, "Permisos", "/permisos" },
+                    { 8, 1, "fa-solid fa-layer-group", 7, "Modulos", "/modulos" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -484,6 +511,9 @@ namespace Proyecto_de_practicas.Migrations
         {
             migrationBuilder.DropTable(
                 name: "ArticuloCamposValores");
+
+            migrationBuilder.DropTable(
+                name: "EncabezadoResult");
 
             migrationBuilder.DropTable(
                 name: "Inventario");

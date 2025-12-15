@@ -1,4 +1,6 @@
-﻿using Proyecto_de_practicas.Modules.Articulos.Entities;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Proyecto_de_practicas.Modules.Articulos.Entities;
 
 namespace Proyecto_de_practicas.Modules.Articulos.Repository.IArticulosRepository
 {
@@ -11,5 +13,8 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository.IArticulosRepositor
         Task<bool> DeleteAsync(int id);
         Task<bool> TieneRelacionConArticulosAsync(int id);
         Task<TipoArticulo> GetByIdWithArticulosAsync(int id);
+        Task<bool> ExisteNombreAsync(string nombre, int? excluirId = null);
+
+        Task<List<string>> GetEncabezadoArticulosAsync(int idTipoArticulo);
     }
 }

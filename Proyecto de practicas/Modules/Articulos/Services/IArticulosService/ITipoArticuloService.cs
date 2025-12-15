@@ -10,5 +10,8 @@ namespace Proyecto_de_practicas.Service
         Task<TipoArticuloDTO> UpdateAsync(int id, TipoArticuloDTO dto);
         Task<bool> DeleteAsync(int id);
         Task<TipoArticuloDTO> ObtenerPorIdAsync(int id);
+
+        Task<List<string>> GetEncabezadoArticulosAsync(int idTipoArticulo);
+
     }
 }

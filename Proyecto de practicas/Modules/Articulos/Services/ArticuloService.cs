@@ -1,4 +1,7 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper;
 using Proyecto_de_practicas.Modules.Articulos.DTO;
 using Proyecto_de_practicas.Modules.Articulos.Entities;
 using Proyecto_de_practicas.Modules.Articulos.Repository.IArticulosRepository;
@@ -61,14 +64,31 @@ namespace Proyecto_de_practicas.Modules.Articulos.Services
             return _mapper.Map<List<ArticuloDto>>(entities);
         }
 
-        public async Task<string> CreateArticuloConCampos(ArticuloDto request)
+        public async Task<ArticuloDto?> GetByCodigoCortoAsync(string codigoCorto)
         {
-            return await _repo.CreateArticuloConCampos(request);
+            var entity = await _repo.GetByCodigoCortoAsync(codigoCorto);
+            return entity == null ? null : _mapper.Map<ArticuloDto>(entity);
         }
+
+        public async Task<string> GuardarArticuloConCampos(ArticuloConCamposRequest request)
+        {
+            return await _repo.GuardarArticuloConCampos(request);
+        }
+
+        public async Task<List<CampoArticuloDto>> GetCamposPorTipoArticuloAsync(int tipoArticuloId)
+        {
+            // Llama al repositorio para mantener la separación de responsabilidades
+            return await _repo.GetCamposPorTipoArticuloAsync(tipoArticuloId);
+        }
+        public async Task<List<ArticuloDto>> GetAllConCamposAsync()
+        {
+            return await _repo.GetAllConCamposAsync();
+        }
+
+
         public async Task<List<Dictionary<string, object>>> GetArticulosPivotPorTipoAsync(int tipoArticuloId)
         {
             return await _repo.GetArticulosPivotPorTipoAsync(tipoArticuloId);
         }
-
     }
 }
