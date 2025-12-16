@@ -6,7 +6,6 @@ using Proyecto_de_practicas.Modules.Security.Services.IServices;
 
 [ApiController]
 [Route("api/usuarios")]
-[Authorize]
 public class UsuariosController : ControllerBase
 {
     private readonly IUsuariosServices _usuariosService;

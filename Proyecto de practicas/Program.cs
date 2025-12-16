@@ -5,7 +5,6 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Proyecto_de_practicas.Data;
-using Proyecto_de_practicas.Models;
 using Proyecto_de_practicas.Modules.Articulos.Repository;
 using Proyecto_de_practicas.Modules.Articulos.Repository.IArticulosRepository;
 using Proyecto_de_practicas.Modules.Articulos.Services;
@@ -18,6 +17,10 @@ using Proyecto_de_practicas.Modules.Security.Repositories;
 using Proyecto_de_practicas.Modules.Security.Repositories.IRepositories;
 using Proyecto_de_practicas.Modules.Security.Services;
 using Proyecto_de_practicas.Modules.Security.Services.IServices;
+using Proyecto_de_practicas.Modules.Traslados.Repository;
+using Proyecto_de_practicas.Modules.Traslados.Repository.IRespository;
+using Proyecto_de_practicas.Modules.Traslados.Service;
+using Proyecto_de_practicas.Modules.Traslados.Service.IService;
 using Proyecto_de_practicas.Modules.Ubicaciones.Repository;
 using Proyecto_de_practicas.Modules.Ubicaciones.Repository.IUbicacionesRepository;
 using Proyecto_de_practicas.Modules.Ubicaciones.Services;
@@ -128,6 +131,10 @@ internal class Program
         builder.Services.AddScoped<IUsuariosRepository, UsuarioRepository>();
         builder.Services.AddScoped<IUsuariosServices, UsuariosService>();
 
+        // traslados
+        builder.Services.AddScoped<ITrasladoRepository, TrasladoRepository>();
+        builder.Services.AddScoped<ITrasladoService, TrasladoService>();
+
         // Roles
         builder.Services.AddScoped<IRolesRepository, RolesRepository>();
         builder.Services.AddScoped<IRolesService, RolesService>();
@@ -179,10 +186,6 @@ internal class Program
         builder.Services.AddScoped<IReportesService, ReportesService>();
 
 
-
-        // ========================
-        //      APP BUILD
-        // ========================
         var app = builder.Build();
 
         if (app.Environment.IsDevelopment())

@@ -106,11 +106,31 @@ namespace Proyecto_de_practicas.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+<<<<<<< HEAD
                     b.Property<int>("Estado")
                         .HasColumnType("int");
 
                     b.Property<int>("Stock")
                         .HasColumnType("int");
+=======
+                    b.Property<string>("CodigoPatrimonial")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Condicion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Estado")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("FechaAdquision")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Nombre")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("QRCodeBase64")
+                        .HasColumnType("nvarchar(max)");
+>>>>>>> b4196ffb8762941be095062e1cf8b36fbb9333c0
 
                     b.Property<int>("TipoArticuloId")
                         .HasColumnType("int");
@@ -118,6 +138,12 @@ namespace Proyecto_de_practicas.Migrations
                     b.Property<int?>("UbicacionId")
                         .HasColumnType("int");
 
+<<<<<<< HEAD
+=======
+                    b.Property<double>("ValorAdquisitivo")
+                        .HasColumnType("float");
+
+>>>>>>> b4196ffb8762941be095062e1cf8b36fbb9333c0
                     b.HasKey("Id");
 
                     b.HasIndex("TipoArticuloId");
@@ -180,6 +206,18 @@ namespace Proyecto_de_practicas.Migrations
                     b.ToTable("CamposArticulos");
                 });
 
+<<<<<<< HEAD
+=======
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.EncabezadoResult", b =>
+                {
+                    b.Property<string>("Encabezado")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.ToTable("EncabezadoResult");
+                });
+
+>>>>>>> b4196ffb8762941be095062e1cf8b36fbb9333c0
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.TipoArticulo", b =>
                 {
                     b.Property<int>("Id")
@@ -496,6 +534,7 @@ namespace Proyecto_de_practicas.Migrations
                             ModuloId = 7,
                             Nombre = "Modulos",
                             Ruta = "/modulos"
+<<<<<<< HEAD
                         },
                         new
                         {
@@ -505,6 +544,8 @@ namespace Proyecto_de_practicas.Migrations
                             ModuloId = 6,
                             Nombre = "Reportes",
                             Ruta = "/reportes"
+=======
+>>>>>>> b4196ffb8762941be095062e1cf8b36fbb9333c0
                         });
                 });
 
@@ -695,13 +736,21 @@ namespace Proyecto_de_practicas.Migrations
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.ArticuloCampoValor", b =>
                 {
                     b.HasOne("Proyecto_de_practicas.Modules.Articulos.Entities.Articulo", "Articulo")
+<<<<<<< HEAD
                         .WithMany("CamposValores")
+=======
+                        .WithMany()
+>>>>>>> b4196ffb8762941be095062e1cf8b36fbb9333c0
                         .HasForeignKey("ArticuloId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Proyecto_de_practicas.Modules.Articulos.Entities.CampoArticulo", "CampoArticulo")
+<<<<<<< HEAD
                         .WithMany("CamposValores")
+=======
+                        .WithMany()
+>>>>>>> b4196ffb8762941be095062e1cf8b36fbb9333c0
                         .HasForeignKey("CampoArticuloId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -793,6 +842,7 @@ namespace Proyecto_de_practicas.Migrations
                     b.Navigation("TipoUbicacion");
                 });
 
+<<<<<<< HEAD
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.Articulo", b =>
                 {
                     b.Navigation("CamposValores");
@@ -803,6 +853,8 @@ namespace Proyecto_de_practicas.Migrations
                     b.Navigation("CamposValores");
                 });
 
+=======
+>>>>>>> b4196ffb8762941be095062e1cf8b36fbb9333c0
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.TipoArticulo", b =>
                 {
                     b.Navigation("Articulos");

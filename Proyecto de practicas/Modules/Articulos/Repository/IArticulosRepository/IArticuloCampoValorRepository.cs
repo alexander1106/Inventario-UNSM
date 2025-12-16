@@ -1,4 +1,5 @@
-﻿using Proyecto_de_practicas.Modules.Articulos.Entities;
+﻿using Proyecto_de_practicas.Modules.Articulos.DTO;
+using Proyecto_de_practicas.Modules.Articulos.Entities;
 
 namespace Proyecto_de_practicas.Modules.Articulos.Repository.IArticulosRepository
 {
@@ -11,6 +12,7 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository.IArticulosRepositor
         Task UpdateAsync(ArticuloCampoValor entity);
         Task<IEnumerable<ArticuloCampoValor>> GetByTipoArticuloIdAsync(int tipoArticuloId);
         Task DeleteAsync(int id);
+
 
     }
 }

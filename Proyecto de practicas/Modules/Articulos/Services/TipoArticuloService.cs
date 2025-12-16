@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Proyecto_de_practicas.Modules.Articulos.Entities;
 using Proyecto_de_practicas.Modules.Articulos.Repository.IArticulosRepository;
 using Proyecto_de_practicas.Modules.Ubicaciones.DTO;
@@ -28,9 +29,12 @@ namespace Proyecto_de_practicas.Modules.Articulos.Services
             var entity = await _repo.GetByIdAsync(id);
             return entity == null ? null : _mapper.Map<TipoArticuloDTO>(entity);
         }
-
         public async Task<TipoArticuloDTO> AddAsync(TipoArticuloDTO dto)
         {
+            bool existe = await _repo.ExisteNombreAsync(dto.Nombre);
+            if (existe)
+                throw new InvalidOperationException("Ya existe un tipo de artículo con ese nombre.");
+
             var entity = _mapper.Map<TipoArticulo>(dto);
             var result = await _repo.AddAsync(entity);
             return _mapper.Map<TipoArticuloDTO>(result);
@@ -38,16 +42,27 @@ namespace Proyecto_de_practicas.Modules.Articulos.Services
 
         public async Task<TipoArticuloDTO> UpdateAsync(int id, TipoArticuloDTO dto)
         {
-            // Validar relación
+            // 🔒 Validar relación
             bool tieneRelacion = await _repo.TieneRelacionConArticulosAsync(id);
             if (tieneRelacion)
-                throw new InvalidOperationException("No se puede editar este tipo de artículo porque tiene artículos relacionados.");
+                throw new InvalidOperationException(
+                    "No se puede editar este tipo de artículo porque tiene artículos relacionados."
+                );
+
+            // 🔒 Validar nombre duplicado (excluyendo el mismo ID)
+            bool existe = await _repo.ExisteNombreAsync(dto.Nombre, id);
+            if (existe)
+                throw new InvalidOperationException(
+                    "Ya existe un tipo de artículo con ese nombre."
+                );
 
             var entity = _mapper.Map<TipoArticulo>(dto);
             entity.Id = id;
+
             var result = await _repo.UpdateAsync(entity);
             return _mapper.Map<TipoArticuloDTO>(result);
         }
+
 
 
         public async Task<bool> DeleteAsync(int id)
@@ -68,5 +83,12 @@ namespace Proyecto_de_practicas.Modules.Articulos.Services
 
             return _mapper.Map<TipoArticuloDTO>(entity);
         }
+
+
+        public async Task<List<string>> GetEncabezadoArticulosAsync(int idTipoArticulo)
+        {
+            return await _repo.GetEncabezadoArticulosAsync(idTipoArticulo);
+        }
+
     }
 }

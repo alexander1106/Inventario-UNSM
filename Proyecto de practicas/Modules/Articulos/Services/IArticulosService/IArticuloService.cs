@@ -1,4 +1,6 @@
 ﻿using Proyecto_de_practicas.Modules.Articulos.DTO;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Proyecto_de_practicas.Service
 {
@@ -8,13 +10,22 @@ namespace Proyecto_de_practicas.Service
         Task<ArticuloDto?> GetByIdAsync(int id);
         Task<ArticuloDto> AddAsync(ArticuloDto dto);
         Task<ArticuloDto> UpdateAsync(int id, ArticuloDto dto);
+
+        // 🔹 Métodos para campos dinámicos
+        Task<List<CampoArticuloDto>> GetCamposPorTipoArticuloAsync(int tipoArticuloId);
+
+        // 🔹 Nuevo: obtener todos con campos
+        Task<List<ArticuloDto>> GetAllConCamposAsync();
+
+        //Task<string> CreateArticuloConCampos(ArticuloDto request);
+        //Task<string> UpdateArticuloConCampos(ArticuloDto request);
         Task<bool> DeleteAsync(int id);
         Task<List<ArticuloDto>> GetByTipoArticuloIdAsync(int tipoArticuloId);
         Task<List<ArticuloDto>> GetByUbicacionIdAsync(int ubicacionId);
-        Task<string> CreateArticuloConCampos(ArticuloDto request);
-        Task<string> UpdateArticuloConCampos(ArticuloDto request);
+        Task<string> GuardarArticuloConCampos(ArticuloConCamposRequest request);
         Task<List<Dictionary<string, object>>> GetArticulosPivotPorTipoAsync(int tipoArticuloId);
+        Task<ArticuloDto?> GetByCodigoCortoAsync(string codigoCorto);
 
-
+        // 🔹 Método agregado para campos dinámicos
     }
 }
