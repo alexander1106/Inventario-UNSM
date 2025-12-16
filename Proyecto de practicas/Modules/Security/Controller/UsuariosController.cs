@@ -133,6 +133,7 @@ public class UsuariosController : ControllerBase
         return Ok(new { mensaje = "Contraseña cambiada exitosamente" });
     }
     // ✨ Actualizar solo la imagen del usuario autenticado
+    [ApiExplorerSettings(IgnoreApi = true)]
     [HttpPatch("actualizar-imagen")]
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> ActualizarImagen([FromForm] IFormFile imagen)

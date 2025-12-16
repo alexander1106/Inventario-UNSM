@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Proyecto_de_practicas.Models;
 using Proyecto_de_practicas.Modules.Articulos.DTO;
 using Proyecto_de_practicas.Modules.Articulos.Entities;
 using Proyecto_de_practicas.Modules.Security.DTO;
@@ -65,11 +64,7 @@ public class MappingProfile : Profile
         CreateMap<ArticuloCampoValor, ArticuloCampoValorDto>();
         CreateMap<ArticuloCampoValorDto, ArticuloCampoValor>();
 
-        // ====== ARTÍCULOS ======
-        CreateMap<Articulo, ArticuloDto>()
-            .ForMember(dest => dest.CamposValores, opt => opt.MapFrom(src => src.CamposValores));
-        CreateMap<ArticuloDto, Articulo>()
-            .ForMember(dest => dest.CamposValores, opt => opt.MapFrom(src => src.CamposValores));
+        
 
         CreateMap<Articulo, ArticuloDto>();
         CreateMap<ArticuloDto, Articulo>();
