@@ -21,11 +21,11 @@ namespace Proyecto_de_practicas.Modules.Security.Controllers
             var result = await _service.GetAsync(rolId, subModuloId);
             return result == null ? NotFound() : Ok(result);
         }
-
+        // Por esto
         [HttpGet("rol/{rolId}")]
         public async Task<IActionResult> GetByRol(int rolId)
         {
-            var list = await _service.GetByRolAsync(rolId);
+            var list = await _service.GetModulosConSubModulosPorRolAsync(rolId); // <-- devuelve agrupado
             return Ok(list);
         }
 
@@ -52,5 +52,13 @@ namespace Proyecto_de_practicas.Modules.Security.Controllers
             await _service.ActualizarSubModulosAsync(rolId, subModulosIds);
             return Ok(new { message = "Submódulos actualizados correctamente." });
         }
+        [HttpGet("rol-modulos/{rolId}")]
+        public async Task<IActionResult> GetModulosConSubModulosPorRol(int rolId)
+        {
+            var result = await _service.GetModulosConSubModulosPorRolAsync(rolId);
+            return Ok(result);
+        }
+
+
     }
 }

@@ -2,6 +2,7 @@
 using Proyecto_de_practicas.Data;
 using Proyecto_de_practicas.Modules.Security.Security;
 using Proyecto_de_practicas.Modules.Security.Repositories.IRepositories;
+using Proyecto_de_practicas.Modules.Security.DTO; // Asegúrate de tener el DTO
 
 namespace Proyecto_de_practicas.Modules.Security.Repositories
 {
@@ -21,7 +22,7 @@ namespace Proyecto_de_practicas.Modules.Security.Repositories
                 .FirstOrDefaultAsync(r => r.RolId == rolId && r.SubModuloId == subModuloId);
         }
 
-        public async Task<IEnumerable<RolSubModulo>> GetByRolAsync(int rolId)
+        public async Task<IEnumerable<RolSubModulo>> GetByRolRawAsync(int rolId)
         {
             return await _context.RolSubmodulo
                 .Where(r => r.RolId == rolId)
@@ -29,9 +30,32 @@ namespace Proyecto_de_practicas.Modules.Security.Repositories
                 .ToListAsync();
         }
 
+        public async Task<List<SubModuloDTO>> GetSubModulosByRolAsync(int rolId)
+        {
+            return await _context.RolSubmodulo
+                .Where(rsm => rsm.RolId == rolId)
+                .Include(rsm => rsm.SubModulo)
+                .Select(rsm => new SubModuloDTO
+                {
+                    Id = rsm.SubModulo.Id,
+                    Nombre = rsm.SubModulo.Nombre,
+                    Ruta = rsm.SubModulo.Ruta,
+                    Icon = rsm.SubModulo.Icon,
+                    ModuloId = rsm.SubModulo.ModuloId  // <-- Esto es clave
+
+                })
+                .ToListAsync();
+        }
+
         public async Task AddAsync(RolSubModulo entity)
         {
             _context.RolSubmodulo.Add(entity);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AddRangeAsync(List<RolSubModulo> list)
+        {
+            await _context.RolSubmodulo.AddRangeAsync(list);
             await _context.SaveChangesAsync();
         }
 
@@ -50,7 +74,7 @@ namespace Proyecto_de_practicas.Modules.Security.Repositories
                 await _context.SaveChangesAsync();
             }
         }
-        // Eliminar todos los submódulos de un rol
+
         public async Task DeleteByRolIdAsync(int rolId)
         {
             var registros = await _context.RolSubmodulo
@@ -60,14 +84,5 @@ namespace Proyecto_de_practicas.Modules.Security.Repositories
             _context.RolSubmodulo.RemoveRange(registros);
             await _context.SaveChangesAsync();
         }
-
-        // Agregar varios submódulos a la vez
-        public async Task AddRangeAsync(List<RolSubModulo> list)
-        {
-            await _context.RolSubmodulo.AddRangeAsync(list);
-            await _context.SaveChangesAsync();
-        }
-
-
     }
 }

@@ -2,19 +2,22 @@
 using Proyecto_de_practicas.Modules.Security.Repositories.IRepositories;
 using Proyecto_de_practicas.Modules.Security.Security;
 using Proyecto_de_practicas.Modules.Security.Services.IServices;
+using Proyecto_de_practicas.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Proyecto_de_practicas.Modules.Security.Services
 {
-    public class RolSubModuloService : IRolSubModuloService
+    public class RolSubModuloService :  IRolSubModuloService
     {
         private readonly IRolSubModuloRepository _repository;
+        private readonly AplicationDBContext _context;
 
-        public RolSubModuloService(IRolSubModuloRepository repository)
+        public RolSubModuloService(IRolSubModuloRepository repository, AplicationDBContext context)
         {
             _repository = repository;
+            _context = context;
         }
 
-        // Obtener un registro por rolId y subModuloId
         public async Task<RolSubModuloDto?> GetAsync(int rolId, int subModuloId)
         {
             var entity = await _repository.GetByIdAsync(rolId, subModuloId);
@@ -23,14 +26,11 @@ namespace Proyecto_de_practicas.Modules.Security.Services
             return MapToDto(entity);
         }
 
-        // Obtener todos los registros de un rol
-        public async Task<IEnumerable<RolSubModuloDto>> GetByRolAsync(int rolId)
+        public async Task<List<SubModuloDTO>> GetByRolAsync(int rolId)
         {
-            var list = await _repository.GetByRolAsync(rolId);
-            return list.Select(MapToDto);
+            return await _repository.GetSubModulosByRolAsync(rolId);
         }
 
-        // Crear nuevo registro
         public async Task<RolSubModuloDto> CreateAsync(int rolId, int subModuloId)
         {
             var entity = new RolSubModulo
@@ -43,7 +43,6 @@ namespace Proyecto_de_practicas.Modules.Security.Services
             return MapToDto(entity);
         }
 
-        // Actualizar un registro existente usando DTO
         public async Task<RolSubModuloDto?> UpdateAsync(RolSubModuloDto dto)
         {
             var entity = await _repository.GetByIdAsync(dto.RolId, dto.SubModuloId);
@@ -55,21 +54,45 @@ namespace Proyecto_de_practicas.Modules.Security.Services
             await _repository.UpdateAsync(entity);
             return MapToDto(entity);
         }
+        public async Task<List<ModuloConSubModulosDto>> GetModulosConSubModulosPorRolAsync(int rolId)
+        {
+            var subModulos = await _repository.GetSubModulosByRolAsync(rolId);
 
-        // Eliminar un registro
+            var moduloIds = subModulos.Select(s => s.ModuloId).Distinct().ToList();
+            var modulos = await _context.Modulos
+                .Where(m => moduloIds.Contains(m.Id))
+                .ToListAsync();
+
+            var modulosAgrupados = modulos.Select(m => new ModuloConSubModulosDto
+            {
+                Id = m.Id,
+                Nombre = m.Nombre,
+                Ruta = m.Ruta,
+                Icon = m.Icon,
+                SubModulos = subModulos
+                    .Where(s => s.ModuloId == m.Id)
+                    .Select(s => new SubModuloDTO
+                    {
+                        Id = s.Id,
+                        Nombre = s.Nombre,
+                        Ruta = s.Ruta,
+                        Icon = s.Icon
+                    }).ToList()
+            }).ToList();
+
+            return modulosAgrupados;
+        }
+
         public async Task<bool> DeleteAsync(int rolId, int subModuloId)
         {
             await _repository.DeleteAsync(rolId, subModuloId);
             return true;
         }
 
-        // 🔥 NUEVO: actualizar todos los submódulos de un rol
         public async Task ActualizarSubModulosAsync(int rolId, List<int> subModulosIds)
         {
-            // 1️⃣ Eliminar los submódulos actuales del rol
             await _repository.DeleteByRolIdAsync(rolId);
 
-            // 2️⃣ Agregar los nuevos submódulos
             if (subModulosIds != null && subModulosIds.Any())
             {
                 var list = subModulosIds.Select(id => new RolSubModulo
@@ -82,7 +105,6 @@ namespace Proyecto_de_practicas.Modules.Security.Services
             }
         }
 
-        // Método privado para mapear entidad a DTO
         private RolSubModuloDto MapToDto(RolSubModulo entity)
         {
             return new RolSubModuloDto
