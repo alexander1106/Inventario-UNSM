@@ -13,6 +13,7 @@ namespace Proyecto_de_practicas.Modules.Security.Repositories.IRepositories
         Task UpdatePasswordAsync(int idUsuario, string passwordHash);
 
         Task<bool> UpdateImagenAsync(int idUsuario, string imagenPath);
-
+        Task<List<Usuario>> FiltrarAsync(UsuarioFiltro filtro);
+        Task<(List<Usuario>, int total)> GetPagedAsync(int page, int pageSize);
     }
 }

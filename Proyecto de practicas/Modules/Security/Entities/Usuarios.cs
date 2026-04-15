@@ -11,7 +11,7 @@ namespace Proyecto_de_practicas.Modules.Security.Entities
         public string Email { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
-        public string Estado { get; set; }
+        public Boolean Estado { get; set; }
         public int RolId { get; set; }
 
         [ForeignKey("RolId")]
@@ -20,7 +20,10 @@ namespace Proyecto_de_practicas.Modules.Security.Entities
         [NotMapped]
         public IFormFile? Imagen { get; set; }
 
-        // 📌 Ruta de la imagen guardada
         public string? ImagenPath { get; set; }
+        public DateTime FechaCreacion { get; set; }
+        public DateTime? FechaModificacion { get; set; }
+        public string? UsuarioCreacion { get; set; }
+        public string? UsuarioModificacion { get; set; }
     }
 }

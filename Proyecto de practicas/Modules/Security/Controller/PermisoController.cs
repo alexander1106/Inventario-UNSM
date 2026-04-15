@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Proyecto_de_practicas.Config;
 using Proyecto_de_practicas.Modules.Security.DTO;
 using Proyecto_de_practicas.Modules.Security.Services.IServices;
 
@@ -15,45 +16,148 @@ namespace Proyecto_de_practicas.Modules.Security.Controller
             _service = service;
         }
 
-        // GET: api/Permiso
+        // GET: api/permisos
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var list = await _service.GetAllAsync();
-            return Ok(list);
+            try
+            {
+                var list = await _service.GetAllAsync();
+
+                return Ok(new ApiResponse<object>(
+                    true,
+                    "Lista de permisos obtenida correctamente",
+                    list
+                ));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ApiResponse<object>(
+                    false,
+                    "Error interno del servidor",
+                    null,
+                    ex.Message
+                ));
+            }
         }
 
-        // GET: api/Permiso/{id}
+        // GET: api/permisos/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var permiso = await _service.GetAsync(id);
-            return permiso == null ? NotFound() : Ok(permiso);
+            try
+            {
+                var permiso = await _service.GetAsync(id);
+
+                if (permiso == null)
+                {
+                    return NotFound(new ApiResponse<object>(
+                        false,
+                        "Permiso no encontrado",
+                        null
+                    ));
+                }
+
+                return Ok(new ApiResponse<object>(
+                    true,
+                    "Permiso encontrado",
+                    permiso
+                ));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ApiResponse<object>(
+                    false,
+                    "Error interno del servidor",
+                    null,
+                    ex.Message
+                ));
+            }
         }
 
-        // POST: api/Permiso
+        // POST: api/permisos
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] PermisoDto dto)
         {
-            var created = await _service.CreateAsync(dto);
-            return Ok(created);
+            try
+            {
+                var created = await _service.CreateAsync(dto);
+
+                return Ok(new ApiResponse<object>(
+                    true,
+                    "Permiso creado correctamente",
+                    created
+                ));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ApiResponse<object>(
+                    false,
+                    "Error al crear el permiso",
+                    null,
+                    ex.Message
+                ));
+            }
         }
 
-        // PUT: api/Permiso/{id}
+        // PUT: api/permisos/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] PermisoDto dto)
         {
-            dto.Id = id;
-            var updated = await _service.UpdateAsync(dto);
-            return updated == null ? NotFound() : Ok(updated);
+            try
+            {
+                dto.Id = id;
+                var updated = await _service.UpdateAsync(dto);
+
+                if (updated == null)
+                {
+                    return NotFound(new ApiResponse<object>(
+                        false,
+                        "Permiso no encontrado para actualizar",
+                        null
+                    ));
+                }
+
+                return Ok(new ApiResponse<object>(
+                    true,
+                    "Permiso actualizado correctamente",
+                    updated
+                ));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ApiResponse<object>(
+                    false,
+                    "Error al actualizar el permiso",
+                    null,
+                    ex.Message
+                ));
+            }
         }
 
-        // DELETE: api/Permiso/{id}
+        // DELETE: api/permisos/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _service.DeleteAsync(id);
-            return NoContent();
+            try
+            {
+                await _service.DeleteAsync(id);
+
+                return Ok(new ApiResponse<object>(
+                    true,
+                    "Permiso eliminado correctamente",
+                    null
+                ));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ApiResponse<object>(
+                    false,
+                    "Error al eliminar el permiso",
+                    null,
+                    ex.Message
+                ));
+            }
         }
     }
 }

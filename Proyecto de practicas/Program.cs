@@ -8,6 +8,8 @@ using Proyecto_de_practicas.Data;
 using Proyecto_de_practicas.Modules.Articulos.Repository;
 using Proyecto_de_practicas.Modules.Articulos.Repository.IArticulosRepository;
 using Proyecto_de_practicas.Modules.Articulos.Services;
+using Proyecto_de_practicas.Modules.Prestamos.Services;
+using Proyecto_de_practicas.Modules.Prestamos.Services.IServices;
 using Proyecto_de_practicas.Modules.Reportes.Repository;
 using Proyecto_de_practicas.Modules.Reportes.Repository.IReporteRepository;
 using Proyecto_de_practicas.Modules.Reportes.Services;
@@ -27,11 +29,28 @@ using Proyecto_de_practicas.Modules.Ubicaciones.Services;
 using Proyecto_de_practicas.Modules.Ubicaciones.Services.IUbicacionesServices;
 using Proyecto_de_practicas.Service;
 
+// 🔥 IMPORTANTE
+using Serilog;
+
 internal class Program
 {
     private static void Main(string[] args)
     {
+
+        // 🔥 CONFIGURACIÓN DE SERILOG (ANTES DE BUILDER)
+        Log.Logger = new LoggerConfiguration()
+            .WriteTo.Console()
+            .WriteTo.File(
+                "logs/log-.txt",
+                rollingInterval: RollingInterval.Day,
+                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level}] {Message}{NewLine}{Exception}"
+            )
+            .CreateLogger();
+
         var builder = WebApplication.CreateBuilder(args);
+
+        // 🔥 CONECTAR SERILOG
+        builder.Host.UseSerilog();
 
         // ========================
         //        CONTROLLERS
@@ -126,58 +145,42 @@ internal class Program
         // ========================
         //     REPOS & SERVICES
         // ========================
-
-        // Usuarios
         builder.Services.AddScoped<IUsuariosRepository, UsuarioRepository>();
         builder.Services.AddScoped<IUsuariosServices, UsuariosService>();
 
-        // traslados
         builder.Services.AddScoped<ITrasladoRepository, TrasladoRepository>();
         builder.Services.AddScoped<ITrasladoService, TrasladoService>();
 
-        // Roles
         builder.Services.AddScoped<IRolesRepository, RolesRepository>();
         builder.Services.AddScoped<IRolesService, RolesService>();
 
-        // Tipo Artículo
         builder.Services.AddScoped<ITipoArticuloRepository, TipoArticuloRepository>();
         builder.Services.AddScoped<ITipoArticuloService, TipoArticuloService>();
 
-        // Ubicaciones
         builder.Services.AddScoped<IUbicacionRepository, UbicacionRepository>();
         builder.Services.AddScoped<IUbicacionService, UbicacionService>();
 
-        // Artículos
         builder.Services.AddScoped<IArticuloRepository, ArticuloRepository>();
         builder.Services.AddScoped<IArticuloService, ArticuloService>();
 
-        // Campos Artículos
         builder.Services.AddScoped<ICampoArticuloRepository, CampoArticuloRepository>();
         builder.Services.AddScoped<ICampoArticuloService, CampoArticuloService>();
 
-        // Articulos - CampoValor
         builder.Services.AddScoped<IArticuloCampoValorRepository, ArticuloCampoValorRepository>();
         builder.Services.AddScoped<IArticuloCampoValorService, ArticuloCampoValorService>();
 
-        // Tipo Ubicación
         builder.Services.AddScoped<ITipoUbicacionRepository, TipoUbicacionRepository>();
         builder.Services.AddScoped<ITipoUbicacionService, TipoUbicacionService>();
 
-        // Módulos
         builder.Services.AddScoped<IModulosRepository, ModulosRepository>();
         builder.Services.AddScoped<IModulosService, ModulosService>();
 
-        // SubMódulos
         builder.Services.AddScoped<ISubModulosRepository, SubModulosRepository>();
         builder.Services.AddScoped<ISubModulosService, SubModulosService>();
 
-        // Rol - SubMódulo
-        builder.Services.AddScoped<IRolSubModuloRepository, RolSubModuloRepository>();
-        builder.Services.AddScoped<IRolSubModuloService, RolSubModuloService>();
+        builder.Services.AddScoped<IRolPermisosService, RolPermisosService>();
 
-        // Permisos
-        builder.Services.AddScoped<IRolSubModuloPermisoRepository, RolSubModuloPermisoRepository>();
-        builder.Services.AddScoped<IRolSubModuloPermisoService, RolSubModuloPermisoService>();
+        builder.Services.AddScoped<IRolPermisoRepository, RolPermisosRepository>();
 
         builder.Services.AddScoped<IPermisoRepository, PermisoRepository>();
         builder.Services.AddScoped<IPermisoService, PermisoService>();
@@ -185,8 +188,10 @@ internal class Program
         builder.Services.AddScoped<IReportesRepository, ReportesRepository>();
         builder.Services.AddScoped<IReportesService, ReportesService>();
 
+        builder.Services.AddHttpContextAccessor();
 
         var app = builder.Build();
+        app.UseMiddleware<ErrorHandlerMiddleware>();
 
         if (app.Environment.IsDevelopment())
         {
@@ -194,10 +199,8 @@ internal class Program
             app.UseSwaggerUI();
         }
 
-        // Archivos estáticos (wwwroot)
         app.UseStaticFiles();
 
-        // Carpeta IMAGENES dentro de WWWROOT
         var imagenesPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "imagenes");
 
         if (!Directory.Exists(imagenesPath))
@@ -211,8 +214,6 @@ internal class Program
             RequestPath = "/imagenes"
         });
 
-
-        //app.UseHttpsRedirection();
         app.UseCors("AllowAll");
 
         app.UseAuthentication();

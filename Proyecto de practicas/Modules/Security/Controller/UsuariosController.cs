@@ -1,7 +1,8 @@
 ﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Proyecto_de_practicas.Config;
 using Proyecto_de_practicas.Modules.Security.DTO;
+using Proyecto_de_practicas.Modules.Security.Entities;
 using Proyecto_de_practicas.Modules.Security.Services.IServices;
 
 [ApiController]
@@ -18,147 +19,207 @@ public class UsuariosController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var usuarios = await _usuariosService.GetAllAsync();
-        return Ok(usuarios);
+        try
+        {
+            var data = await _usuariosService.GetAllAsync();
+
+            return Ok(new ApiResponse<List<UsuarioResponseDTO>>(
+                true,
+                "Usuarios obtenidos correctamente",
+                data
+            ));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new ApiResponse<object>(false, ex.Message, null));
+        }
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var usuario = await _usuariosService.GetByIdAsync(id);
-        if (usuario == null)
-            return NotFound(new { mensaje = "Usuario no encontrado" });
-
-        return Ok(usuario);
-    }
-
-    // ✨ Crear usuario con imagen
-    [HttpPost]
-    [Consumes("multipart/form-data")]
-    public async Task<IActionResult> Add([FromForm] UsuarioCreateDTO usuarioDto)
-    {
-        if (usuarioDto == null)
-            return BadRequest(new { mensaje = "El cuerpo de la solicitud es nulo" });
-
         try
         {
-            var nuevo = await _usuariosService.AddAsync(usuarioDto);
+            var usuario = await _usuariosService.GetByIdAsync(id);
 
-            if (nuevo == null)
-                return BadRequest(new { mensaje = "No se pudo crear el usuario" });
+            if (usuario == null)
+                return NotFound(new ApiResponse<object>(
+                    false,
+                    "Usuario no encontrado",
+                    null
+                ));
 
-            return CreatedAtAction(nameof(GetById), new { id = nuevo.Id }, new
-            {
-                mensaje = "Usuario registrado exitosamente",
-                usuario = nuevo
-            });
+            return Ok(new ApiResponse<UsuarioResponseDTO>(
+                true,
+                "Usuario obtenido correctamente",
+                usuario
+            ));
         }
         catch (Exception ex)
         {
-            return BadRequest(new { mensaje = ex.Message });
+            return BadRequest(new ApiResponse<object>(false, ex.Message, null));
         }
     }
 
-    // ✨ Actualizar usuario con imagen
+    [HttpPost]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> Add([FromForm] UsuarioCreateDTO dto)
+    {
+        try
+        {
+            var nuevo = await _usuariosService.AddAsync(dto);
+
+            return Created("", new ApiResponse<UsuarioResponseDTO>(
+                true,
+                "Usuario registrado exitosamente",
+                nuevo
+            ));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new ApiResponse<object>(false, ex.Message, null));
+        }
+    }
+
     [HttpPut("{id}")]
     [Consumes("multipart/form-data")]
-    public async Task<IActionResult> Update(int id, [FromForm] UsuariosDto usuarioDto)
+    public async Task<IActionResult> Update(int id, [FromForm] UsuarioUpdateDTO dto)
     {
-        usuarioDto.Id = id;
+        try
+        {
+            dto.Id = id;
 
-        var actualizado = await _usuariosService.UpdateAsync(usuarioDto);
-        if (actualizado == null)
-            return NotFound(new { mensaje = "Usuario no encontrado" });
+            var actualizado = await _usuariosService.UpdateAsync(dto);
 
-        return Ok(actualizado);
+            if (actualizado == null)
+                return NotFound(new ApiResponse<object>(
+                    false,
+                    "Usuario no encontrado",
+                    null
+                ));
+
+            return Ok(new ApiResponse<UsuarioResponseDTO>(
+                true,
+                "Usuario actualizado correctamente",
+                actualizado
+            ));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new ApiResponse<object>(false, ex.Message, null));
+        }
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var eliminado = await _usuariosService.DeleteAsync(id);
-        if (!eliminado)
-            return NotFound(new { mensaje = "Usuario no encontrado" });
+        try
+        {
+            var eliminado = await _usuariosService.DeleteAsync(id);
 
-        return Ok(new { mensaje = "Usuario eliminado exitosamente" });
+            if (!eliminado)
+                return NotFound(new ApiResponse<object>(
+                    false,
+                    "Usuario no encontrado",
+                    null
+                ));
+
+            return Ok(new ApiResponse<object>(
+                true,
+                "Usuario eliminado correctamente",
+                null
+            ));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new ApiResponse<object>(false, ex.Message, null));
+        }
     }
 
-    // ✨ Obtener usuario autenticado
+    [HttpGet("filtrar")]
+    public async Task<IActionResult> Filtrar([FromQuery] UsuarioFiltro filtro)
+    {
+        try
+        {
+            var data = await _usuariosService.FiltrarAsync(filtro);
+
+            return Ok(new ApiResponse<List<UsuarioResponseDTO>>(
+                true,
+                "Usuarios filtrados correctamente",
+                data
+            ));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new ApiResponse<object>(false, ex.Message, null));
+        }
+    }
+
     [HttpGet("usuario-actual")]
     public async Task<IActionResult> GetUsuarioActual()
     {
-        var username =
-            User.FindFirst(ClaimTypes.Name)?.Value ??
-            User.FindFirst("username")?.Value ??
-            User.FindFirst("sub")?.Value;
+        try
+        {
+            var username = User.FindFirst(ClaimTypes.Name)?.Value
+                ?? User.FindFirst("username")?.Value
+                ?? User.FindFirst("sub")?.Value;
 
-        if (string.IsNullOrEmpty(username))
-            return Unauthorized(new { mensaje = "Usuario no autenticado" });
+            if (string.IsNullOrEmpty(username))
+                return Unauthorized(new ApiResponse<object>(
+                    false,
+                    "Usuario no autenticado",
+                    null
+                ));
 
-        var usuario = await _usuariosService.GetByUsernameAsync(username);
+            var usuario = await _usuariosService.GetByUsernameAsync(username);
 
-        if (usuario == null)
-            return NotFound(new { mensaje = "Usuario no encontrado" });
+            if (usuario == null)
+                return NotFound(new ApiResponse<object>(
+                    false,
+                    "Usuario no encontrado",
+                    null
+                ));
 
-        return Ok(usuario);
+            return Ok(new ApiResponse<UsuarioResponseDTO>(
+                true,
+                "Usuario actual obtenido",
+                usuario
+            ));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new ApiResponse<object>(false, ex.Message, null));
+        }
     }
 
-    // ✨ Cambiar contraseña
-    [HttpPost("cambiar-password")]
-    public async Task<IActionResult> CambiarPassword([FromBody] CambiarPasswordDto dto)
+    [HttpGet("paginado")]
+    public async Task<IActionResult> GetPaged(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10)
     {
-        var username =
-            User.FindFirst(ClaimTypes.Name)?.Value ??
-            User.FindFirst("username")?.Value ??
-            User.FindFirst("sub")?.Value;
+        try
+        {
+            var (data, total) = await _usuariosService.GetPagedAsync(page, pageSize);
 
-        if (string.IsNullOrEmpty(username))
-            return Unauthorized(new { mensaje = "Usuario no autenticado" });
-
-        var usuarioEntidad = await _usuariosService.GetEntityByUsernameAsync(username);
-
-        if (usuarioEntidad == null)
-            return NotFound(new { mensaje = "Usuario no encontrado" });
-
-        bool esValida = _usuariosService.VerificarPassword(usuarioEntidad, dto.PasswordActual);
-
-        if (!esValida)
-            return BadRequest(new { mensaje = "La contraseña actual es incorrecta" });
-
-        bool actualizado = await _usuariosService.CambiarPasswordAsync(usuarioEntidad.Id, dto.PasswordNueva);
-
-        if (!actualizado)
-            return StatusCode(500, new { mensaje = "Error al cambiar la contraseña" });
-
-        return Ok(new { mensaje = "Contraseña cambiada exitosamente" });
+            return Ok(new ApiResponse<object>(
+                true,
+                "Usuarios paginados correctamente",
+                new
+                {
+                    data,
+                    meta = new
+                    {
+                        total,
+                        page,
+                        pageSize,
+                        totalPages = (int)Math.Ceiling((double)total / pageSize)
+                    }
+                }
+            ));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new ApiResponse<object>(false, ex.Message, null));
+        }
     }
-    // ✨ Actualizar solo la imagen del usuario autenticado
-    [ApiExplorerSettings(IgnoreApi = true)]
-    [HttpPatch("actualizar-imagen")]
-    [Consumes("multipart/form-data")]
-    public async Task<IActionResult> ActualizarImagen([FromForm] IFormFile imagen)
-    {
-        if (imagen == null || imagen.Length == 0)
-            return BadRequest(new { mensaje = "No se subió ninguna imagen." });
-
-        var username = User.FindFirst(ClaimTypes.Name)?.Value
-                       ?? User.FindFirst("username")?.Value
-                       ?? User.FindFirst("sub")?.Value;
-
-        if (string.IsNullOrEmpty(username))
-            return Unauthorized(new { mensaje = "Usuario no autenticado" });
-
-        var usuario = await _usuariosService.GetByUsernameAsync(username);
-        if (usuario == null)
-            return NotFound(new { mensaje = "Usuario no encontrado" });
-
-        var resultado = await _usuariosService.ActualizarImagenAsync(usuario.Id, imagen);
-        if (!resultado)
-            return StatusCode(500, new { mensaje = "No se pudo actualizar la imagen" });
-
-        return Ok(new { imagenPath = usuario.ImagenPath });
-    }
-
-
-
 }

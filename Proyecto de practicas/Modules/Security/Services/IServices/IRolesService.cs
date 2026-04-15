@@ -12,5 +12,6 @@ namespace Proyecto_de_practicas.Modules.Security.Services.IServices
         Task<RolesDTO> AddRoleAsync(RolesDTO rol);
         Task<RolesDTO> UpdateRoleAsync(RolesDTO rol);
         Task<bool> DeleteRol(int id);
+        Task<RolAccesoDTO> GetAccesosPorRolAsync(int rolId);
     }
 }
