@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Proyecto_de_practicas.Config;
 using Proyecto_de_practicas.Modules.Security.DTO;
 using Proyecto_de_practicas.Modules.Security.Services.IServices;
 
@@ -20,7 +21,12 @@ namespace Proyecto_de_practicas.Modules.Security.Controller
         public async Task<IActionResult> GetAll()
         {
             var roles = await _rolesService.GetAllRolesAsync();
-            return Ok(roles);
+
+            return Ok(new ApiResponse<List<RolesDTO>>(
+                true,
+                "Roles obtenidos correctamente",
+                roles
+            ));
         }
 
         // GET: api/roles/{id}
@@ -28,10 +34,19 @@ namespace Proyecto_de_practicas.Modules.Security.Controller
         public async Task<IActionResult> GetById(int id)
         {
             var rol = await _rolesService.GetByIdAsync(id);
-            if (rol == null)
-                return NotFound(new { message = "Rol no encontrado." });
 
-            return Ok(rol);
+            if (rol == null)
+                return NotFound(new ApiResponse<object>(
+                    false,
+                    "Rol no encontrado",
+                    null
+                ));
+
+            return Ok(new ApiResponse<RolesDTO>(
+                true,
+                "Rol obtenido correctamente",
+                rol
+            ));
         }
 
         // GET: api/roles/nombre/{nombre}
@@ -39,10 +54,19 @@ namespace Proyecto_de_practicas.Modules.Security.Controller
         public async Task<IActionResult> GetByNombre(string nombre)
         {
             var rol = await _rolesService.GetByNombreAsync(nombre);
-            if (rol == null)
-                return NotFound(new { message = "Rol no encontrado." });
 
-            return Ok(rol);
+            if (rol == null)
+                return NotFound(new ApiResponse<object>(
+                    false,
+                    "Rol no encontrado",
+                    null
+                ));
+
+            return Ok(new ApiResponse<RolesDTO>(
+                true,
+                "Rol obtenido correctamente",
+                rol
+            ));
         }
 
         // POST: api/roles
@@ -52,11 +76,22 @@ namespace Proyecto_de_practicas.Modules.Security.Controller
             try
             {
                 var creado = await _rolesService.AddRoleAsync(dto);
-                return CreatedAtAction(nameof(GetById), new { id = creado.Id }, creado);
+
+                return CreatedAtAction(nameof(GetById), new { id = creado.Id },
+                    new ApiResponse<RolesDTO>(
+                        true,
+                        "Rol creado correctamente",
+                        creado
+                    )
+                );
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(new ApiResponse<object>(
+                    false,
+                    ex.Message,
+                    null
+                ));
             }
         }
 
@@ -65,16 +100,29 @@ namespace Proyecto_de_practicas.Modules.Security.Controller
         public async Task<IActionResult> Update(int id, [FromBody] RolesDTO dto)
         {
             if (dto.Id != id)
-                return BadRequest(new { message = "El ID del cuerpo no coincide con la URL." });
+                return BadRequest(new ApiResponse<object>(
+                    false,
+                    "El ID no coincide",
+                    null
+                ));
 
             try
             {
                 var actualizado = await _rolesService.UpdateRoleAsync(dto);
-                return Ok(actualizado);
+
+                return Ok(new ApiResponse<RolesDTO>(
+                    true,
+                    "Rol actualizado correctamente",
+                    actualizado
+                ));
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(new ApiResponse<object>(
+                    false,
+                    ex.Message,
+                    null
+                ));
             }
         }
 
@@ -85,9 +133,17 @@ namespace Proyecto_de_practicas.Modules.Security.Controller
             var eliminado = await _rolesService.DeleteRol(id);
 
             if (!eliminado)
-                return NotFound(new { message = "Rol no encontrado." });
+                return NotFound(new ApiResponse<object>(
+                    false,
+                    "Rol no encontrado",
+                    null
+                ));
 
-            return Ok(new { message = "Rol eliminado correctamente." });
+            return Ok(new ApiResponse<object>(
+                true,
+                "Rol eliminado correctamente",
+                null
+            ));
         }
     }
 }

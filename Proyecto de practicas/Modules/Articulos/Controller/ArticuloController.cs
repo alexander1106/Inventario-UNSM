@@ -3,11 +3,14 @@ using Proyecto_de_practicas.Modules.Articulos.DTO;
 using Proyecto_de_practicas.Service;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Proyecto_de_practicas.Modules.Articulos.Controller
 {
     [Route("api/articulos")]
     [ApiController]
+
     public class ArticuloController : ControllerBase
     {
         private readonly IArticuloService _service;

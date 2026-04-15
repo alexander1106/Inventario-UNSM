@@ -1,0 +1,10 @@
+﻿namespace Proyecto_de_practicas.Modules.Prestamos.DTO
+{
+    public class CreatePrestamoDTO
+    {
+        public int ArticuloId { get; set; }
+        public string NombreSolicitante { get; set; }
+        public DateTime FechaPrestamo { get; set; }
+        public DateTime FechaDevolucion { get; set; }
+    }
+}

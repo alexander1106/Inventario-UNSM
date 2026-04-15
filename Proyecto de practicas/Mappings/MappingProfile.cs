@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Proyecto_de_practicas.Modules.Articulos.DTO;
 using Proyecto_de_practicas.Modules.Articulos.Entities;
+using Proyecto_de_practicas.Modules.Prestamos.DTO;
 using Proyecto_de_practicas.Modules.Security.DTO;
 using Proyecto_de_practicas.Modules.Security.Entities;
 using Proyecto_de_practicas.Modules.Security.Security;
@@ -11,27 +12,25 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        // ====== USUARIOS ======
+        CreateMap<Usuario, UsuarioResponseDTO>();
+        CreateMap<UsuarioUpdateDTO, Usuario>();
+        CreateMap<Roles, RolesDTO>();
 
-        // Mapear entidad a DTO de salida (para mostrar usuario, incluyendo el nombre del rol)
-        CreateMap<Usuario, UsuariosDto>()
-            .ForMember(dest => dest.Rol, opt => opt.MapFrom(src => src.Rol != null ? src.Rol.Nombre : ""));
-
-        // Mapear DTO de salida a entidad (para actualizaciones si es necesario)
-        CreateMap<UsuariosDto, Usuario>();
-
-        // Mapear DTO de creación a entidad (para crear usuario)
         CreateMap<UsuarioCreateDTO, Usuario>()
             .ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.Nombres))
             .ForMember(dest => dest.Apellido, opt => opt.MapFrom(src => src.Apellidos))
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
-            .ForMember(dest => dest.Estado, opt => opt.MapFrom(src => "Activo"))
+            .ForMember(dest => dest.Estado, opt => opt.MapFrom(src => true))
             .ForMember(dest => dest.RolId, opt => opt.MapFrom(src => src.RolId)); // << mapear RolId, NO Rol
 
 
         // ====== ROLES ======
         CreateMap<Roles, RolesDTO>();
         CreateMap<RolesDTO, Roles>();
+
+        CreateMap<Prestamos, PrestamoDTO>();
+        CreateMap<CreatePrestamoDTO, Prestamos>();
+        CreateMap<UpdatePrestamosDTO, Prestamos>();
 
         // ====== MÓDULOS ======
         CreateMap<Modulo, ModuloDTO>();
@@ -42,8 +41,8 @@ public class MappingProfile : Profile
         CreateMap<SubModuloDTO, SubModulo>();
 
         // ====== PERMISOS ======
-        CreateMap<RolSubModulo, RolSubModuloDto>();
-        CreateMap<RolSubModuloDto, RolSubModulo>();
+        CreateMap<RolPermisos, RolPermisos>();
+        CreateMap<RolPermisos, RolPermisosDTO>().ReverseMap();
 
         // ====== UBICACIONES ======
         CreateMap<Ubicacion, UbicacionDto>();

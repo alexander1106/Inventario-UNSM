@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Proyecto_de_practicas.Modules.Security.Services.IServices;
+using Proyecto_de_practicas.Modules.Security.Entities;
 
 namespace Proyecto_de_practicas.Modules.Security.Controller
 {
@@ -17,12 +18,16 @@ namespace Proyecto_de_practicas.Modules.Security.Controller
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto login)
         {
-            var usuario = await _usuariosService.GetByUsernameAsync(login.Username);
+            var usuario = await _usuariosService.GetEntityByUsernameAsync(login.Username);
 
-            if (usuario == null || usuario.Password != login.Password)
+            if (usuario == null)
                 return Unauthorized(new { message = "Usuario o contraseña incorrectos" });
 
-            // DEVUELVE LOS DATOS COMPLETOS DEL USUARIO
+            bool esValido = _usuariosService.VerificarPassword(usuario, login.Password);
+
+            if (!esValido)
+                return Unauthorized(new { message = "Usuario o contraseña incorrectos" });
+
             return Ok(new
             {
                 message = "Login exitoso",

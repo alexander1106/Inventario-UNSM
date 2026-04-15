@@ -42,7 +42,6 @@ namespace Proyecto_de_practicas.Modules.Articulos.Services
 
         public async Task<TipoArticuloDTO> UpdateAsync(int id, TipoArticuloDTO dto)
         {
-            // 🔒 Validar relación
             bool tieneRelacion = await _repo.TieneRelacionConArticulosAsync(id);
             if (tieneRelacion)
                 throw new InvalidOperationException(

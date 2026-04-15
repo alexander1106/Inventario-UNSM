@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Proyecto_de_practicas.Config;
 using Proyecto_de_practicas.Modules.Security.Services.IServices;
 
 namespace Proyecto_de_practicas.Controllers.Security
@@ -14,43 +15,122 @@ namespace Proyecto_de_practicas.Controllers.Security
             _service = service;
         }
 
-        // GET: api/submodulos
+        // GET: api/sub-modulos
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var submodulos = await _service.GetAllAsync();
-            return Ok(submodulos);
+            try
+            {
+                var submodulos = await _service.GetAllAsync();
+
+                return Ok(new ApiResponse<object>(
+                    true,
+                    "Lista de submódulos obtenida correctamente",
+                    submodulos
+                ));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ApiResponse<object>(
+                    false,
+                    "Error interno del servidor",
+                    null,
+                    ex.Message
+                ));
+            }
         }
 
-        // GET: api/submodulos/5
+        // GET: api/sub-modulos/{id}
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var submodulo = await _service.GetByIdAsync(id);
+            try
+            {
+                var submodulo = await _service.GetByIdAsync(id);
 
-            if (submodulo == null)
-                return NotFound(new { message = "El submódulo no existe." });
+                if (submodulo == null)
+                {
+                    return NotFound(new ApiResponse<object>(
+                        false,
+                        "El submódulo no existe",
+                        null
+                    ));
+                }
 
-            return Ok(submodulo);
+                return Ok(new ApiResponse<object>(
+                    true,
+                    "Submódulo encontrado",
+                    submodulo
+                ));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ApiResponse<object>(
+                    false,
+                    "Error interno del servidor",
+                    null,
+                    ex.Message
+                ));
+            }
         }
 
-        // GET: api/submodulos/modulo/3
+        // GET: api/sub-modulos/modulo/{moduloId}
         [HttpGet("modulo/{moduloId:int}")]
         public async Task<IActionResult> GetByModulo(int moduloId)
         {
-            var submodulos = await _service.GetByModuloIdAsync(moduloId);
-            return Ok(submodulos);
+            try
+            {
+                var submodulos = await _service.GetByModuloIdAsync(moduloId);
+
+                return Ok(new ApiResponse<object>(
+                    true,
+                    "Submódulos del módulo obtenidos correctamente",
+                    submodulos
+                ));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ApiResponse<object>(
+                    false,
+                    "Error interno del servidor",
+                    null,
+                    ex.Message
+                ));
+            }
         }
 
-        // GET: api/submodulos/buscar?nombre=xx
+        // GET: api/sub-modulos/buscar?nombre=xx
         [HttpGet("buscar")]
         public async Task<IActionResult> SearchByNombre([FromQuery] string nombre)
         {
-            if (string.IsNullOrWhiteSpace(nombre))
-                return BadRequest(new { message = "Debe proporcionar un nombre para buscar." });
+            try
+            {
+                if (string.IsNullOrWhiteSpace(nombre))
+                {
+                    return BadRequest(new ApiResponse<object>(
+                        false,
+                        "Debe proporcionar un nombre para buscar",
+                        null
+                    ));
+                }
 
-            var resultado = await _service.SearchByNombreAsync(nombre);
-            return Ok(resultado);
+                var resultado = await _service.SearchByNombreAsync(nombre);
+
+                return Ok(new ApiResponse<object>(
+                    true,
+                    "Resultado de búsqueda",
+                    resultado
+                ));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ApiResponse<object>(
+                    false,
+                    "Error interno del servidor",
+                    null,
+                    ex.Message
+                ));
+            }
         }
     }
 }

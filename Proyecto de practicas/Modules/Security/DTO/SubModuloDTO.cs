@@ -8,5 +8,7 @@
 
         public string? Icon { get; set; }
         public int ModuloId { get; set; }
+        public List<string> Permisos { get; set; }
+
     }
 }

@@ -132,6 +132,39 @@ namespace Proyecto_de_practicas.Migrations
                     b.ToTable("EncabezadoResult");
                 });
 
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.Prestamos", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ArticuloId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Estado")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("EstadoPrestamo")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("FechaDevolucion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaPrestamo")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("NombreSolicitante")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ArticuloId");
+
+                    b.ToTable("Prestamos");
+                });
+
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.TipoArticulo", b =>
                 {
                     b.Property<int>("Id")
@@ -219,7 +252,23 @@ namespace Proyecto_de_practicas.Migrations
                         },
                         new
                         {
+                            Id = 5,
+                            Estado = 1,
+                            Icon = "fa-solid fa-handshake",
+                            Nombre = "Prestamos",
+                            Ruta = "/prestamos"
+                        },
+                        new
+                        {
                             Id = 6,
+                            Estado = 1,
+                            Icon = "fa-solid fa-screwdriver-wrench",
+                            Nombre = "Mantenimiento",
+                            Ruta = "/mantenimiento"
+                        },
+                        new
+                        {
+                            Id = 7,
                             Estado = 1,
                             Icon = "fa-solid fa-chart-line",
                             Nombre = "Reportes",
@@ -227,7 +276,7 @@ namespace Proyecto_de_practicas.Migrations
                         },
                         new
                         {
-                            Id = 7,
+                            Id = 8,
                             Estado = 1,
                             Icon = "fa-solid fa-shield-alt",
                             Nombre = "Seguridad",
@@ -279,29 +328,6 @@ namespace Proyecto_de_practicas.Migrations
                             Activo = true,
                             Nombre = "Eliminar"
                         });
-                });
-
-            modelBuilder.Entity("Proyecto_de_practicas.Modules.Security.Entities.RolSubModuloPermiso", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("PermisoId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RolSubModuloId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PermisoId");
-
-                    b.HasIndex("RolSubModuloId");
-
-                    b.ToTable("RolSubModuloPermisos");
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Security.Entities.Roles", b =>
@@ -428,7 +454,7 @@ namespace Proyecto_de_practicas.Migrations
                             Id = 7,
                             Estado = 1,
                             Icon = "fa-solid fa-key",
-                            ModuloId = 7,
+                            ModuloId = 8,
                             Nombre = "Permisos",
                             Ruta = "/permisos"
                         },
@@ -440,6 +466,24 @@ namespace Proyecto_de_practicas.Migrations
                             ModuloId = 7,
                             Nombre = "Modulos",
                             Ruta = "/modulos"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Estado = 1,
+                            Icon = "fa-solid fa-handshake",
+                            ModuloId = 6,
+                            Nombre = "Prestamos",
+                            Ruta = "/prestamos"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Estado = 1,
+                            Icon = "fa-solid fa-screwdriver-wrench",
+                            ModuloId = 7,
+                            Nombre = "Mantenimiento",
+                            Ruta = "/mantenimiento"
                         });
                 });
 
@@ -458,9 +502,14 @@ namespace Proyecto_de_practicas.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Estado")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaModificacion")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ImagenPath")
                         .HasColumnType("nvarchar(max)");
@@ -480,6 +529,12 @@ namespace Proyecto_de_practicas.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UsuarioCreacion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UsuarioModificacion")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("RolId");
@@ -487,13 +542,16 @@ namespace Proyecto_de_practicas.Migrations
                     b.ToTable("Usuarios");
                 });
 
-            modelBuilder.Entity("Proyecto_de_practicas.Modules.Security.Security.RolSubModulo", b =>
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Security.Security.RolPermisos", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("PermisoId")
+                        .HasColumnType("int");
 
                     b.Property<int>("RolId")
                         .HasColumnType("int");
@@ -503,11 +561,13 @@ namespace Proyecto_de_practicas.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PermisoId");
+
                     b.HasIndex("RolId");
 
                     b.HasIndex("SubModuloId");
 
-                    b.ToTable("RolSubmodulo");
+                    b.ToTable("RolPermisos");
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Traslados.Entities.Traslado", b =>
@@ -643,23 +703,15 @@ namespace Proyecto_de_practicas.Migrations
                     b.Navigation("TipoArticulo");
                 });
 
-            modelBuilder.Entity("Proyecto_de_practicas.Modules.Security.Entities.RolSubModuloPermiso", b =>
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.Prestamos", b =>
                 {
-                    b.HasOne("Proyecto_de_practicas.Modules.Security.Entities.Permiso", "Permiso")
-                        .WithMany("RolSubModuloPermisos")
-                        .HasForeignKey("PermisoId")
+                    b.HasOne("Proyecto_de_practicas.Modules.Articulos.Entities.Articulo", "Articulo")
+                        .WithMany("Prestamos")
+                        .HasForeignKey("ArticuloId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Proyecto_de_practicas.Modules.Security.Security.RolSubModulo", "RolSubModulo")
-                        .WithMany("Permisos")
-                        .HasForeignKey("RolSubModuloId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Permiso");
-
-                    b.Navigation("RolSubModulo");
+                    b.Navigation("Articulo");
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Security.Entities.SubModulo", b =>
@@ -678,14 +730,20 @@ namespace Proyecto_de_practicas.Migrations
                     b.HasOne("Proyecto_de_practicas.Modules.Security.Entities.Roles", "Rol")
                         .WithMany()
                         .HasForeignKey("RolId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Rol");
                 });
 
-            modelBuilder.Entity("Proyecto_de_practicas.Modules.Security.Security.RolSubModulo", b =>
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Security.Security.RolPermisos", b =>
                 {
+                    b.HasOne("Proyecto_de_practicas.Modules.Security.Entities.Permiso", "Permiso")
+                        .WithMany("RolPermisos")
+                        .HasForeignKey("PermisoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Proyecto_de_practicas.Modules.Security.Entities.Roles", "Rol")
                         .WithMany()
                         .HasForeignKey("RolId")
@@ -697,6 +755,8 @@ namespace Proyecto_de_practicas.Migrations
                         .HasForeignKey("SubModuloId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Permiso");
 
                     b.Navigation("Rol");
 
@@ -749,6 +809,11 @@ namespace Proyecto_de_practicas.Migrations
                     b.Navigation("TipoUbicacion");
                 });
 
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.Articulo", b =>
+                {
+                    b.Navigation("Prestamos");
+                });
+
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.CampoArticulo", b =>
                 {
                     b.Navigation("CamposValores");
@@ -768,12 +833,7 @@ namespace Proyecto_de_practicas.Migrations
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Security.Entities.Permiso", b =>
                 {
-                    b.Navigation("RolSubModuloPermisos");
-                });
-
-            modelBuilder.Entity("Proyecto_de_practicas.Modules.Security.Security.RolSubModulo", b =>
-                {
-                    b.Navigation("Permisos");
+                    b.Navigation("RolPermisos");
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Ubicaciones.Entities.TipoUbicacion", b =>
