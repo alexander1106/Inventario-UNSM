@@ -95,14 +95,26 @@ namespace Proyecto_de_practicas.Modules.Security.Services
 
         public async Task<RolesDTO> AddRoleAsync(RolesDTO rol)
         {
-            if (await RoleExistsAsync(rol.Nombre))
-                throw new Exception("El rol ya existe.");
+            var existente = await _context.Roles
+                .FirstOrDefaultAsync(r => r.Nombre.ToLower() == rol.Nombre.ToLower());
+
+            if (existente != null)
+            {
+                if (existente.Estado == 1)
+                    throw new Exception("El rol ya existe.");
+
+                // 🔥 Reactivar en vez de crear nuevo
+                existente.Estado = 1;
+                await _context.SaveChangesAsync();
+
+                return _mapper.Map<RolesDTO>(existente);
+            }
 
             var entity = _mapper.Map<Roles>(rol);
             var creado = await _rolesRepository.AddAsync(entity);
+
             return _mapper.Map<RolesDTO>(creado);
         }
-
         public async Task<RolesDTO> UpdateRoleAsync(RolesDTO rol)
         {
             var entity = _mapper.Map<Roles>(rol);
@@ -120,7 +132,13 @@ namespace Proyecto_de_practicas.Modules.Security.Services
                 .AnyAsync(u => u.RolId == id);
 
             if (usuariosConRol)
-                throw new Exception("No se puede eliminar el rol porque está asignado a los usuarios");
+                throw new Exception("No se puede eliminar el rol porque está asignado a usuarios");
+
+            var tienePermisos = await _context.RolPermisos
+                .AnyAsync(rp => rp.RolId == id);
+
+            if (tienePermisos)
+                throw new Exception("No se puede eliminar el rol porque tiene permisos asignados");
 
             return await _rolesRepository.DeleteAsync(id);
         }

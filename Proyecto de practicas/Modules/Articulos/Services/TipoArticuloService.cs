@@ -62,19 +62,22 @@ namespace Proyecto_de_practicas.Modules.Articulos.Services
             return _mapper.Map<TipoArticuloDTO>(result);
         }
 
-
-
         public async Task<bool> DeleteAsync(int id)
         {
-            // Validar relación
-            bool tieneRelacion = await _repo.TieneRelacionConArticulosAsync(id);
-            if (tieneRelacion)
-                throw new InvalidOperationException("No se puede eliminar este tipo de artículo porque tiene artículos relacionados.");
+            bool tieneArticulos = await _repo.TieneRelacionConArticulosAsync(id);
+            if (tieneArticulos)
+                throw new InvalidOperationException(
+                    "No se puede eliminar este tipo de artículo porque tiene artículos relacionados."
+                );
+
+            bool tieneCampos = await _repo.TieneRelacionConCamposAsync(id);
+            if (tieneCampos)
+                throw new InvalidOperationException(
+                    "No se puede eliminar este tipo de artículo porque tiene campos de artículo relacionados."
+                );
 
             return await _repo.DeleteAsync(id);
         }
-        
-
         public async Task<TipoArticuloDTO?> ObtenerPorIdAsync(int id)
         {
             var entity = await _repo.GetByIdWithArticulosAsync(id);

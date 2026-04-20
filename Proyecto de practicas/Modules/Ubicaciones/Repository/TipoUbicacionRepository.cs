@@ -65,7 +65,7 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Repository
             if (entity == null) return false;
 
             if (entity.Ubicaciones.Any())
-                throw new InvalidOperationException("No se puede eliminar un tipo de ubicación que tiene ubicaciones asociadas.");
+                throw new InvalidOperationException("No se puede eliminar este tipo de ubicación porque tiene registros asociados");
 
             _context.TipoUbicacion.Remove(entity);
             await _context.SaveChangesAsync();

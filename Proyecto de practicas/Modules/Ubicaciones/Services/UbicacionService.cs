@@ -37,7 +37,7 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Services
                 u.Nombre.ToLower() == dto.Nombre.ToLower() &&
                 u.TipoUbicacionId == dto.TipoUbicacionId))
             {
-                throw new InvalidOperationException("Ya existe una ubicación con ese nombre en este tipo.");
+                throw new InvalidOperationException("El nombre ingresado ya corresponde a una ubicación existente en este tipo");
             }
 
             var entity = _mapper.Map<Ubicacion>(dto);
@@ -54,7 +54,7 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Services
                 u.Nombre.ToLower() == dto.Nombre.ToLower() &&
                 u.Descripcion == dto.Descripcion))
             {
-                throw new InvalidOperationException("Ya existe una ubicación con ese nombre en este tipo.");
+                throw new InvalidOperationException("El nombre ingresado ya corresponde a una ubicación existente en este tipo");
             }
 
             // 🔧 Recuperar la entidad existente del contexto

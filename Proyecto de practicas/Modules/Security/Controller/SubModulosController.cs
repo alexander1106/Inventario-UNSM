@@ -74,13 +74,22 @@ namespace Proyecto_de_practicas.Controllers.Security
             }
         }
 
-        // GET: api/sub-modulos/modulo/{moduloId}
         [HttpGet("modulo/{moduloId:int}")]
         public async Task<IActionResult> GetByModulo(int moduloId)
         {
             try
             {
                 var submodulos = await _service.GetByModuloIdAsync(moduloId);
+
+                // 👇 VALIDACIÓN CLAVE
+                if (submodulos == null || !submodulos.Any())
+                {
+                    return NotFound(new ApiResponse<object>(
+                        false,
+                        "No hay submódulos en este módulo",
+                        null
+                    ));
+                }
 
                 return Ok(new ApiResponse<object>(
                     true,
@@ -98,8 +107,6 @@ namespace Proyecto_de_practicas.Controllers.Security
                 ));
             }
         }
-
-        // GET: api/sub-modulos/buscar?nombre=xx
         [HttpGet("buscar")]
         public async Task<IActionResult> SearchByNombre([FromQuery] string nombre)
         {
@@ -115,6 +122,16 @@ namespace Proyecto_de_practicas.Controllers.Security
                 }
 
                 var resultado = await _service.SearchByNombreAsync(nombre);
+
+                // 👇 VALIDACIÓN CLAVE (esto te falta)
+                if (resultado == null || !resultado.Any())
+                {
+                    return NotFound(new ApiResponse<object>(
+                        false,
+                        "No se encontraron submódulos con ese nombre",
+                        null
+                    ));
+                }
 
                 return Ok(new ApiResponse<object>(
                     true,

@@ -12,7 +12,7 @@ using Proyecto_de_practicas.Data;
 namespace Proyecto_de_practicas.Migrations
 {
     [DbContext(typeof(AplicationDBContext))]
-    [Migration("20260413062457_initial")]
+    [Migration("20260420045922_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -439,7 +439,7 @@ namespace Proyecto_de_practicas.Migrations
                             Id = 5,
                             Estado = 1,
                             Icon = "fa-solid fa-user",
-                            ModuloId = 7,
+                            ModuloId = 8,
                             Nombre = "Usuarios",
                             Ruta = "/usuarios"
                         },
@@ -448,7 +448,7 @@ namespace Proyecto_de_practicas.Migrations
                             Id = 6,
                             Estado = 1,
                             Icon = "fa-solid fa-user-shield",
-                            ModuloId = 7,
+                            ModuloId = 8,
                             Nombre = "Roles",
                             Ruta = "/roles"
                         },
@@ -466,27 +466,9 @@ namespace Proyecto_de_practicas.Migrations
                             Id = 8,
                             Estado = 1,
                             Icon = "fa-solid fa-layer-group",
-                            ModuloId = 7,
+                            ModuloId = 8,
                             Nombre = "Modulos",
                             Ruta = "/modulos"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Estado = 1,
-                            Icon = "fa-solid fa-handshake",
-                            ModuloId = 6,
-                            Nombre = "Prestamos",
-                            Ruta = "/prestamos"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            Estado = 1,
-                            Icon = "fa-solid fa-screwdriver-wrench",
-                            ModuloId = 7,
-                            Nombre = "Mantenimiento",
-                            Ruta = "/mantenimiento"
                         });
                 });
 
@@ -553,16 +535,21 @@ namespace Proyecto_de_practicas.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("ModuloId")
+                        .HasColumnType("int");
+
                     b.Property<int>("PermisoId")
                         .HasColumnType("int");
 
                     b.Property<int>("RolId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SubModuloId")
+                    b.Property<int?>("SubModuloId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ModuloId");
 
                     b.HasIndex("PermisoId");
 
@@ -741,6 +728,10 @@ namespace Proyecto_de_practicas.Migrations
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Security.Security.RolPermisos", b =>
                 {
+                    b.HasOne("Proyecto_de_practicas.Modules.Security.Entities.Modulo", "Modulo")
+                        .WithMany()
+                        .HasForeignKey("ModuloId");
+
                     b.HasOne("Proyecto_de_practicas.Modules.Security.Entities.Permiso", "Permiso")
                         .WithMany("RolPermisos")
                         .HasForeignKey("PermisoId")
@@ -755,9 +746,9 @@ namespace Proyecto_de_practicas.Migrations
 
                     b.HasOne("Proyecto_de_practicas.Modules.Security.Entities.SubModulo", "SubModulo")
                         .WithMany()
-                        .HasForeignKey("SubModuloId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SubModuloId");
+
+                    b.Navigation("Modulo");
 
                     b.Navigation("Permiso");
 

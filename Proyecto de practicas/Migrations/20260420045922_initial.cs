@@ -199,12 +199,18 @@ namespace Proyecto_de_practicas.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RolId = table.Column<int>(type: "int", nullable: false),
-                    SubModuloId = table.Column<int>(type: "int", nullable: false),
+                    ModuloId = table.Column<int>(type: "int", nullable: true),
+                    SubModuloId = table.Column<int>(type: "int", nullable: true),
                     PermisoId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RolPermisos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RolPermisos_Modulos_ModuloId",
+                        column: x => x.ModuloId,
+                        principalTable: "Modulos",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_RolPermisos_Permisos_PermisoId",
                         column: x => x.PermisoId,
@@ -221,8 +227,7 @@ namespace Proyecto_de_practicas.Migrations
                         name: "FK_RolPermisos_SubModulos_SubModuloId",
                         column: x => x.SubModuloId,
                         principalTable: "SubModulos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -395,12 +400,10 @@ namespace Proyecto_de_practicas.Migrations
                     { 2, 1, "fa-solid fa-tags", 2, "Tipos de Artículo", "/tipos-articulos" },
                     { 3, 1, "fa-solid fa-map-marker", 3, "Ubicaciones", "/ubicaciones" },
                     { 4, 1, "fa-solid fa-layer-group", 3, "Tipos de Ubicación", "/tipo-ubicacion" },
-                    { 5, 1, "fa-solid fa-user", 7, "Usuarios", "/usuarios" },
-                    { 6, 1, "fa-solid fa-user-shield", 7, "Roles", "/roles" },
+                    { 5, 1, "fa-solid fa-user", 8, "Usuarios", "/usuarios" },
+                    { 6, 1, "fa-solid fa-user-shield", 8, "Roles", "/roles" },
                     { 7, 1, "fa-solid fa-key", 8, "Permisos", "/permisos" },
-                    { 8, 1, "fa-solid fa-layer-group", 7, "Modulos", "/modulos" },
-                    { 9, 1, "fa-solid fa-handshake", 6, "Prestamos", "/prestamos" },
-                    { 10, 1, "fa-solid fa-screwdriver-wrench", 7, "Mantenimiento", "/mantenimiento" }
+                    { 8, 1, "fa-solid fa-layer-group", 8, "Modulos", "/modulos" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -432,6 +435,11 @@ namespace Proyecto_de_practicas.Migrations
                 name: "IX_Prestamos_ArticuloId",
                 table: "Prestamos",
                 column: "ArticuloId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RolPermisos_ModuloId",
+                table: "RolPermisos",
+                column: "ModuloId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RolPermisos_PermisoId",

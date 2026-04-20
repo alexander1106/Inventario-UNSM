@@ -18,15 +18,10 @@ namespace Proyecto_de_practicas.Modules.Security.Services
             _context = context;
         }
 
-        // ✅ GET UNO
-        public async Task<RolPermisosDTO?> GetAsync(int rolId, int subModuloId, int permisoId)
+        // ✅ GET UNO (CORREGIDO)
+        public async Task<RolPermisosDTO?> GetAsync(int rolId, int? moduloId, int? subModuloId, int permisoId)
         {
-            var entity = await _context.RolPermisos
-                .FirstOrDefaultAsync(x =>
-                    x.RolId == rolId &&
-                    x.SubModuloId == subModuloId &&
-                    x.PermisoId == permisoId);
-
+            var entity = await _repository.GetByKeysAsync(rolId, moduloId, subModuloId, permisoId);
             return entity == null ? null : MapToDto(entity);
         }
 
@@ -36,29 +31,38 @@ namespace Proyecto_de_practicas.Modules.Security.Services
             return await _repository.GetSubModulosByRolAsync(rolId);
         }
 
-        // ✅ CREATE
+        // ✅ CREATE (CORREGIDO)
         public async Task<RolPermisosDTO> CreateAsync(RolPermisosDTO dto)
         {
+            if (dto.ModuloId == null && dto.SubModuloId == null)
+                throw new Exception("Debe enviar ModuloId o SubModuloId");
+
+            if (dto.ModuloId != null && dto.SubModuloId != null)
+                throw new Exception("No puede enviar ModuloId y SubModuloId al mismo tiempo");
+
             var exists = await _context.RolPermisos.AnyAsync(x =>
                 x.RolId == dto.RolId &&
+                x.ModuloId == dto.ModuloId &&
                 x.SubModuloId == dto.SubModuloId &&
                 x.PermisoId == dto.PermisoId);
 
             if (exists)
-                throw new Exception("El permiso ya está asignado a este rol");
+                throw new Exception("El permiso ya existe");
 
             var entity = new RolPermisos
             {
                 RolId = dto.RolId,
+                ModuloId = dto.ModuloId,
                 SubModuloId = dto.SubModuloId,
                 PermisoId = dto.PermisoId
             };
 
             await _repository.AddAsync(entity);
+
             return MapToDto(entity);
         }
 
-        // ✅ UPDATE INDIVIDUAL (🔥 NUEVO)
+        // ✅ UPDATE INDIVIDUAL (CORREGIDO)
         public async Task<RolPermisosDTO?> UpdateByIdAsync(int id, RolPermisosDTO dto)
         {
             var entity = await _context.RolPermisos.FindAsync(id);
@@ -66,9 +70,16 @@ namespace Proyecto_de_practicas.Modules.Security.Services
             if (entity == null)
                 throw new Exception("No existe el permiso");
 
+            if (dto.ModuloId == null && dto.SubModuloId == null)
+                throw new Exception("Debe enviar ModuloId o SubModuloId");
+
+            if (dto.ModuloId != null && dto.SubModuloId != null)
+                throw new Exception("No puede enviar ambos");
+
             var exists = await _context.RolPermisos.AnyAsync(x =>
                 x.Id != id &&
                 x.RolId == dto.RolId &&
+                x.ModuloId == dto.ModuloId &&
                 x.SubModuloId == dto.SubModuloId &&
                 x.PermisoId == dto.PermisoId);
 
@@ -76,6 +87,7 @@ namespace Proyecto_de_practicas.Modules.Security.Services
                 throw new Exception("Ya existe ese permiso");
 
             entity.RolId = dto.RolId;
+            entity.ModuloId = dto.ModuloId;
             entity.SubModuloId = dto.SubModuloId;
             entity.PermisoId = dto.PermisoId;
 
@@ -84,7 +96,7 @@ namespace Proyecto_de_practicas.Modules.Security.Services
             return MapToDto(entity);
         }
 
-        // 🚀 SYNC INTELIGENTE (🔥 NUEVO)
+        // 🚀 SYNC INTELIGENTE (CORREGIDO)
         public async Task SyncPermisosAsync(int rolId, List<RolPermisosDTO> permisos)
         {
             var actuales = await _context.RolPermisos
@@ -92,23 +104,26 @@ namespace Proyecto_de_practicas.Modules.Security.Services
                 .ToListAsync();
 
             var nuevos = permisos
-                .GroupBy(p => new { p.SubModuloId, p.PermisoId })
+                .GroupBy(p => new { p.ModuloId, p.SubModuloId, p.PermisoId })
                 .Select(g => g.First())
                 .ToList();
 
             var eliminar = actuales
                 .Where(a => !nuevos.Any(n =>
+                    n.ModuloId == a.ModuloId &&
                     n.SubModuloId == a.SubModuloId &&
                     n.PermisoId == a.PermisoId))
                 .ToList();
 
             var agregar = nuevos
                 .Where(n => !actuales.Any(a =>
+                    a.ModuloId == n.ModuloId &&
                     a.SubModuloId == n.SubModuloId &&
                     a.PermisoId == n.PermisoId))
                 .Select(n => new RolPermisos
                 {
                     RolId = rolId,
+                    ModuloId = n.ModuloId,
                     SubModuloId = n.SubModuloId,
                     PermisoId = n.PermisoId
                 })
@@ -123,18 +138,16 @@ namespace Proyecto_de_practicas.Modules.Security.Services
             await _context.SaveChangesAsync();
         }
 
-        // ✅ DELETE
-        public async Task<bool> DeleteAsync(int rolId, int subModuloId, int permisoId)
+        // ✅ DELETE (CORREGIDO)
+        public async Task<bool> DeleteAsync(int rolId, int? moduloId, int? subModuloId, int permisoId)
         {
-            var entity = await _context.RolPermisos
-                .FirstOrDefaultAsync(x =>
-                    x.RolId == rolId &&
-                    x.SubModuloId == subModuloId &&
-                    x.PermisoId == permisoId);
+            var entity = await _repository.GetByKeysAsync(rolId, moduloId, subModuloId, permisoId);
 
             if (entity == null) return false;
 
-            await _repository.DeleteAsync(rolId, subModuloId, permisoId);
+            _context.RolPermisos.Remove(entity);
+            await _context.SaveChangesAsync();
+
             return true;
         }
 
@@ -157,13 +170,7 @@ namespace Proyecto_de_practicas.Modules.Security.Services
                 Icon = m.Icon,
                 SubModulos = subModulos
                     .Where(s => s.ModuloId == m.Id)
-                    .Select(s => new SubModuloDTO
-                    {
-                        Id = s.Id,
-                        Nombre = s.Nombre,
-                        Ruta = s.Ruta,
-                        Icon = s.Icon
-                    }).ToList()
+                    .ToList()
             }).ToList();
         }
 
@@ -173,15 +180,18 @@ namespace Proyecto_de_practicas.Modules.Security.Services
             {
                 Id = entity.Id,
                 RolId = entity.RolId,
+                ModuloId = entity.ModuloId,
                 SubModuloId = entity.SubModuloId,
                 PermisoId = entity.PermisoId
             };
         }
 
+        // ✅ ACCESOS COMPLETOS (CORREGIDO PARA MODULO + SUBMODULO)
         public async Task<RolAccesoDTO> GetAccesosPorRolAsync(int rolId)
         {
             var data = await _context.RolPermisos
                 .Where(rp => rp.RolId == rolId)
+                .Include(rp => rp.Modulo)
                 .Include(rp => rp.SubModulo)
                     .ThenInclude(sm => sm.Modulo)
                 .Include(rp => rp.Permiso)
@@ -191,13 +201,14 @@ namespace Proyecto_de_practicas.Modules.Security.Services
             {
                 RolId = rolId,
                 Modulos = data
-                    .GroupBy(rp => rp.SubModulo.Modulo)
+                    .GroupBy(rp => rp.Modulo ?? rp.SubModulo.Modulo)
                     .Select(mod => new ModuloDTO
                     {
                         Id = mod.Key.Id,
                         Nombre = mod.Key.Nombre,
                         Icon = mod.Key.Icon,
                         SubModulos = mod
+                            .Where(rp => rp.SubModulo != null)
                             .GroupBy(rp => rp.SubModulo)
                             .Select(sub => new SubModuloDTO
                             {
@@ -218,6 +229,5 @@ namespace Proyecto_de_practicas.Modules.Security.Services
 
             return resultado;
         }
-
     }
 }

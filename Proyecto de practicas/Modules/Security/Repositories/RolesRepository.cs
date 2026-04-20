@@ -28,16 +28,20 @@ namespace Proyecto_de_practicas.Modules.Security.Repositories
             if (rol == null)
                 return false;
 
-            _context.Roles.Remove(rol);
+            rol.Estado = 0; // 🔥 desactivar en vez de eliminar
+
+            _context.Roles.Update(rol);
             await _context.SaveChangesAsync();
+
             return true;
         }
 
         public async Task<List<Roles>> GetAllAsync()
         {
-            return await _context.Roles.ToListAsync();
+            return await _context.Roles
+                .Where(r => r.Estado == 1)
+                .ToListAsync();
         }
-
         public async Task<Roles?> GetByIdAsync(int id)
         {
             return await _context.Roles.FindAsync(id);

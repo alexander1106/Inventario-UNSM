@@ -20,8 +20,19 @@ public class PrestamoService : IServicePrestamos
 
     public async Task<IEnumerable<PrestamoDTO>> GetAllAsync()
     {
-        var prestamos = await _context.Prestamos.ToListAsync();
-        return _mapper.Map<IEnumerable<PrestamoDTO>>(prestamos);
+        var prestamos = await _context.Prestamos
+            .Include(p => p.Articulo)
+            .ToListAsync();
+
+        return prestamos.Select(p => new PrestamoDTO
+        {
+            Id = p.Id,
+            NombreSolicitante = p.NombreSolicitante,
+            FechaPrestamo = p.FechaPrestamo,
+            FechaDevolucion = p.FechaDevolucion,
+            Estado = p.Estado,
+            ArticuloId = p.Articulo.Id
+        });
     }
 
     public async Task<PrestamoDTO?> GetByIdAsync(int id)

@@ -15,23 +15,24 @@ namespace Proyecto_de_practicas.Modules.Security.Repositories
             _context = context;
         }
 
-        // 🔥 POR ID
         public async Task<RolPermisos?> GetByIdAsync(int id)
         {
             return await _context.RolPermisos
                 .Include(r => r.Permiso)
                 .Include(r => r.SubModulo)
+                .Include(r => r.Modulo)
                 .FirstOrDefaultAsync(r => r.Id == id);
         }
 
-        // 🔥 POR CLAVES (ESTE TE FALTABA)
-        public async Task<RolPermisos?> GetByKeysAsync(int rolId, int subModuloId, int permisoId)
+        public async Task<RolPermisos?> GetByKeysAsync(int rolId, int? moduloId, int? subModuloId, int permisoId)
         {
             return await _context.RolPermisos
                 .Include(r => r.Permiso)
                 .Include(r => r.SubModulo)
+                .Include(r => r.Modulo)
                 .FirstOrDefaultAsync(r =>
                     r.RolId == rolId &&
+                    r.ModuloId == moduloId &&
                     r.SubModuloId == subModuloId &&
                     r.PermisoId == permisoId);
         }
@@ -42,13 +43,14 @@ namespace Proyecto_de_practicas.Modules.Security.Repositories
                 .Where(r => r.RolId == rolId)
                 .Include(r => r.Permiso)
                 .Include(r => r.SubModulo)
+                .Include(r => r.Modulo)
                 .ToListAsync();
         }
 
         public async Task<List<SubModuloDTO>> GetSubModulosByRolAsync(int rolId)
         {
             return await _context.RolPermisos
-                .Where(r => r.RolId == rolId)
+                .Where(r => r.RolId == rolId && r.SubModuloId != null)
                 .Include(r => r.SubModulo)
                 .Select(r => new SubModuloDTO
                 {
@@ -80,9 +82,9 @@ namespace Proyecto_de_practicas.Modules.Security.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int rolId, int subModuloId, int permisoId)
+        public async Task DeleteAsync(int rolId, int? moduloId, int? subModuloId, int permisoId)
         {
-            var item = await GetByKeysAsync(rolId, subModuloId, permisoId);
+            var item = await GetByKeysAsync(rolId, moduloId, subModuloId, permisoId);
 
             if (item != null)
             {
@@ -91,7 +93,6 @@ namespace Proyecto_de_practicas.Modules.Security.Repositories
             }
         }
 
-        // 🔥 DELETE RANGE (INTERFACE LO PIDE)
         public async Task DeleteRangeAsync(List<RolPermisos> list)
         {
             _context.RolPermisos.RemoveRange(list);

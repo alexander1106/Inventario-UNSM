@@ -8,6 +8,8 @@ using Proyecto_de_practicas.Data;
 using Proyecto_de_practicas.Modules.Articulos.Repository;
 using Proyecto_de_practicas.Modules.Articulos.Repository.IArticulosRepository;
 using Proyecto_de_practicas.Modules.Articulos.Services;
+using Proyecto_de_practicas.Modules.Mantenimiento.Service;
+using Proyecto_de_practicas.Modules.Mantenimiento.Service.IService;
 using Proyecto_de_practicas.Modules.Prestamos.Services;
 using Proyecto_de_practicas.Modules.Prestamos.Services.IServices;
 using Proyecto_de_practicas.Modules.Reportes.Repository;
@@ -187,6 +189,8 @@ internal class Program
 
         builder.Services.AddScoped<IReportesRepository, ReportesRepository>();
         builder.Services.AddScoped<IReportesService, ReportesService>();
+        builder.Services.AddScoped<IServicePrestamos, PrestamoService>();
+        builder.Services.AddScoped<IMantenimeintosService, MantenimeintosService>();
 
         builder.Services.AddHttpContextAccessor();
 
