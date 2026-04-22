@@ -11,5 +11,6 @@ namespace Proyecto_de_practicas.Modules.Security.DTO
         public int SubModuloId { get; set; }
 
         public int PermisoId { get; set; }
+
     }
 }

@@ -7,13 +7,13 @@ namespace Proyecto_de_practicas.Modules.Security.Security
         public int Id { get; set; }
 
         public int RolId { get; set; }
-        public Roles Rol { get; set; }
+        public virtual Roles Rol { get; set; } = null!;
 
         public int SubModuloId { get; set; }
-        public SubModulo SubModulo { get; set; }
+        public virtual SubModulo SubModulo { get; set; } = null!;
 
-        // 👇 LO QUE TE FALTA
+        // Asegúrate de que PermisoId sea INT y no tenga espacios raros
         public int PermisoId { get; set; }
-        public Permiso Permiso { get; set; }
+        public virtual Permiso Permiso { get; set; } = null!;
     }
 }

@@ -4,6 +4,7 @@ using Proyecto_de_practicas.Data;
 using Proyecto_de_practicas.Modules.Security.DTO;
 using Proyecto_de_practicas.Modules.Security.Entities;
 using Proyecto_de_practicas.Modules.Security.Repositories.IRepositories;
+using Proyecto_de_practicas.Modules.Security.Security;
 using Proyecto_de_practicas.Modules.Security.Services.IServices;
 
 namespace Proyecto_de_practicas.Modules.Security.Services
@@ -100,6 +101,20 @@ namespace Proyecto_de_practicas.Modules.Security.Services
 
             var entity = _mapper.Map<Roles>(rol);
             var creado = await _rolesRepository.AddAsync(entity);
+
+            if (rol.RolPermisos != null && rol.RolPermisos.Any())
+            {
+                var listaPermisos = rol.RolPermisos.Select(p => new RolPermisos
+                {
+                    RolId = creado.Id, 
+                    SubModuloId = p.SubModuloId,
+                    PermisoId = p.PermisoId
+                }).ToList();
+
+                await _context.RolPermisos.AddRangeAsync(listaPermisos);
+                await _context.SaveChangesAsync();
+            }
+
             return _mapper.Map<RolesDTO>(creado);
         }
 

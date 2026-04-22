@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Proyecto_de_practicas.Data;
 
@@ -11,9 +12,11 @@ using Proyecto_de_practicas.Data;
 namespace Proyecto_de_practicas.Migrations
 {
     [DbContext(typeof(AplicationDBContext))]
-    partial class AplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20260422083449_practicas_master")]
+    partial class practicas_master
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -549,261 +552,7 @@ namespace Proyecto_de_practicas.Migrations
 
                     b.HasIndex("SubModuloId");
 
-                    b.ToTable("RolPermisos");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            PermisoId = 1,
-                            RolId = 1,
-                            SubModuloId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            PermisoId = 2,
-                            RolId = 1,
-                            SubModuloId = 1
-                        },
-                        new
-                        {
-                            Id = 3,
-                            PermisoId = 3,
-                            RolId = 1,
-                            SubModuloId = 1
-                        },
-                        new
-                        {
-                            Id = 4,
-                            PermisoId = 4,
-                            RolId = 1,
-                            SubModuloId = 1
-                        },
-                        new
-                        {
-                            Id = 5,
-                            PermisoId = 1,
-                            RolId = 1,
-                            SubModuloId = 2
-                        },
-                        new
-                        {
-                            Id = 6,
-                            PermisoId = 2,
-                            RolId = 1,
-                            SubModuloId = 2
-                        },
-                        new
-                        {
-                            Id = 7,
-                            PermisoId = 3,
-                            RolId = 1,
-                            SubModuloId = 2
-                        },
-                        new
-                        {
-                            Id = 8,
-                            PermisoId = 4,
-                            RolId = 1,
-                            SubModuloId = 2
-                        },
-                        new
-                        {
-                            Id = 9,
-                            PermisoId = 1,
-                            RolId = 1,
-                            SubModuloId = 3
-                        },
-                        new
-                        {
-                            Id = 10,
-                            PermisoId = 2,
-                            RolId = 1,
-                            SubModuloId = 3
-                        },
-                        new
-                        {
-                            Id = 11,
-                            PermisoId = 3,
-                            RolId = 1,
-                            SubModuloId = 3
-                        },
-                        new
-                        {
-                            Id = 12,
-                            PermisoId = 4,
-                            RolId = 1,
-                            SubModuloId = 3
-                        },
-                        new
-                        {
-                            Id = 13,
-                            PermisoId = 1,
-                            RolId = 1,
-                            SubModuloId = 4
-                        },
-                        new
-                        {
-                            Id = 14,
-                            PermisoId = 2,
-                            RolId = 1,
-                            SubModuloId = 4
-                        },
-                        new
-                        {
-                            Id = 15,
-                            PermisoId = 3,
-                            RolId = 1,
-                            SubModuloId = 4
-                        },
-                        new
-                        {
-                            Id = 16,
-                            PermisoId = 4,
-                            RolId = 1,
-                            SubModuloId = 4
-                        },
-                        new
-                        {
-                            Id = 17,
-                            PermisoId = 1,
-                            RolId = 1,
-                            SubModuloId = 5
-                        },
-                        new
-                        {
-                            Id = 18,
-                            PermisoId = 2,
-                            RolId = 1,
-                            SubModuloId = 5
-                        },
-                        new
-                        {
-                            Id = 19,
-                            PermisoId = 3,
-                            RolId = 1,
-                            SubModuloId = 5
-                        },
-                        new
-                        {
-                            Id = 20,
-                            PermisoId = 4,
-                            RolId = 1,
-                            SubModuloId = 5
-                        },
-                        new
-                        {
-                            Id = 21,
-                            PermisoId = 1,
-                            RolId = 1,
-                            SubModuloId = 6
-                        },
-                        new
-                        {
-                            Id = 22,
-                            PermisoId = 2,
-                            RolId = 1,
-                            SubModuloId = 6
-                        },
-                        new
-                        {
-                            Id = 23,
-                            PermisoId = 3,
-                            RolId = 1,
-                            SubModuloId = 6
-                        },
-                        new
-                        {
-                            Id = 24,
-                            PermisoId = 4,
-                            RolId = 1,
-                            SubModuloId = 6
-                        },
-                        new
-                        {
-                            Id = 25,
-                            PermisoId = 1,
-                            RolId = 1,
-                            SubModuloId = 7
-                        },
-                        new
-                        {
-                            Id = 26,
-                            PermisoId = 2,
-                            RolId = 1,
-                            SubModuloId = 7
-                        },
-                        new
-                        {
-                            Id = 27,
-                            PermisoId = 3,
-                            RolId = 1,
-                            SubModuloId = 7
-                        },
-                        new
-                        {
-                            Id = 28,
-                            PermisoId = 4,
-                            RolId = 1,
-                            SubModuloId = 7
-                        },
-                        new
-                        {
-                            Id = 29,
-                            PermisoId = 1,
-                            RolId = 1,
-                            SubModuloId = 8
-                        },
-                        new
-                        {
-                            Id = 30,
-                            PermisoId = 2,
-                            RolId = 1,
-                            SubModuloId = 8
-                        },
-                        new
-                        {
-                            Id = 31,
-                            PermisoId = 3,
-                            RolId = 1,
-                            SubModuloId = 8
-                        },
-                        new
-                        {
-                            Id = 32,
-                            PermisoId = 4,
-                            RolId = 1,
-                            SubModuloId = 8
-                        },
-                        new
-                        {
-                            Id = 33,
-                            PermisoId = 3,
-                            RolId = 2,
-                            SubModuloId = 1
-                        },
-                        new
-                        {
-                            Id = 34,
-                            PermisoId = 3,
-                            RolId = 2,
-                            SubModuloId = 2
-                        },
-                        new
-                        {
-                            Id = 35,
-                            PermisoId = 3,
-                            RolId = 2,
-                            SubModuloId = 3
-                        },
-                        new
-                        {
-                            Id = 36,
-                            PermisoId = 3,
-                            RolId = 2,
-                            SubModuloId = 4
-                        });
+                    b.ToTable("RolPermisos", (string)null);
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Traslados.Entities.Traslado", b =>
@@ -977,7 +726,7 @@ namespace Proyecto_de_practicas.Migrations
                     b.HasOne("Proyecto_de_practicas.Modules.Security.Entities.Permiso", "Permiso")
                         .WithMany("RolPermisos")
                         .HasForeignKey("PermisoId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Proyecto_de_practicas.Modules.Security.Entities.Roles", "Rol")
@@ -989,7 +738,7 @@ namespace Proyecto_de_practicas.Migrations
                     b.HasOne("Proyecto_de_practicas.Modules.Security.Entities.SubModulo", "SubModulo")
                         .WithMany()
                         .HasForeignKey("SubModuloId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Permiso");
