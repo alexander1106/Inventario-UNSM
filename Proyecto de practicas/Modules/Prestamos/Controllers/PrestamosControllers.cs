@@ -56,9 +56,9 @@ public class PrestamosController : ControllerBase
 
     // 🔹 Actualizar préstamo
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, [FromBody] UpdatePrestamosDTO request)
+    public async Task<IActionResult> Update(int id, int nuevoEstado)
     {
-        var prestamoActualizado = await _prestamoService.UpdateAsync(id, request);
+        var prestamoActualizado = await _prestamoService.UpdateEstadoAsync(id, nuevoEstado);
 
         if (prestamoActualizado == null)
             return NotFound(new { mensaje = "Préstamo no encontrado" });

@@ -6,5 +6,11 @@
         public string NombreSolicitante { get; set; }
         public DateTime FechaPrestamo { get; set; }
         public DateTime FechaDevolucion { get; set; }
+
+        public int Estado { get; set; } = 1;
+        public bool EstadoPrestamo
+        {
+            get; set;
+        }
     }
 }

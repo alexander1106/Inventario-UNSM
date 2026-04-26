@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Proyecto_de_practicas.Modules.Articulos.Entities;
+using Proyecto_de_practicas.Modules.Mantenimiento.Entity;
 using Proyecto_de_practicas.Modules.Security.Entities;
 using Proyecto_de_practicas.Modules.Security.Security;
 using Proyecto_de_practicas.Modules.Traslados.Entities;
@@ -28,8 +29,11 @@ namespace Proyecto_de_practicas.Data
 
         public DbSet<TipoUbicacion> TipoUbicacion { get; set; }
         public DbSet<Ubicacion> Ubicaciones { get; set; }
-
         public DbSet<Traslado> Traslado { get; set; }
+
+        public DbSet<Mantenimientos> Mantenimientos { get; set; }
+
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

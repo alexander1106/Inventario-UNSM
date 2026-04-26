@@ -153,16 +153,40 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
         // 🔹 Guardar artículo con campos dinámicos
         public async Task<string> GuardarArticuloConCampos(ArticuloConCamposRequest request)
         {
+            // 🔹 Validar request
+            if (request == null)
+                throw new Exception("El request está vacío");
+
+            if (request.CamposValores == null || !request.CamposValores.Any())
+                throw new Exception("No se enviaron campos");
+
+            // 🔹 Obtener IDs de campos enviados
+            var camposIds = request.CamposValores
+                .Select(c => c.CampoArticuloId)
+                .ToList();
+
+            // 🔹 Traer todos los campos en una sola consulta (evita N+1)
+            var camposDb = await _context.CamposArticulos
+                .Where(ca => camposIds.Contains(ca.Id))
+                .ToDictionaryAsync(ca => ca.Id, ca => ca.NombreCampo);
+
+            // 🔹 Validar que todos los campos existan
+            foreach (var id in camposIds)
+            {
+                if (!camposDb.ContainsKey(id))
+                    throw new Exception($"El CampoArticuloId {id} no existe en la base de datos");
+            }
+
+            // 🔹 Construir JSON correctamente
             var camposJson = System.Text.Json.JsonSerializer.Serialize(
-                request.CamposValores.Select(c => new {
-                    campo = _context.CamposArticulos
-                                    .Where(ca => ca.Id == c.CampoArticuloId)
-                                    .Select(ca => ca.NombreCampo)
-                                    .FirstOrDefault(),
+                request.CamposValores.Select(c => new
+                {
+                    campo = camposDb[c.CampoArticuloId], // ya validado
                     valor = c.Valor
                 })
             );
 
+            // 🔹 Ejecutar SP
             await _context.Database.OpenConnectionAsync();
             try
             {
@@ -171,11 +195,11 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
                 command.CommandType = System.Data.CommandType.StoredProcedure;
 
                 command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@QRCodeBase64", ""));
-                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@CodigoPatrimonial", request.CodigoPatrimonial));
-                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@Nombre", request.Nombre));
+                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@CodigoPatrimonial", request.CodigoPatrimonial ?? ""));
+                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@Nombre", request.Nombre ?? ""));
                 command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@FechaAdquision", request.FechaAdquision));
                 command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@ValorAdquisitivo", request.ValorAdquisitivo));
-                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@Condicion", request.Condicion));
+                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@Condicion", request.Condicion ?? ""));
                 command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@TipoArticuloId", request.TipoArticuloId));
                 command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@UbicacionId", request.UbicacionId));
                 command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@Estado", request.Estado));
@@ -189,13 +213,13 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
                 await _context.Database.CloseConnectionAsync();
             }
 
+            // 🔹 Obtener artículo recién creado
             var articulo = await _context.Articulos
                 .FirstOrDefaultAsync(a => a.CodigoPatrimonial == request.CodigoPatrimonial
-                                       && a.TipoArticuloId == request.TipoArticuloId);
+                                      && a.TipoArticuloId == request.TipoArticuloId);
 
             if (articulo != null)
             {
-                // Generamos la URL para Angular
                 articulo.QRCodeBase64 = GenerarUrlAngular(articulo.Id);
                 _context.Articulos.Update(articulo);
                 await _context.SaveChangesAsync();

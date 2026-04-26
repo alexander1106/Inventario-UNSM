@@ -20,7 +20,9 @@ public class PrestamoService : IServicePrestamos
 
     public async Task<IEnumerable<PrestamoDTO>> GetAllAsync()
     {
-        var prestamos = await _context.Prestamos.ToListAsync();
+        var prestamos = await _context.Prestamos
+            .Include(p => p.Articulo)
+            .ToListAsync();
         return _mapper.Map<IEnumerable<PrestamoDTO>>(prestamos);
     }
 
@@ -51,7 +53,8 @@ public class PrestamoService : IServicePrestamos
                 NombreSolicitante = request.NombreSolicitante,
                 FechaPrestamo = request.FechaPrestamo,
                 FechaDevolucion = request.FechaDevolucion,
-                Estado = 0
+                Estado = 1,
+                EstadoPrestamo = true
             };
 
             _context.Prestamos.Add(prestamo);

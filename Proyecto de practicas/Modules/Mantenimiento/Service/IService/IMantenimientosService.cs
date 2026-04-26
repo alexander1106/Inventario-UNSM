@@ -3,7 +3,7 @@ using Proyecto_de_practicas.Modules.Mantenimiento.Entity;
 
 namespace Proyecto_de_practicas.Modules.Mantenimiento.Service.IService
 {
-    public interface IMantenimeintosService
+    public interface IMantenimientosService
     {
         Task<List<Mantenimientos>> GetAll();
         Task<Mantenimientos?> GetById(int id);

@@ -10,11 +10,11 @@ using Proyecto_de_practicas.Modules.Mantenimiento.Service.IService;
 
 namespace Proyecto_de_practicas.Modules.Mantenimiento.Service
 {
-    public class MantenimeintosService : IMantenimeintosService
+    public class MantenimientosService : IMantenimientosService
     {
         private readonly AplicationDBContext _context;
 
-        public MantenimeintosService(AplicationDBContext context)
+        public MantenimientosService(AplicationDBContext context)
         {
             _context = context;
         }
