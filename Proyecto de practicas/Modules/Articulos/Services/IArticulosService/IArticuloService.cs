@@ -16,7 +16,7 @@ namespace Proyecto_de_practicas.Service
 
         // 🔹 Nuevo: obtener todos con campos
         Task<List<ArticuloDto>> GetAllConCamposAsync();
-
+        Task<string> UpdateArticuloConCampos(int id, ArticuloConCamposRequest request);
         //Task<string> CreateArticuloConCampos(ArticuloDto request);
         //Task<string> UpdateArticuloConCampos(ArticuloDto request);
         Task<bool> DeleteAsync(int id);

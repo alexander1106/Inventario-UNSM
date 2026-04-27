@@ -19,7 +19,10 @@ namespace Proyecto_de_practicas.Modules.Articulos.Services
             _repo = repo;
             _mapper = mapper;
         }
-
+        public async Task<string> UpdateArticuloConCampos(int id, ArticuloConCamposRequest request)
+        {
+            return await _repo.UpdateArticuloConCampos(id, request);
+        }
         public async Task<List<ArticuloDto>> GetAllAsync()
         {
             var entities = await _repo.GetAllAsync();

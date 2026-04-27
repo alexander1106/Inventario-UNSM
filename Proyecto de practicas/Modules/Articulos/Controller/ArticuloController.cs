@@ -41,7 +41,26 @@ namespace Proyecto_de_practicas.Modules.Articulos.Controller
                 result
             ));
         }
+        [HttpPut("update-con-campos/{id}")]
+        public async Task<IActionResult> UpdateConCampos(int id, [FromBody] ArticuloConCamposRequest request)
+        {
+            if (request == null)
+            {
+                return BadRequest(new ApiResponse<object>(
+                    false,
+                    "Datos inválidos",
+                    null
+                ));
+            }
 
+            var result = await _service.UpdateArticuloConCampos(id, request);
+
+            return Ok(new ApiResponse<object>(
+                true,
+                $"Artículo ID {id} actualizado correctamente con campos",
+                result
+            ));
+        }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {

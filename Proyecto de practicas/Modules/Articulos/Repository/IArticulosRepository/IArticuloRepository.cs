@@ -13,6 +13,7 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository.IArticulosRepositor
         Task<Articulo> AddAsync(Articulo articulo);
         Task<Articulo> UpdateAsync(Articulo articulo);
         Task<bool> DeleteAsync(int id);
+        Task<string> UpdateArticuloConCampos(int id, ArticuloConCamposRequest request);
 
         // Métodos por tipo o ubicación
         Task<List<Articulo>> GetByTipoArticuloIdAsync(int tipoArticuloId);

@@ -13,7 +13,11 @@ namespace Proyecto_de_practicas.Modules.Security.Repositories
         {
             _context = context;
         }
-
+        public async Task<Permiso?> GetByNombreAsync(string nombre)
+        {
+            return await _context.Permisos
+                .FirstOrDefaultAsync(p => p.Nombre == nombre);
+        }
         public async Task<Permiso?> GetByIdAsync(int id)
         {
             return await _context.Permisos.FindAsync(id);

@@ -89,7 +89,7 @@ public class UsuariosService : IUsuariosServices
             if (existente != null)
             {
                 _logger.LogWarning("Username {Username} ya existe", usuarioDto.Username);
-                throw new Exception("El username ya existe");
+                throw new Exception("El usuario ya existe");
             }
 
             var usuario = _mapper.Map<Usuario>(usuarioDto);

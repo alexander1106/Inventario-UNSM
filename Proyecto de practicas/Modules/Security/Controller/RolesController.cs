@@ -28,11 +28,13 @@ namespace Proyecto_de_practicas.Modules.Security.Controller
                 roles
             ));
         }
+        // GET: api/roles/{id}/accesos
 
         // GET: api/roles/{id}
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
+
             var rol = await _rolesService.GetByIdAsync(id);
 
             if (rol == null)
@@ -42,10 +44,16 @@ namespace Proyecto_de_practicas.Modules.Security.Controller
                     null
                 ));
 
-            return Ok(new ApiResponse<RolesDTO>(
+            var accesos = await _rolesService.GetAccesosPorRolAsync(id);
+
+            return Ok(new ApiResponse<object>(
                 true,
-                "Rol obtenido correctamente",
-                rol
+                "Accesos del rol obtenidos correctamente",
+                new
+                {
+                    Rol = rol,
+                    Accesos = accesos
+                }
             ));
         }
 

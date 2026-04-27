@@ -207,6 +207,13 @@ namespace Proyecto_de_practicas.Modules.Security.Services
                         Id = mod.Key.Id,
                         Nombre = mod.Key.Nombre,
                         Icon = mod.Key.Icon,
+                        Ruta = !string.IsNullOrEmpty(mod.Key.Ruta)
+                        ? mod.Key.Ruta
+                        : mod
+                            .Where(rp => rp.SubModulo != null && rp.SubModulo.Ruta != null)
+                            .Select(rp => rp.SubModulo.Ruta)
+                            .FirstOrDefault(),
+
                         SubModulos = mod
                             .Where(rp => rp.SubModulo != null)
                             .GroupBy(rp => rp.SubModulo)

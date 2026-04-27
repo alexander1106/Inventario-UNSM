@@ -29,6 +29,7 @@ namespace Proyecto_de_practicas.Modules.Security.Services
                 .Where(rp => rp.RolId == rolId)
                 .Include(rp => rp.SubModulo)
                     .ThenInclude(sm => sm.Modulo)
+                .Include(rp => rp.Modulo) // 👈 CLAVE
                 .Include(rp => rp.Permiso)
                 .ToListAsync();
 
@@ -36,7 +37,10 @@ namespace Proyecto_de_practicas.Modules.Security.Services
             {
                 RolId = rolId,
                 Modulos = data
-                    .GroupBy(rp => rp.SubModulo.Modulo)
+                    // 🔥 AGRUPAR DEPENDIENDO SI TIENE SUBMODULO O NO
+                    .GroupBy(rp => rp.SubModulo != null
+                        ? rp.SubModulo.Modulo
+                        : rp.Modulo)
                     .Select(mod => new ModuloDTO
                     {
                         Id = mod.Key.Id,
@@ -44,6 +48,7 @@ namespace Proyecto_de_practicas.Modules.Security.Services
                         Icon = mod.Key.Icon,
 
                         SubModulos = mod
+                            .Where(rp => rp.SubModulo != null) // 👈 SOLO LOS QUE TIENEN SUBMODULO
                             .GroupBy(rp => rp.SubModulo)
                             .Select(sub => new SubModuloDTO
                             {
@@ -58,12 +63,9 @@ namespace Proyecto_de_practicas.Modules.Security.Services
                                     .Distinct()
                                     .ToList()
                             })
-                            // 🔥 FILTRO CLAVE: SOLO submódulos con permisos
-                            .Where(sub => sub.Permisos.Any())
-                            .ToList()
+                            .ToList(),
+
                     })
-                    // 🔥 FILTRO CLAVE: SOLO módulos con submódulos
-                    .Where(mod => mod.SubModulos.Any())
                     .ToList()
             };
 

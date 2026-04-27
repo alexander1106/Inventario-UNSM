@@ -23,7 +23,7 @@ namespace Proyecto_de_practicas.Data
         public DbSet<TipoArticulo> TipoArticulos { get; set; }
         public DbSet<Prestamos> Prestamos { get; set; }
 
-        public DbSet<Articulo> Articulos { get; set; }
+        public DbSet<Articulo> Articulo { get; set; }
         public DbSet<Mantenimientos> Mantenimientos { get; set; }
 
         public DbSet<CampoArticulo> CamposArticulos { get; set; }

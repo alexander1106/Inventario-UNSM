@@ -29,6 +29,11 @@ namespace Proyecto_de_practicas.Modules.Security.Services
 
         public async Task<PermisoDto> CreateAsync(PermisoDto dto)
         {
+            var existe = await _repository.GetByNombreAsync(dto.Nombre);
+
+            if (existe != null)
+                throw new Exception("Ya existe un permiso con ese nombre");
+
             var entity = new Permiso
             {
                 Nombre = dto.Nombre,
@@ -38,11 +43,15 @@ namespace Proyecto_de_practicas.Modules.Security.Services
             await _repository.AddAsync(entity);
             return MapToDto(entity);
         }
-
         public async Task<PermisoDto?> UpdateAsync(PermisoDto dto)
         {
             var entity = await _repository.GetByIdAsync(dto.Id);
             if (entity == null) return null;
+
+            var existe = await _repository.GetByNombreAsync(dto.Nombre);
+
+            if (existe != null && existe.Id != dto.Id)
+                throw new Exception("Ya existe otro permiso con ese nombre");
 
             entity.Nombre = dto.Nombre;
             entity.Activo = dto.Activo;
@@ -50,7 +59,6 @@ namespace Proyecto_de_practicas.Modules.Security.Services
             await _repository.UpdateAsync(entity);
             return MapToDto(entity);
         }
-
         public async Task<bool> DeleteAsync(int id)
         {
             await _repository.DeleteAsync(id);

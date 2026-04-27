@@ -28,7 +28,7 @@ namespace Proyecto_de_practicas.Modules.Reportes.Repository
 
         public async Task<List<ArticulosPorTipoDto>> GetArticulosPorTipoAsync()
         {
-            return await _context.Articulos
+            return await _context.Articulo
                 .Include(a => a.TipoArticulo)
                 .GroupBy(a => a.TipoArticulo.Nombre)
                 .Select(g => new ArticulosPorTipoDto

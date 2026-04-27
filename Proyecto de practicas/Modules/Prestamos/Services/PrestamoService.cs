@@ -46,7 +46,7 @@ public class PrestamoService : IServicePrestamos
     {
         try
         {
-            var articulo = await _context.Articulos.FindAsync(request.ArticuloId);
+            var articulo = await _context.Articulo.FindAsync(request.ArticuloId);
             if (articulo == null)
                 throw new Exception("Artículo no existe");
 
