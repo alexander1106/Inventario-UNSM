@@ -17,6 +17,34 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Services
             _mapper = mapper;
         }
 
+        // =========================
+        private async Task<string?> GuardarImagen(IFormFile? file)
+        {
+            if (file == null) return null;
+
+            var folder = Path.Combine("wwwroot", "uploads", "ubicaciones");
+            Directory.CreateDirectory(folder);
+
+            var fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
+            var path = Path.Combine(folder, fileName);
+
+            using (var stream = new FileStream(path, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            return "/uploads/ubicaciones/" + fileName;
+        }
+        public async Task<List<UbicacionDto>> GetByUsuarioAsync(int usuarioId)
+        {
+            var entidades = await _repo.GetAllAsync();
+
+            var filtradas = entidades
+                .Where(u => u.UsuarioId == usuarioId)
+                .ToList();
+
+            return _mapper.Map<List<UbicacionDto>>(filtradas);
+        }
         public async Task<List<UbicacionDto>> GetAllAsync()
         {
             var entities = await _repo.GetAllAsync();
@@ -29,59 +57,98 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Services
             return entity == null ? null : _mapper.Map<UbicacionDto>(entity);
         }
 
-        public async Task<UbicacionDto> AddAsync(UbicacionDto dto)
+        // =========================
+        // 🔥 CREATE CON IMAGEN
+        // =========================
+        public async Task<UbicacionDto> AddAsync(UbicacionDto dto, IFormFile? imagen)
         {
-            // Validar duplicados por nombre y tipo
             var existentes = await _repo.GetAllAsync();
+
             if (existentes.Any(u =>
                 u.Nombre.ToLower() == dto.Nombre.ToLower() &&
                 u.TipoUbicacionId == dto.TipoUbicacionId))
             {
-                throw new InvalidOperationException("El nombre ingresado ya corresponde a una ubicación existente en este tipo");
+                throw new InvalidOperationException(
+                    "El nombre ingresado ya corresponde a una ubicación existente en este tipo");
             }
 
-            var entity = _mapper.Map<Ubicacion>(dto);
+            var entity = new Ubicacion
+            {
+                Nombre = dto.Nombre,
+                Descripcion = dto.Descripcion,
+                Piso = dto.Piso,
+                TipoUbicacionId = dto.TipoUbicacionId,
+                UsuarioId = dto.UsuarioId,
+
+                ImagenUrl = await GuardarImagen(imagen)
+            };
+
             var result = await _repo.AddAsync(entity);
             return _mapper.Map<UbicacionDto>(result);
         }
 
-
-        public async Task<UbicacionDto> UpdateAsync(int id, UbicacionDto dto)
+        // =========================
+        // 🔥 UPDATE CON IMAGEN
+        // =========================
+        public async Task<UbicacionDto> UpdateAsync(int id, UbicacionDto dto, IFormFile? imagen)
         {
             var existentes = await _repo.GetAllAsync();
+
             if (existentes.Any(u =>
                 u.Id != id &&
                 u.Nombre.ToLower() == dto.Nombre.ToLower() &&
-                u.Descripcion == dto.Descripcion))
+                u.TipoUbicacionId == dto.TipoUbicacionId))
             {
-                throw new InvalidOperationException("El nombre ingresado ya corresponde a una ubicación existente en este tipo");
+                throw new InvalidOperationException(
+                    "El nombre ingresado ya corresponde a una ubicación existente en este tipo");
             }
 
-            // 🔧 Recuperar la entidad existente del contexto
             var existingEntity = await _repo.GetByIdAsync(id);
+
             if (existingEntity == null)
                 throw new InvalidOperationException("No se encontró la ubicación a actualizar.");
 
-            // 🔄 Mapear los cambios al objeto rastreado
-            _mapper.Map(dto, existingEntity);
+            existingEntity.Nombre = dto.Nombre;
+            existingEntity.Descripcion = dto.Descripcion;
+            existingEntity.Piso = dto.Piso;
+            existingEntity.TipoUbicacionId = dto.TipoUbicacionId;
+
+            if (imagen != null)
+            {
+                existingEntity.ImagenUrl = await GuardarImagen(imagen);
+            }
 
             var result = await _repo.UpdateAsync(existingEntity);
             return _mapper.Map<UbicacionDto>(result);
         }
 
-
         public async Task<bool> DeleteAsync(int id)
         {
             return await _repo.DeleteAsync(id);
         }
+
         public async Task<List<UbicacionDto>> GetByTipoAsync(int tipoId)
         {
             var entities = await _repo.GetAllAsync();
 
-            var filtradas = entities.Where(u => u.TipoUbicacionId == tipoId).ToList();
+            var filtradas = entities
+                .Where(u => u.TipoUbicacionId == tipoId)
+                .ToList();
 
             return _mapper.Map<List<UbicacionDto>>(filtradas);
         }
-    }
+        public async Task<UbicacionDto> AsignarUsuarioAsync(int ubicacionId, int usuarioId)
+        {
+            var ubicacion = await _repo.GetByIdAsync(ubicacionId);
 
+            if (ubicacion == null)
+                throw new Exception("Ubicación no encontrada");
+
+            ubicacion.UsuarioId = usuarioId;
+
+            var result = await _repo.UpdateAsync(ubicacion);
+
+            return _mapper.Map<UbicacionDto>(result);
+        }
+    }
 }

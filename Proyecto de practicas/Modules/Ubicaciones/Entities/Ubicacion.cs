@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using Proyecto_de_practicas.Modules.Articulos.Entities;
+using Proyecto_de_practicas.Modules.Security.Entities;
 
 namespace Proyecto_de_practicas.Modules.Ubicaciones.Entities
 {
@@ -14,6 +15,12 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Entities
         [JsonIgnore] // 👈 evita el ciclo
         public virtual TipoUbicacion TipoUbicacion { get; set; } = null!;
         public virtual ICollection<Articulo> Articulos { get; set; } = new List<Articulo>();
+        // 🆕 IMAGEN
+        public string? ImagenUrl { get; set; }
 
+        public int UsuarioId { get; set; }
+
+        [JsonIgnore]
+        public virtual Usuario Usuario { get; set; } = null!;
     }
 }

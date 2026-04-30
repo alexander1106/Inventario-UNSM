@@ -6,9 +6,11 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Services.IUbicacionesService
     {
         Task<List<UbicacionDto>> GetAllAsync();
         Task<UbicacionDto?> GetByIdAsync(int id);
-        Task<UbicacionDto> AddAsync(UbicacionDto dto);
-        Task<UbicacionDto> UpdateAsync(int id, UbicacionDto dto);
+        Task<List<UbicacionDto>> GetByUsuarioAsync(int usuarioId);
         Task<bool> DeleteAsync(int id);
         Task<List<UbicacionDto>> GetByTipoAsync(int tipoId);
+        Task<UbicacionDto> AddAsync(UbicacionDto dto, IFormFile? imagen);
+        Task<UbicacionDto> UpdateAsync(int id, UbicacionDto dto, IFormFile? imagen);
+        Task<UbicacionDto> AsignarUsuarioAsync(int ubicacionId, int usuarioId);
     }
 }

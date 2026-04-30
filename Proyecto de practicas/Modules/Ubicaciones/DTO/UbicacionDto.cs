@@ -13,5 +13,8 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.DTO
         public int TipoUbicacionId { get; set; }
 
         // Opcional: lista de artículos en esta ubicación
+        public string? ImagenUrl { get; set; }
+        public int UsuarioId { get; set; }
+
     }
 }
