@@ -199,11 +199,9 @@ internal class Program
         builder.Services.AddScoped<IMantenimientosService, MantenimientosService>();
         builder.Services.AddScoped<IServicePrestamos, PrestamoService>();
 
-        // Register the Repository first
         builder.Services.AddScoped<IReporteRepository, ReporteRepository>();
         builder.Services.AddScoped<IReportesService, ReportesService>();
 
-        // Then your Service (which you likely already have)
         builder.Services.AddScoped<IReportesService, ReportesService>();
 
 

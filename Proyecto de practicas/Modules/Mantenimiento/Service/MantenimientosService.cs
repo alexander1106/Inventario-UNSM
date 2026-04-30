@@ -1,4 +1,4 @@
-﻿using global::Proyecto_de_practicas.Data;
+using global::Proyecto_de_practicas.Data;
 using global::Proyecto_de_practicas.Modules.Mantenimiento.DTO;
 using global::Proyecto_de_practicas.Modules.Mantenimiento.Entity;
 using global::Proyecto_de_practicas.Modules.Mantenimiento.Service.IService;
@@ -43,6 +43,7 @@ namespace Proyecto_de_practicas.Modules.Mantenimiento.Service
                 ProveedorServicion = dto.ProveedorServicion,
                 Costo = dto.Costo,
                 TipoMantenimiento = dto.TipoMantenimiento,
+                Observaciones = dto.Observaciones,
                 EstadoMantenimiento = true,
                 Estado = true
             };
@@ -59,6 +60,12 @@ namespace Proyecto_de_practicas.Modules.Mantenimiento.Service
 
             if (mantenimiento == null) return false;
 
+            mantenimiento.ArticuloId = dto.ArticuloId;
+            mantenimiento.FechaMantenimiento = dto.FechaMantenimiento;
+            mantenimiento.ProveedorServicion = dto.ProveedorServicion;
+            mantenimiento.Costo = dto.Costo;
+            mantenimiento.TipoMantenimiento = dto.TipoMantenimiento;
+            mantenimiento.Observaciones = dto.Observaciones;
             mantenimiento.EstadoMantenimiento = dto.EstadoMantenimiento;
 
             _context.Update(mantenimiento);

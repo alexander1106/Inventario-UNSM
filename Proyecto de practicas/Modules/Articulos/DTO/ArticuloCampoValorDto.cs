@@ -1,10 +1,11 @@
-﻿namespace Proyecto_de_practicas.Modules.Articulos.DTO
+namespace Proyecto_de_practicas.Modules.Articulos.DTO
 {
     public class ArticuloCampoValorDto
     {
         public int Id { get; set; }
         public int ArticuloId { get; set; }
         public int CampoArticuloId { get; set; }
+        public string? NombreCampo { get; set; } // Propiedad para el nombre del campo
         public string Valor { get; set; } = null!;
     }
 }

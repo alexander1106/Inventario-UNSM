@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -31,8 +31,7 @@ namespace Proyecto_de_practicas.Modules.Articulos.Services
 
         public async Task<ArticuloDto?> GetByIdAsync(int id)
         {
-            var entity = await _repo.GetByIdAsync(id);
-            return entity == null ? null : _mapper.Map<ArticuloDto>(entity);
+            return await _repo.GetByIdConCamposAsync(id);
         }
 
         public async Task<ArticuloDto> AddAsync(ArticuloDto dto)

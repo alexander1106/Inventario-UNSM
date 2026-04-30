@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Proyecto_de_practicas.Modules.Ubicaciones.Entities;
@@ -15,6 +15,7 @@ namespace Proyecto_de_practicas.Modules.Articulos.Entities
         public DateTime FechaAdquision { get; set; }
         public double ValorAdquisitivo { get; set; }
         public string? Condicion { get; set; }
+        public string? Descripcion { get; set; }
 
         [Column("vidaUtil")]
         public int VidaUtil { get; set; }

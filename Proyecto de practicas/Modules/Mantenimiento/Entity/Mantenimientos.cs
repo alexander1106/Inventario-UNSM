@@ -1,4 +1,4 @@
-﻿using Proyecto_de_practicas.Modules.Articulos.Entities;
+using Proyecto_de_practicas.Modules.Articulos.Entities;
 
 namespace Proyecto_de_practicas.Modules.Mantenimiento.Entity
 {
@@ -11,6 +11,7 @@ namespace Proyecto_de_practicas.Modules.Mantenimiento.Entity
         public String ProveedorServicion { get; set; }  
         public Double Costo { get; set; }
         public String TipoMantenimiento { get; set; }
+        public String? Observaciones { get; set; }
         public Boolean EstadoMantenimiento { get; set; } = true;
         public Mantenimientos() { }
         public Boolean Estado { get; set; } = true;

@@ -60,7 +60,7 @@ namespace Proyecto_de_practicas.Modules.Reporte.Repository
                     if (filtros.FechaFin.HasValue) prestQuery = prestQuery.Where(p => p.FechaPrestamo <= filtros.FechaFin);
 
                     var prestamos = await prestQuery.AsNoTracking().ToListAsync();
-                    response.Kpis.Add(new KpiDto { Label = "PRÉSTAMOS ACTIVOS", Value = prestamos.Count(p => p.EstadoPrestamo).ToString() });
+                    response.Kpis.Add(new KpiDto { Label = "PRÉSTAMOS ACTIVOS", Value = prestamos.Count(p => p.Estado == 1).ToString() });
                     response.Kpis.Add(new KpiDto { Label = "ATRASADOS", Value = prestamos.Count(p => p.FechaDevolucion < DateTime.Now && (p.Estado == 1)).ToString() });
                     response.Kpis.Add(new KpiDto { Label = "RATIO RETORNO", Value = "85%" });
 
@@ -70,7 +70,7 @@ namespace Proyecto_de_practicas.Modules.Reporte.Repository
                         NombreArticulo = p.Articulo?.Nombre,
                         Solicitante = p.NombreSolicitante,
                         Fecha = p.FechaPrestamo?.ToShortDateString(),
-                        Estado = p.EstadoPrestamo ? "Activo" : "Devuelto"
+                        Estado = p.Estado == 1 ? "Activo" : "Devuelto"
                     }).ToList();
                     break;
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,16 +30,20 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
             var articulo = await _context.Articulo.FirstOrDefaultAsync(a => a.Id == id);
             if (articulo == null) return null;
 
-            // Traer los valores de campos
+            // Traer los valores de campos con sus nombres
             var camposValores = await _context.ArticuloCamposValores
                 .Where(cv => cv.ArticuloId == id)
-                .Select(cv => new ArticuloCampoValorDto
-                {
-                    Id = cv.Id,
-                    ArticuloId = cv.ArticuloId,
-                    CampoArticuloId = cv.CampoArticuloId,
-                    Valor = cv.Valor
-                }).ToListAsync();
+                .Join(_context.CamposArticulos,
+                    cv => cv.CampoArticuloId,
+                    ca => ca.Id,
+                    (cv, ca) => new ArticuloCampoValorDto
+                    {
+                        Id = cv.Id,
+                        ArticuloId = cv.ArticuloId,
+                        CampoArticuloId = cv.CampoArticuloId,
+                        NombreCampo = ca.NombreCampo, // Asegurarse de traer el nombre
+                        Valor = cv.Valor
+                    }).ToListAsync();
 
             // Mapear al DTO del artículo
             var articuloDto = new ArticuloDto
