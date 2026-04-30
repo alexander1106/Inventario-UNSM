@@ -41,8 +41,10 @@ namespace Proyecto_de_practicas.Modules.Reporte.Repository
                     response.Tabla = articulos.Select(a => (dynamic)new
                     {
                         a.Id,
+                        Codigo = a.CodigoPatrimonial ?? "N/A",
                         NombreArticulo = a.Nombre,
                         Ubicacion = a.Ubicacion?.Nombre ?? "N/A",
+                        Categoria = a.TipoArticulo?.Nombre ?? "Sin Categoría",
                         Estado = a.Condicion,
                         Valor = a.ValorAdquisitivo,
                         Fecha = a.FechaAdquision.ToShortDateString()
