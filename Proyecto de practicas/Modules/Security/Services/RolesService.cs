@@ -4,6 +4,7 @@ using Proyecto_de_practicas.Data;
 using Proyecto_de_practicas.Modules.Security.DTO;
 using Proyecto_de_practicas.Modules.Security.Entities;
 using Proyecto_de_practicas.Modules.Security.Repositories.IRepositories;
+using Proyecto_de_practicas.Modules.Security.Security;
 using Proyecto_de_practicas.Modules.Security.Services.IServices;
 
 namespace Proyecto_de_practicas.Modules.Security.Services

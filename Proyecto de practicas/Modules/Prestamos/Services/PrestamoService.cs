@@ -62,7 +62,8 @@ public class PrestamoService : IServicePrestamos
                 NombreSolicitante = request.NombreSolicitante,
                 FechaPrestamo = request.FechaPrestamo,
                 FechaDevolucion = request.FechaDevolucion,
-                Estado = 0
+                Estado = 1,
+                EstadoPrestamo = true
             };
 
             _context.Prestamos.Add(prestamo);

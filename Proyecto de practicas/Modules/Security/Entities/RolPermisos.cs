@@ -7,7 +7,7 @@ namespace Proyecto_de_practicas.Modules.Security.Security
         public int Id { get; set; }
 
         public int RolId { get; set; }
-        public Roles Rol { get; set; }
+        public virtual Roles Rol { get; set; } = null!;
 
         // 👇 NUEVO
         public int? ModuloId { get; set; }
@@ -18,6 +18,6 @@ namespace Proyecto_de_practicas.Modules.Security.Security
         public SubModulo? SubModulo { get; set; }
         // 👇 LO QUE TE FALTA
         public int PermisoId { get; set; }
-        public Permiso Permiso { get; set; }
+        public virtual Permiso Permiso { get; set; } = null!;
     }
 }

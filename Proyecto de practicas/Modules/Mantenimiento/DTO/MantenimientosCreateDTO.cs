@@ -9,6 +9,7 @@ namespace Proyecto_de_practicas.Modules.Mantenimiento.DTO
         public String ProveedorServicion { get; set; }
         public Double Costo { get; set; }
         public String TipoMantenimiento { get; set; }
+        public String? Observaciones { get; set; }
 
     }
 }

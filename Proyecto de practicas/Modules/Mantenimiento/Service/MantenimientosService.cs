@@ -10,11 +10,11 @@ using Proyecto_de_practicas.Modules.Mantenimiento.Service.IService;
 
 namespace Proyecto_de_practicas.Modules.Mantenimiento.Service
 {
-    public class MantenimeintosService : IMantenimeintosService
+    public class MantenimientosService : IMantenimientosService
     {
         private readonly AplicationDBContext _context;
 
-        public MantenimeintosService(AplicationDBContext context)
+        public MantenimientosService(AplicationDBContext context)
         {
             _context = context;
         }
@@ -43,6 +43,7 @@ namespace Proyecto_de_practicas.Modules.Mantenimiento.Service
                 ProveedorServicion = dto.ProveedorServicion,
                 Costo = dto.Costo,
                 TipoMantenimiento = dto.TipoMantenimiento,
+                Observaciones = dto.Observaciones,
                 EstadoMantenimiento = true,
                 Estado = true
             };
@@ -59,6 +60,12 @@ namespace Proyecto_de_practicas.Modules.Mantenimiento.Service
 
             if (mantenimiento == null) return false;
 
+            mantenimiento.ArticuloId = dto.ArticuloId;
+            mantenimiento.FechaMantenimiento = dto.FechaMantenimiento;
+            mantenimiento.ProveedorServicion = dto.ProveedorServicion;
+            mantenimiento.Costo = dto.Costo;
+            mantenimiento.TipoMantenimiento = dto.TipoMantenimiento;
+            mantenimiento.Observaciones = dto.Observaciones;
             mantenimiento.EstadoMantenimiento = dto.EstadoMantenimiento;
 
             _context.Update(mantenimiento);

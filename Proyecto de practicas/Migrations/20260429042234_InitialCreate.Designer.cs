@@ -12,8 +12,8 @@ using Proyecto_de_practicas.Data;
 namespace Proyecto_de_practicas.Migrations
 {
     [DbContext(typeof(AplicationDBContext))]
-    [Migration("20260420045922_initial")]
-    partial class initial
+    [Migration("20260429042234_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -70,7 +70,7 @@ namespace Proyecto_de_practicas.Migrations
 
                     b.HasIndex("UbicacionId");
 
-                    b.ToTable("Articulos");
+                    b.ToTable("articulos");
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.ArticuloCampoValor", b =>
@@ -193,6 +193,44 @@ namespace Proyecto_de_practicas.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TipoArticulos");
+                });
+
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Mantenimiento.Entity.Mantenimientos", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ArticuloId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Costo")
+                        .HasColumnType("float");
+
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("EstadoMantenimiento")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("FechaMantenimiento")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ProveedorServicion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TipoMantenimiento")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ArticuloId");
+
+                    b.ToTable("Mantenimientos");
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Security.Entities.Modulo", b =>
@@ -558,6 +596,260 @@ namespace Proyecto_de_practicas.Migrations
                     b.HasIndex("SubModuloId");
 
                     b.ToTable("RolPermisos");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            PermisoId = 1,
+                            RolId = 1,
+                            SubModuloId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            PermisoId = 2,
+                            RolId = 1,
+                            SubModuloId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            PermisoId = 3,
+                            RolId = 1,
+                            SubModuloId = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            PermisoId = 4,
+                            RolId = 1,
+                            SubModuloId = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            PermisoId = 1,
+                            RolId = 1,
+                            SubModuloId = 2
+                        },
+                        new
+                        {
+                            Id = 6,
+                            PermisoId = 2,
+                            RolId = 1,
+                            SubModuloId = 2
+                        },
+                        new
+                        {
+                            Id = 7,
+                            PermisoId = 3,
+                            RolId = 1,
+                            SubModuloId = 2
+                        },
+                        new
+                        {
+                            Id = 8,
+                            PermisoId = 4,
+                            RolId = 1,
+                            SubModuloId = 2
+                        },
+                        new
+                        {
+                            Id = 9,
+                            PermisoId = 1,
+                            RolId = 1,
+                            SubModuloId = 3
+                        },
+                        new
+                        {
+                            Id = 10,
+                            PermisoId = 2,
+                            RolId = 1,
+                            SubModuloId = 3
+                        },
+                        new
+                        {
+                            Id = 11,
+                            PermisoId = 3,
+                            RolId = 1,
+                            SubModuloId = 3
+                        },
+                        new
+                        {
+                            Id = 12,
+                            PermisoId = 4,
+                            RolId = 1,
+                            SubModuloId = 3
+                        },
+                        new
+                        {
+                            Id = 13,
+                            PermisoId = 1,
+                            RolId = 1,
+                            SubModuloId = 4
+                        },
+                        new
+                        {
+                            Id = 14,
+                            PermisoId = 2,
+                            RolId = 1,
+                            SubModuloId = 4
+                        },
+                        new
+                        {
+                            Id = 15,
+                            PermisoId = 3,
+                            RolId = 1,
+                            SubModuloId = 4
+                        },
+                        new
+                        {
+                            Id = 16,
+                            PermisoId = 4,
+                            RolId = 1,
+                            SubModuloId = 4
+                        },
+                        new
+                        {
+                            Id = 17,
+                            PermisoId = 1,
+                            RolId = 1,
+                            SubModuloId = 5
+                        },
+                        new
+                        {
+                            Id = 18,
+                            PermisoId = 2,
+                            RolId = 1,
+                            SubModuloId = 5
+                        },
+                        new
+                        {
+                            Id = 19,
+                            PermisoId = 3,
+                            RolId = 1,
+                            SubModuloId = 5
+                        },
+                        new
+                        {
+                            Id = 20,
+                            PermisoId = 4,
+                            RolId = 1,
+                            SubModuloId = 5
+                        },
+                        new
+                        {
+                            Id = 21,
+                            PermisoId = 1,
+                            RolId = 1,
+                            SubModuloId = 6
+                        },
+                        new
+                        {
+                            Id = 22,
+                            PermisoId = 2,
+                            RolId = 1,
+                            SubModuloId = 6
+                        },
+                        new
+                        {
+                            Id = 23,
+                            PermisoId = 3,
+                            RolId = 1,
+                            SubModuloId = 6
+                        },
+                        new
+                        {
+                            Id = 24,
+                            PermisoId = 4,
+                            RolId = 1,
+                            SubModuloId = 6
+                        },
+                        new
+                        {
+                            Id = 25,
+                            PermisoId = 1,
+                            RolId = 1,
+                            SubModuloId = 7
+                        },
+                        new
+                        {
+                            Id = 26,
+                            PermisoId = 2,
+                            RolId = 1,
+                            SubModuloId = 7
+                        },
+                        new
+                        {
+                            Id = 27,
+                            PermisoId = 3,
+                            RolId = 1,
+                            SubModuloId = 7
+                        },
+                        new
+                        {
+                            Id = 28,
+                            PermisoId = 4,
+                            RolId = 1,
+                            SubModuloId = 7
+                        },
+                        new
+                        {
+                            Id = 29,
+                            PermisoId = 1,
+                            RolId = 1,
+                            SubModuloId = 8
+                        },
+                        new
+                        {
+                            Id = 30,
+                            PermisoId = 2,
+                            RolId = 1,
+                            SubModuloId = 8
+                        },
+                        new
+                        {
+                            Id = 31,
+                            PermisoId = 3,
+                            RolId = 1,
+                            SubModuloId = 8
+                        },
+                        new
+                        {
+                            Id = 32,
+                            PermisoId = 4,
+                            RolId = 1,
+                            SubModuloId = 8
+                        },
+                        new
+                        {
+                            Id = 33,
+                            PermisoId = 3,
+                            RolId = 2,
+                            SubModuloId = 1
+                        },
+                        new
+                        {
+                            Id = 34,
+                            PermisoId = 3,
+                            RolId = 2,
+                            SubModuloId = 2
+                        },
+                        new
+                        {
+                            Id = 35,
+                            PermisoId = 3,
+                            RolId = 2,
+                            SubModuloId = 3
+                        },
+                        new
+                        {
+                            Id = 36,
+                            PermisoId = 3,
+                            RolId = 2,
+                            SubModuloId = 4
+                        });
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Traslados.Entities.Traslado", b =>
@@ -607,6 +899,10 @@ namespace Proyecto_de_practicas.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
@@ -704,6 +1000,17 @@ namespace Proyecto_de_practicas.Migrations
                     b.Navigation("Articulo");
                 });
 
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Mantenimiento.Entity.Mantenimientos", b =>
+                {
+                    b.HasOne("Proyecto_de_practicas.Modules.Articulos.Entities.Articulo", "Articulo")
+                        .WithMany()
+                        .HasForeignKey("ArticuloId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Articulo");
+                });
+
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Security.Entities.SubModulo", b =>
                 {
                     b.HasOne("Proyecto_de_practicas.Modules.Security.Entities.Modulo", "Modulo")
@@ -739,7 +1046,7 @@ namespace Proyecto_de_practicas.Migrations
                         .IsRequired();
 
                     b.HasOne("Proyecto_de_practicas.Modules.Security.Entities.Roles", "Rol")
-                        .WithMany()
+                        .WithMany("RolPermisos")
                         .HasForeignKey("RolId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -826,6 +1133,11 @@ namespace Proyecto_de_practicas.Migrations
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Security.Entities.Permiso", b =>
+                {
+                    b.Navigation("RolPermisos");
+                });
+
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Security.Entities.Roles", b =>
                 {
                     b.Navigation("RolPermisos");
                 });

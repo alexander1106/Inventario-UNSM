@@ -10,9 +10,9 @@ namespace Proyecto_de_practicas.Modules.Mantenimiento.Controller
     [Route("api/[controller]")]
     public class MantenimientosController : ControllerBase
     {
-        private readonly IMantenimeintosService _service;
+        private readonly IMantenimientosService _service;
 
-        public MantenimientosController(IMantenimeintosService service)
+        public MantenimientosController(IMantenimientosService service)
         {
             _service = service;
         }
