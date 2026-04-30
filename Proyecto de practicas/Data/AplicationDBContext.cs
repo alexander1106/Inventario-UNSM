@@ -101,8 +101,12 @@ namespace Proyecto_de_practicas.Data
                 .WithMany()
                 .HasForeignKey(acv => acv.ArticuloId)
                 .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Ubicacion>()
+                .HasOne(u => u.Usuario)
+                .WithMany()
+                .HasForeignKey(u => u.UsuarioId)
+                .IsRequired(false); // 👈 CLAVE
 
-            
             modelBuilder.Entity<Traslado>(entity =>
             {
                 entity.HasOne(t => t.Articulo)

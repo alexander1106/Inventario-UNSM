@@ -15,7 +15,17 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Controller
         {
             _service = service;
         }
+        [HttpGet("por-padre/{padreId}")]
+        public async Task<ActionResult<ApiResponse<List<UbicacionDto>>>> GetByPadre(int padreId)
+        {
+            var result = await _service.GetByPadreAsync(padreId);
 
+            return Ok(new ApiResponse<List<UbicacionDto>>(
+                true,
+                result.Any() ? "OK" : "Sin datos",
+                result
+            ));
+        }
         [HttpGet]
         public async Task<ActionResult<ApiResponse<List<UbicacionDto>>>> GetAll()
         {

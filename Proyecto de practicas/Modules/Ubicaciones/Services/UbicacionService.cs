@@ -35,6 +35,16 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Services
 
             return "/uploads/ubicaciones/" + fileName;
         }
+        public async Task<List<UbicacionDto>> GetByPadreAsync(int padreId)
+        {
+            var entities = await _repo.GetAllAsync();
+
+            var filtradas = entities
+                .Where(u => u.PadreId == padreId)
+                .ToList();
+
+            return _mapper.Map<List<UbicacionDto>>(filtradas);
+        }
         public async Task<List<UbicacionDto>> GetByUsuarioAsync(int usuarioId)
         {
             var entidades = await _repo.GetAllAsync();
@@ -79,7 +89,7 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Services
                 Piso = dto.Piso,
                 TipoUbicacionId = dto.TipoUbicacionId,
                 UsuarioId = dto.UsuarioId,
-
+                PadreId = dto.PadreId, // 🔥 AQUÍ
                 ImagenUrl = await GuardarImagen(imagen)
             };
 
@@ -107,11 +117,12 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Services
 
             if (existingEntity == null)
                 throw new InvalidOperationException("No se encontró la ubicación a actualizar.");
-
+            
             existingEntity.Nombre = dto.Nombre;
             existingEntity.Descripcion = dto.Descripcion;
             existingEntity.Piso = dto.Piso;
             existingEntity.TipoUbicacionId = dto.TipoUbicacionId;
+            existingEntity.PadreId = dto.PadreId; // 🔥 AQUÍ
 
             if (imagen != null)
             {

@@ -26,7 +26,5 @@ namespace Proyecto_de_practicas.Modules.Security.Entities
         public DateTime? FechaModificacion { get; set; }
         public string? UsuarioCreacion { get; set; }
         public string? UsuarioModificacion { get; set; }
-        // 🔥 RELACIÓN 1 A 1
-        public virtual Ubicacion Ubicacion { get; set; }
     }
 }

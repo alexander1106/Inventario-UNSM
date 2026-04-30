@@ -7,14 +7,15 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.DTO
         public int Id { get; set; }
         public string Nombre { get; set; } = null!;
         public string Descripcion { get; set; } = null!;
-        public int Piso { get; set; } = 0; 
+        public int Piso { get; set; }
 
-        // Información del tipo de ubicación
         public int TipoUbicacionId { get; set; }
 
-        // Opcional: lista de artículos en esta ubicación
         public string? ImagenUrl { get; set; }
-        public int UsuarioId { get; set; }
 
+        public int? UsuarioId { get; set; }
+
+        // 🔥 NUEVO
+        public int? PadreId { get; set; }
     }
 }

@@ -12,5 +12,6 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Services.IUbicacionesService
         Task<UbicacionDto> AddAsync(UbicacionDto dto, IFormFile? imagen);
         Task<UbicacionDto> UpdateAsync(int id, UbicacionDto dto, IFormFile? imagen);
         Task<UbicacionDto> AsignarUsuarioAsync(int ubicacionId, int usuarioId);
+        Task<List<UbicacionDto>> GetByPadreAsync(int padreId);
     }
 }
