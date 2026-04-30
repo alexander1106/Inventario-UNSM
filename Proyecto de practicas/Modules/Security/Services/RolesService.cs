@@ -30,6 +30,7 @@ namespace Proyecto_de_practicas.Modules.Security.Services
                 .Where(rp => rp.RolId == rolId)
                 .Include(rp => rp.SubModulo)
                     .ThenInclude(sm => sm.Modulo)
+                .Include(rp => rp.Modulo) // 👈 CLAVE
                 .Include(rp => rp.Permiso)
                 .ToListAsync();
 
@@ -37,7 +38,10 @@ namespace Proyecto_de_practicas.Modules.Security.Services
             {
                 RolId = rolId,
                 Modulos = data
-                    .GroupBy(rp => rp.SubModulo.Modulo)
+                    // 🔥 AGRUPAR DEPENDIENDO SI TIENE SUBMODULO O NO
+                    .GroupBy(rp => rp.SubModulo != null
+                        ? rp.SubModulo.Modulo
+                        : rp.Modulo)
                     .Select(mod => new ModuloDTO
                     {
                         Id = mod.Key.Id,
@@ -45,6 +49,7 @@ namespace Proyecto_de_practicas.Modules.Security.Services
                         Icon = mod.Key.Icon,
 
                         SubModulos = mod
+                            .Where(rp => rp.SubModulo != null) // 👈 SOLO LOS QUE TIENEN SUBMODULO
                             .GroupBy(rp => rp.SubModulo)
                             .Select(sub => new SubModuloDTO
                             {
@@ -59,12 +64,9 @@ namespace Proyecto_de_practicas.Modules.Security.Services
                                     .Distinct()
                                     .ToList()
                             })
-                            // 🔥 FILTRO CLAVE: SOLO submódulos con permisos
-                            .Where(sub => sub.Permisos.Any())
-                            .ToList()
+                            .ToList(),
+
                     })
-                    // 🔥 FILTRO CLAVE: SOLO módulos con submódulos
-                    .Where(mod => mod.SubModulos.Any())
                     .ToList()
             };
 
@@ -96,28 +98,26 @@ namespace Proyecto_de_practicas.Modules.Security.Services
 
         public async Task<RolesDTO> AddRoleAsync(RolesDTO rol)
         {
-            if (await RoleExistsAsync(rol.Nombre))
-                throw new Exception("El rol ya existe.");
+            var existente = await _context.Roles
+                .FirstOrDefaultAsync(r => r.Nombre.ToLower() == rol.Nombre.ToLower());
+
+            if (existente != null)
+            {
+                if (existente.Estado == 1)
+                    throw new Exception("El rol ya existe.");
+
+                // 🔥 Reactivar en vez de crear nuevo
+                existente.Estado = 1;
+                await _context.SaveChangesAsync();
+
+                return _mapper.Map<RolesDTO>(existente);
+            }
 
             var entity = _mapper.Map<Roles>(rol);
             var creado = await _rolesRepository.AddAsync(entity);
 
-            if (rol.RolPermisos != null && rol.RolPermisos.Any())
-            {
-                var listaPermisos = rol.RolPermisos.Select(p => new RolPermisos
-                {
-                    RolId = creado.Id, 
-                    SubModuloId = p.SubModuloId,
-                    PermisoId = p.PermisoId
-                }).ToList();
-
-                await _context.RolPermisos.AddRangeAsync(listaPermisos);
-                await _context.SaveChangesAsync();
-            }
-
             return _mapper.Map<RolesDTO>(creado);
         }
-
         public async Task<RolesDTO> UpdateRoleAsync(RolesDTO rol)
         {
             var entity = _mapper.Map<Roles>(rol);
@@ -135,7 +135,13 @@ namespace Proyecto_de_practicas.Modules.Security.Services
                 .AnyAsync(u => u.RolId == id);
 
             if (usuariosConRol)
-                throw new Exception("No se puede eliminar el rol porque está asignado a los usuarios");
+                throw new Exception("No se puede eliminar el rol porque está asignado a usuarios");
+
+            var tienePermisos = await _context.RolPermisos
+                .AnyAsync(rp => rp.RolId == id);
+
+            if (tienePermisos)
+                throw new Exception("No se puede eliminar el rol porque tiene permisos asignados");
 
             return await _rolesRepository.DeleteAsync(id);
         }

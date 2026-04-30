@@ -8,13 +8,13 @@ using Proyecto_de_practicas.Data;
 using Proyecto_de_practicas.Modules.Articulos.Repository;
 using Proyecto_de_practicas.Modules.Articulos.Repository.IArticulosRepository;
 using Proyecto_de_practicas.Modules.Articulos.Services;
+using Proyecto_de_practicas.Modules.Mantenimiento.Service;
 using Proyecto_de_practicas.Modules.Mantenimiento.Service.IService;
 using Proyecto_de_practicas.Modules.Prestamos.Services;
 using Proyecto_de_practicas.Modules.Prestamos.Services.IServices;
-using Proyecto_de_practicas.Modules.Reportes.Repository;
-using Proyecto_de_practicas.Modules.Reportes.Repository.IReporteRepository;
-using Proyecto_de_practicas.Modules.Reportes.Services;
-using Proyecto_de_practicas.Modules.Reportes.Services.IReporteService;
+
+using Proyecto_de_practicas.Modules.Reporte.Service;
+using Proyecto_de_practicas.Modules.Reporte.Service.IService;
 using Proyecto_de_practicas.Modules.Security.Entities;
 using Proyecto_de_practicas.Modules.Security.Repositories;
 using Proyecto_de_practicas.Modules.Security.Repositories.IRepositories;
@@ -36,6 +36,8 @@ using Proyecto_de_practicas.Service;
 
 // 🔥 IMPORTANTE
 using Serilog;
+using Proyecto_de_practicas.Modules.Reporte.Repository.IRepository;
+using Proyecto_de_practicas.Modules.Reporte.Repository;
 
 internal class Program
 {
@@ -190,11 +192,19 @@ internal class Program
         builder.Services.AddScoped<IPermisoRepository, PermisoRepository>();
         builder.Services.AddScoped<IPermisoService, PermisoService>();
 
-        builder.Services.AddScoped<IReportesRepository, ReportesRepository>();
         builder.Services.AddScoped<IReportesService, ReportesService>();
+        builder.Services.AddScoped<IServicePrestamos, PrestamoService>();
+        builder.Services.AddScoped<IMantenimientosService, MantenimientosService>();
 
         builder.Services.AddScoped<IMantenimientosService, MantenimientosService>();
         builder.Services.AddScoped<IServicePrestamos, PrestamoService>();
+
+        // Register the Repository first
+        builder.Services.AddScoped<IReporteRepository, ReporteRepository>();
+        builder.Services.AddScoped<IReportesService, ReportesService>();
+
+        // Then your Service (which you likely already have)
+        builder.Services.AddScoped<IReportesService, ReportesService>();
 
 
         builder.Services.AddHttpContextAccessor();

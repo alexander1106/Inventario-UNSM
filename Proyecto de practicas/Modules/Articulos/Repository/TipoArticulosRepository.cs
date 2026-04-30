@@ -60,9 +60,13 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
 
         public async Task<bool> TieneRelacionConArticulosAsync(int id)
         {
-            return await _context.Articulos.AnyAsync(a => a.TipoArticuloId == id);
+            return await _context.Articulo.AnyAsync(a => a.TipoArticuloId == id);
         }
-
+        public async Task<bool> TieneRelacionConCamposAsync(int id)
+        {
+            return await _context.CamposArticulos
+                .AnyAsync(c => c.TipoArticuloId == id);
+        }
         public async Task<TipoArticulo?> GetByIdWithArticulosAsync(int id)
         {
             return await _context.TipoArticulos

@@ -1,5 +1,6 @@
-﻿using global::Proyecto_de_practicas.Modules.Prestamos.DTO;
-using global::Proyecto_de_practicas.Modules.Prestamos.Services.IServices;
+﻿using Proyecto_de_practicas.Config;
+using Proyecto_de_practicas.Modules.Prestamos.DTO;
+using Proyecto_de_practicas.Modules.Prestamos.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Proyecto_de_practicas.Modules.Prestamos.Controllers;
@@ -15,26 +16,42 @@ public class PrestamosController : ControllerBase
         _prestamoService = prestamoService;
     }
 
+    // 🔹 GET ALL
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
         var prestamos = await _prestamoService.GetAllAsync();
-        return Ok(prestamos);
+
+        return Ok(new ApiResponse<object>(
+            true,
+            "Lista de préstamos obtenida correctamente",
+            prestamos
+        ));
     }
 
-    // 🔹 Obtener por ID
+    // 🔹 GET BY ID
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
         var prestamo = await _prestamoService.GetByIdAsync(id);
 
         if (prestamo == null)
-            return NotFound(new { mensaje = "Préstamo no encontrado" });
+        {
+            return NotFound(new ApiResponse<object>(
+                false,
+                "Préstamo no encontrado",
+                null
+            ));
+        }
 
-        return Ok(prestamo);
+        return Ok(new ApiResponse<object>(
+            true,
+            "Préstamo encontrado",
+            prestamo
+        ));
     }
 
-    // 🔹 Crear préstamo
+    // 🔹 CREATE
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreatePrestamoDTO request)
     {
@@ -42,49 +59,77 @@ public class PrestamosController : ControllerBase
         {
             var nuevoPrestamo = await _prestamoService.CreateAsync(request);
 
-            return CreatedAtAction(
-                nameof(GetById),
-                new { id = nuevoPrestamo.Id },
+            return Ok(new ApiResponse<object>(
+                true,
+                "Préstamo creado correctamente",
                 nuevoPrestamo
-            );
+            ));
         }
         catch (Exception ex)
         {
-            return BadRequest(new { mensaje = ex.Message });
+            return BadRequest(new ApiResponse<object>(
+                false,
+                "Error al crear préstamo",
+                null,
+                ex.Message
+            ));
         }
     }
 
-    // 🔹 Actualizar préstamo
+    // 🔹 UPDATE
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, int nuevoEstado)
     {
         var prestamoActualizado = await _prestamoService.UpdateEstadoAsync(id, nuevoEstado);
 
         if (prestamoActualizado == null)
-            return NotFound(new { mensaje = "Préstamo no encontrado" });
+        {
+            return NotFound(new ApiResponse<object>(
+                false,
+                "Préstamo no encontrado",
+                null
+            ));
+        }
 
-        return Ok(prestamoActualizado);
+        return Ok(new ApiResponse<object>(
+            true,
+            "Préstamo actualizado correctamente",
+            prestamoActualizado
+        ));
     }
 
-    // 🔹 Eliminar préstamo
+    // 🔹 DELETE
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
         var eliminado = await _prestamoService.DeleteAsync(id);
 
         if (!eliminado)
-            return NotFound(new { mensaje = "Préstamo no encontrado" });
+        {
+            return NotFound(new ApiResponse<object>(
+                false,
+                "Préstamo no encontrado",
+                null
+            ));
+        }
 
-        return Ok(new { mensaje = "Préstamo eliminado correctamente" });
+        return Ok(new ApiResponse<object>(
+            true,
+            "Préstamo eliminado correctamente",
+            null
+        ));
     }
 
-    // 🔹 Obtener préstamos activos
+    // 🔹 ACTIVOS
     [HttpGet("activos")]
     public async Task<IActionResult> GetActivos()
-    {   
+    {
         var prestamos = await _prestamoService.GetPrestamosActivosAsync();
-        return Ok(prestamos);
+
+        return Ok(new ApiResponse<object>(
+            true,
+            "Préstamos activos obtenidos correctamente",
+            prestamos
+        ));
     }
-
-
 }

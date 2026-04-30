@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Proyecto_de_practicas.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -89,7 +89,8 @@ namespace Proyecto_de_practicas.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -199,12 +200,18 @@ namespace Proyecto_de_practicas.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RolId = table.Column<int>(type: "int", nullable: false),
-                    SubModuloId = table.Column<int>(type: "int", nullable: false),
+                    ModuloId = table.Column<int>(type: "int", nullable: true),
+                    SubModuloId = table.Column<int>(type: "int", nullable: true),
                     PermisoId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RolPermisos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RolPermisos_Modulos_ModuloId",
+                        column: x => x.ModuloId,
+                        principalTable: "Modulos",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_RolPermisos_Permisos_PermisoId",
                         column: x => x.PermisoId,
@@ -221,12 +228,11 @@ namespace Proyecto_de_practicas.Migrations
                         name: "FK_RolPermisos_SubModulos_SubModuloId",
                         column: x => x.SubModuloId,
                         principalTable: "SubModulos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "Articulos",
+                name: "articulos",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -244,15 +250,15 @@ namespace Proyecto_de_practicas.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Articulos", x => x.Id);
+                    table.PrimaryKey("PK_articulos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Articulos_TipoArticulos_TipoArticuloId",
+                        name: "FK_articulos_TipoArticulos_TipoArticuloId",
                         column: x => x.TipoArticuloId,
                         principalTable: "TipoArticulos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Articulos_Ubicaciones_UbicacionId",
+                        name: "FK_articulos_Ubicaciones_UbicacionId",
                         column: x => x.UbicacionId,
                         principalTable: "Ubicaciones",
                         principalColumn: "Id");
@@ -272,17 +278,42 @@ namespace Proyecto_de_practicas.Migrations
                 {
                     table.PrimaryKey("PK_ArticuloCamposValores", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ArticuloCamposValores_Articulos_ArticuloId",
-                        column: x => x.ArticuloId,
-                        principalTable: "Articulos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_ArticuloCamposValores_CamposArticulos_CampoArticuloId",
                         column: x => x.CampoArticuloId,
                         principalTable: "CamposArticulos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ArticuloCamposValores_articulos_ArticuloId",
+                        column: x => x.ArticuloId,
+                        principalTable: "articulos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Mantenimientos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ArticuloId = table.Column<int>(type: "int", nullable: false),
+                    FechaMantenimiento = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ProveedorServicion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Costo = table.Column<double>(type: "float", nullable: false),
+                    TipoMantenimiento = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EstadoMantenimiento = table.Column<bool>(type: "bit", nullable: false),
+                    Estado = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Mantenimientos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Mantenimientos_articulos_ArticuloId",
+                        column: x => x.ArticuloId,
+                        principalTable: "articulos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -302,9 +333,9 @@ namespace Proyecto_de_practicas.Migrations
                 {
                     table.PrimaryKey("PK_Prestamos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Prestamos_Articulos_ArticuloId",
+                        name: "FK_Prestamos_articulos_ArticuloId",
                         column: x => x.ArticuloId,
-                        principalTable: "Articulos",
+                        principalTable: "articulos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -326,12 +357,6 @@ namespace Proyecto_de_practicas.Migrations
                 {
                     table.PrimaryKey("PK_Traslado", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Traslado_Articulos_ArticuloId",
-                        column: x => x.ArticuloId,
-                        principalTable: "Articulos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Traslado_Ubicaciones_UbicacionDestinoId",
                         column: x => x.UbicacionDestinoId,
                         principalTable: "Ubicaciones",
@@ -347,6 +372,12 @@ namespace Proyecto_de_practicas.Migrations
                         name: "FK_Traslado_Usuarios_UsuarioId",
                         column: x => x.UsuarioId,
                         principalTable: "Usuarios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Traslado_articulos_ArticuloId",
+                        column: x => x.ArticuloId,
+                        principalTable: "articulos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -395,12 +426,53 @@ namespace Proyecto_de_practicas.Migrations
                     { 2, 1, "fa-solid fa-tags", 2, "Tipos de Artículo", "/tipos-articulos" },
                     { 3, 1, "fa-solid fa-map-marker", 3, "Ubicaciones", "/ubicaciones" },
                     { 4, 1, "fa-solid fa-layer-group", 3, "Tipos de Ubicación", "/tipo-ubicacion" },
-                    { 5, 1, "fa-solid fa-user", 7, "Usuarios", "/usuarios" },
-                    { 6, 1, "fa-solid fa-user-shield", 7, "Roles", "/roles" },
+                    { 5, 1, "fa-solid fa-user", 8, "Usuarios", "/usuarios" },
+                    { 6, 1, "fa-solid fa-user-shield", 8, "Roles", "/roles" },
                     { 7, 1, "fa-solid fa-key", 8, "Permisos", "/permisos" },
-                    { 8, 1, "fa-solid fa-layer-group", 7, "Modulos", "/modulos" },
-                    { 9, 1, "fa-solid fa-handshake", 6, "Prestamos", "/prestamos" },
-                    { 10, 1, "fa-solid fa-screwdriver-wrench", 7, "Mantenimiento", "/mantenimiento" }
+                    { 8, 1, "fa-solid fa-layer-group", 8, "Modulos", "/modulos" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "RolPermisos",
+                columns: new[] { "Id", "ModuloId", "PermisoId", "RolId", "SubModuloId" },
+                values: new object[,]
+                {
+                    { 1, null, 1, 1, 1 },
+                    { 2, null, 2, 1, 1 },
+                    { 3, null, 3, 1, 1 },
+                    { 4, null, 4, 1, 1 },
+                    { 5, null, 1, 1, 2 },
+                    { 6, null, 2, 1, 2 },
+                    { 7, null, 3, 1, 2 },
+                    { 8, null, 4, 1, 2 },
+                    { 9, null, 1, 1, 3 },
+                    { 10, null, 2, 1, 3 },
+                    { 11, null, 3, 1, 3 },
+                    { 12, null, 4, 1, 3 },
+                    { 13, null, 1, 1, 4 },
+                    { 14, null, 2, 1, 4 },
+                    { 15, null, 3, 1, 4 },
+                    { 16, null, 4, 1, 4 },
+                    { 17, null, 1, 1, 5 },
+                    { 18, null, 2, 1, 5 },
+                    { 19, null, 3, 1, 5 },
+                    { 20, null, 4, 1, 5 },
+                    { 21, null, 1, 1, 6 },
+                    { 22, null, 2, 1, 6 },
+                    { 23, null, 3, 1, 6 },
+                    { 24, null, 4, 1, 6 },
+                    { 25, null, 1, 1, 7 },
+                    { 26, null, 2, 1, 7 },
+                    { 27, null, 3, 1, 7 },
+                    { 28, null, 4, 1, 7 },
+                    { 29, null, 1, 1, 8 },
+                    { 30, null, 2, 1, 8 },
+                    { 31, null, 3, 1, 8 },
+                    { 32, null, 4, 1, 8 },
+                    { 33, null, 3, 2, 1 },
+                    { 34, null, 3, 2, 2 },
+                    { 35, null, 3, 2, 3 },
+                    { 36, null, 3, 2, 4 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -414,13 +486,13 @@ namespace Proyecto_de_practicas.Migrations
                 column: "CampoArticuloId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Articulos_TipoArticuloId",
-                table: "Articulos",
+                name: "IX_articulos_TipoArticuloId",
+                table: "articulos",
                 column: "TipoArticuloId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Articulos_UbicacionId",
-                table: "Articulos",
+                name: "IX_articulos_UbicacionId",
+                table: "articulos",
                 column: "UbicacionId");
 
             migrationBuilder.CreateIndex(
@@ -429,9 +501,19 @@ namespace Proyecto_de_practicas.Migrations
                 column: "TipoArticuloId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Mantenimientos_ArticuloId",
+                table: "Mantenimientos",
+                column: "ArticuloId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Prestamos_ArticuloId",
                 table: "Prestamos",
                 column: "ArticuloId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RolPermisos_ModuloId",
+                table: "RolPermisos",
+                column: "ModuloId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RolPermisos_PermisoId",
@@ -494,6 +576,9 @@ namespace Proyecto_de_practicas.Migrations
                 name: "EncabezadoResult");
 
             migrationBuilder.DropTable(
+                name: "Mantenimientos");
+
+            migrationBuilder.DropTable(
                 name: "Prestamos");
 
             migrationBuilder.DropTable(
@@ -512,22 +597,22 @@ namespace Proyecto_de_practicas.Migrations
                 name: "SubModulos");
 
             migrationBuilder.DropTable(
-                name: "Articulos");
-
-            migrationBuilder.DropTable(
                 name: "Usuarios");
 
             migrationBuilder.DropTable(
+                name: "articulos");
+
+            migrationBuilder.DropTable(
                 name: "Modulos");
+
+            migrationBuilder.DropTable(
+                name: "Roles");
 
             migrationBuilder.DropTable(
                 name: "TipoArticulos");
 
             migrationBuilder.DropTable(
                 name: "Ubicaciones");
-
-            migrationBuilder.DropTable(
-                name: "Roles");
 
             migrationBuilder.DropTable(
                 name: "TipoUbicacion");

@@ -9,5 +9,6 @@ namespace Proyecto_de_practicas.Modules.Security.Repositories.IRepositories
         Task AddAsync(Permiso entity);
         Task UpdateAsync(Permiso entity);
         Task DeleteAsync(int id);
+        Task<Permiso?> GetByNombreAsync(string nombre);
     }
 }

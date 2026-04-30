@@ -70,7 +70,7 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Services
 
             // 🚫 Impedir eliminar si tiene ubicaciones asociadas
             if (tipo.Ubicaciones != null && tipo.Ubicaciones.Any())
-                throw new InvalidOperationException("No se puede eliminar un tipo de ubicación que tiene ubicaciones asociadas.");
+                throw new InvalidOperationException("No se puede eliminar este tipo de ubicación porque tiene registros asociados.");
 
             return await _repo.DeleteAsync(id);
         }

@@ -1,12 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Proyecto_de_practicas.Data;
 using Proyecto_de_practicas.Modules.Articulos.DTO;
 using Proyecto_de_practicas.Modules.Articulos.Entities;
 using Proyecto_de_practicas.Modules.Articulos.Repository.IArticulosRepository;
-using System.Linq;
-using System.Threading.Tasks;
-using System;
-using System.Collections.Generic;
 
 namespace Proyecto_de_practicas.Modules.Articulos.Repository
 {
@@ -21,12 +22,12 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
 
         // 🔹 Obtener todos los artículos
         public async Task<List<Articulo>> GetAllAsync() =>
-            await _context.Articulos.ToListAsync();
+            await _context.Articulo.ToListAsync();
 
         // 🔹 Obtener artículo por ID (con campos dinámicos)
         public async Task<ArticuloDto?> GetByIdConCamposAsync(int id)
         {
-            var articulo = await _context.Articulos.FirstOrDefaultAsync(a => a.Id == id);
+            var articulo = await _context.Articulo.FirstOrDefaultAsync(a => a.Id == id);
             if (articulo == null) return null;
 
             // Traer los valores de campos
@@ -62,24 +63,65 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
 
         // 🔹 Obtener artículo por ID (solo entidad)
         public async Task<Articulo?> GetByIdAsync(int id) =>
-            await _context.Articulos.FirstOrDefaultAsync(x => x.Id == id);
+            await _context.Articulo.FirstOrDefaultAsync(x => x.Id == id);
 
         // 🔹 Obtener artículo por QR
         public async Task<Articulo?> GetByCodigoCortoAsync(string codigoCorto) =>
-            await _context.Articulos.FirstOrDefaultAsync(a => a.QRCodeBase64 == codigoCorto);
+            await _context.Articulo.FirstOrDefaultAsync(a => a.QRCodeBase64 == codigoCorto);
 
         // 🔹 Agregar artículo
         public async Task<Articulo> AddAsync(Articulo articulo)
         {
-            _context.Articulos.Add(articulo);
+            _context.Articulo.Add(articulo);
             await _context.SaveChangesAsync();
             return articulo;
         }
+        public async Task<string> UpdateArticuloConCampos(int id, ArticuloConCamposRequest request)
+        {
+            var camposJson = System.Text.Json.JsonSerializer.Serialize(
+                request.CamposValores.Select(c => new {
+                    campo = _context.CamposArticulos
+                                    .Where(ca => ca.Id == c.CampoArticuloId)
+                                    .Select(ca => ca.NombreCampo)
+                                    .FirstOrDefault(),
+                    valor = c.Valor
+                })
+            );
 
+            await _context.Database.OpenConnectionAsync();
+
+            try
+            {
+                using var command = _context.Database.GetDbConnection().CreateCommand();
+                command.CommandText = "sp_UpdateArticuloConCampos";
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@Id", id));
+                command.Parameters.Add(new SqlParameter("@QRCodeBase64", DBNull.Value));
+                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@CodigoPatrimonial", request.CodigoPatrimonial));
+                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@Nombre", request.Nombre));
+                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@FechaAdquision", request.FechaAdquision));
+                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@ValorAdquisitivo", request.ValorAdquisitivo));
+                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@Condicion", request.Condicion));
+                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@TipoArticuloId", request.TipoArticuloId));
+                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@UbicacionId", request.UbicacionId));
+                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@Estado", request.Estado));
+                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@VidaUtil", request.VidaUtil));
+                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@CamposJSON", camposJson));
+
+                await command.ExecuteNonQueryAsync();
+            }
+            finally
+            {
+                await _context.Database.CloseConnectionAsync();
+            }
+
+            return "Artículo actualizado correctamente con campos dinámicos";
+        }
         // 🔹 Actualizar artículo
         public async Task<Articulo> UpdateAsync(Articulo articulo)
         {
-            _context.Articulos.Update(articulo);
+            _context.Articulo.Update(articulo);
             await _context.SaveChangesAsync();
             return articulo;
         }
@@ -87,69 +129,27 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
         // 🔹 Eliminar artículo
         public async Task<bool> DeleteAsync(int id)
         {
-            var entity = await _context.Articulos.FindAsync(id);
+            var entity = await _context.Articulo.FindAsync(id);
             if (entity == null) return false;
 
-            _context.Articulos.Remove(entity);
+            _context.Articulo.Remove(entity);
             await _context.SaveChangesAsync();
             return true;
         }
 
         // 🔹 Obtener artículos por tipo
         public async Task<List<Articulo>> GetByTipoArticuloIdAsync(int tipoArticuloId) =>
-            await _context.Articulos
+            await _context.Articulo
                 .Where(a => a.TipoArticuloId == tipoArticuloId)
                 .ToListAsync();
 
         // 🔹 Obtener artículos por ubicación
         public async Task<List<Articulo>> GetByUbicacionIdAsync(int ubicacionId) =>
-            await _context.Articulos
+            await _context.Articulo
                 .Where(a => a.UbicacionId == ubicacionId)
                 .ToListAsync();
 
-        /*
-        public async Task<string> UpdateArticuloConCampos(ArticuloDto request)
-        {
-            // 1. Obtener el artículo existente
-            var articulo = await _context.Articulos
-                                         .Include(a => a.CamposValores)
-                                         .FirstOrDefaultAsync(a => a.Id == request.Id);
-
-            if (articulo == null) return "Artículo no encontrado";
-
-            // 2. Actualizar campos fijos
-            articulo.TipoArticuloId = request.TipoArticuloId;
-            articulo.UbicacionId = request.UbicacionId;
-            articulo.Estado = request.Estado;
-
-            // 3. Actualizar campos dinámicos
-            foreach (var campo in request.CamposValores)
-            {
-                if (campo.Id > 0)
-                {
-                    // Existe → actualizar
-                    var existente = articulo.CamposValores.FirstOrDefault(c => c.Id == campo.Id);
-                    if (existente != null)
-                        existente.Valor = campo.Valor;
-                }
-                else
-                {
-                    // Nuevo → agregar
-                    articulo.CamposValores.Add(new ArticuloCampoValor
-                    {
-                        ArticuloId = articulo.Id,
-                        CampoArticuloId = campo.CampoArticuloId,
-                        Valor = campo.Valor
-                    });
-                }
-            }
-
-            await _context.SaveChangesAsync();
-
-            return $"Artículo {articulo.Id} actualizado con {request.CamposValores.Count} campos dinámicos.";
-        }
-        */
-
+        
         // 🔹 Guardar artículo con campos dinámicos
         public async Task<string> GuardarArticuloConCampos(ArticuloConCamposRequest request)
         {
@@ -213,15 +213,14 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
                 await _context.Database.CloseConnectionAsync();
             }
 
-            // 🔹 Obtener artículo recién creado
-            var articulo = await _context.Articulos
+            var articulo = await _context.Articulo
                 .FirstOrDefaultAsync(a => a.CodigoPatrimonial == request.CodigoPatrimonial
                                       && a.TipoArticuloId == request.TipoArticuloId);
 
             if (articulo != null)
             {
                 articulo.QRCodeBase64 = GenerarUrlAngular(articulo.Id);
-                _context.Articulos.Update(articulo);
+                _context.Articulo.Update(articulo);
                 await _context.SaveChangesAsync();
             }
 
@@ -260,7 +259,7 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
         public async Task<List<ArticuloDto>> GetAllConCamposAsync()
         {
             // Traer todos los artículos
-            var articulos = await _context.Articulos.ToListAsync();
+            var articulos = await _context.Articulo.ToListAsync();
             var result = new List<ArticuloDto>();
 
             foreach (var articulo in articulos)

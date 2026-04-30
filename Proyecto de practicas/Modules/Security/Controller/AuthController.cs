@@ -21,12 +21,12 @@ namespace Proyecto_de_practicas.Modules.Security.Controller
             var usuario = await _usuariosService.GetEntityByUsernameAsync(login.Username);
 
             if (usuario == null)
-                return Unauthorized(new { message = "Usuario o contraseña incorrectos" });
+                return Unauthorized(new { message = "Credenciales incorrectos" });
 
             bool esValido = _usuariosService.VerificarPassword(usuario, login.Password);
 
             if (!esValido)
-                return Unauthorized(new { message = "Usuario o contraseña incorrectos" });
+                return Unauthorized(new { message = "Credenciales incorrectos" });
 
             return Ok(new
             {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Proyecto_de_practicas.Config;
 using Proyecto_de_practicas.Modules.Ubicaciones.Entities;
 using Proyecto_de_practicas.Modules.Ubicaciones.Services.IUbicacionesServices;
 
@@ -9,67 +10,121 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Controller
     public class TipoUbicacionController : ControllerBase
     {
         private readonly ITipoUbicacionService _service;
-
         public TipoUbicacionController(ITipoUbicacionService service)
         {
             _service = service;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<TipoUbicacion>>> GetAll()
+        public async Task<ActionResult<ApiResponse<List<TipoUbicacion>>>> GetAll()
         {
             var result = await _service.GetAllAsync();
-            return Ok(result);
+            return Ok(new ApiResponse<List<TipoUbicacion>>(
+                true,
+                "Lista obtenida correctamente",
+                result
+            ));
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<TipoUbicacion>> GetById(int id)
+        public async Task<ActionResult<ApiResponse<TipoUbicacion>>> GetById(int id)
         {
             var result = await _service.GetByIdAsync(id);
-            if (result == null) return NotFound();
-            return Ok(result);
+            if (result == null)
+            {
+                return NotFound(new ApiResponse<TipoUbicacion>(
+                    false,
+                    "No se encontró el registro",
+                    null
+                ));
+            }
+
+            return Ok(new ApiResponse<TipoUbicacion>(
+                true,
+                "Registro encontrado",
+                result
+            ));
         }
 
         [HttpPost]
-        public async Task<ActionResult<TipoUbicacion>> Create([FromBody] TipoUbicacion tipoUbicacion)
+        public async Task<ActionResult<ApiResponse<TipoUbicacion>>> Create([FromBody] TipoUbicacion tipoUbicacion)
         {
             try
             {
                 var result = await _service.AddAsync(tipoUbicacion);
-                return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+                return CreatedAtAction(nameof(GetById), new { id = result.Id },
+                    new ApiResponse<TipoUbicacion>(
+                        true,
+                        "Registro creado correctamente",
+                        result
+                    )
+                );
             }
             catch (InvalidOperationException ex)
             {
-                return BadRequest(ex.Message); // Captura duplicado de nombre
+                return BadRequest(new ApiResponse<TipoUbicacion>(
+                    false,
+                    ex.Message,
+                    null,
+                    ex.Message
+                ));
             }
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<TipoUbicacion>> Update(int id, [FromBody] TipoUbicacion tipoUbicacion)
+        public async Task<ActionResult<ApiResponse<TipoUbicacion>>> Update(int id, [FromBody] TipoUbicacion tipoUbicacion)
         {
             try
             {
                 var result = await _service.UpdateAsync(id, tipoUbicacion);
-                return Ok(result);
+
+                return Ok(new ApiResponse<TipoUbicacion>(
+                    true,
+                    "Registro actualizado correctamente",
+                    result
+                ));
             }
             catch (InvalidOperationException ex)
             {
-                return BadRequest(ex.Message); // Captura duplicado de nombre al actualizar
+                return BadRequest(new ApiResponse<TipoUbicacion>(
+                    false,
+                    ex.Message,
+                    null,
+                    ex.Message
+                ));
             }
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult<ApiResponse<object>>> Delete(int id)
         {
             try
             {
                 var success = await _service.DeleteAsync(id);
-                if (!success) return NotFound();
-                return NoContent();
+
+                if (!success)
+                {
+                    return NotFound(new ApiResponse<object>(
+                        false,
+                        "No se encontró el registro",
+                        null
+                    ));
+                }
+
+                return Ok(new ApiResponse<object>(
+                    true,
+                    "Registro eliminado correctamente",
+                    null
+                ));
             }
             catch (InvalidOperationException ex)
             {
-                return BadRequest(ex.Message); // Captura si hay ubicaciones asociadas
+                return BadRequest(new ApiResponse<object>(
+                    false,
+                    ex.Message,
+                    null,
+                    ex.Message
+                ));
             }
         }
     }

@@ -23,7 +23,16 @@ public class PrestamoService : IServicePrestamos
         var prestamos = await _context.Prestamos
             .Include(p => p.Articulo)
             .ToListAsync();
-        return _mapper.Map<IEnumerable<PrestamoDTO>>(prestamos);
+
+        return prestamos.Select(p => new PrestamoDTO
+        {
+            Id = p.Id,
+            NombreSolicitante = p.NombreSolicitante,
+            FechaPrestamo = p.FechaPrestamo,
+            FechaDevolucion = p.FechaDevolucion,
+            Estado = p.Estado,
+            ArticuloId = p.Articulo.Id
+        });
     }
 
     public async Task<PrestamoDTO?> GetByIdAsync(int id)
@@ -37,7 +46,7 @@ public class PrestamoService : IServicePrestamos
     {
         try
         {
-            var articulo = await _context.Articulos.FindAsync(request.ArticuloId);
+            var articulo = await _context.Articulo.FindAsync(request.ArticuloId);
             if (articulo == null)
                 throw new Exception("Artículo no existe");
 

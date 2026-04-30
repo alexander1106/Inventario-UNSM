@@ -67,7 +67,7 @@ namespace Proyecto_de_practicas.Migrations
 
                     b.HasIndex("UbicacionId");
 
-                    b.ToTable("Articulos");
+                    b.ToTable("articulos");
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.ArticuloCampoValor", b =>
@@ -570,16 +570,21 @@ namespace Proyecto_de_practicas.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("ModuloId")
+                        .HasColumnType("int");
+
                     b.Property<int>("PermisoId")
                         .HasColumnType("int");
 
                     b.Property<int>("RolId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SubModuloId")
+                    b.Property<int?>("SubModuloId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ModuloId");
 
                     b.HasIndex("PermisoId");
 
@@ -892,6 +897,10 @@ namespace Proyecto_de_practicas.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -1023,6 +1032,10 @@ namespace Proyecto_de_practicas.Migrations
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Security.Security.RolPermisos", b =>
                 {
+                    b.HasOne("Proyecto_de_practicas.Modules.Security.Entities.Modulo", "Modulo")
+                        .WithMany()
+                        .HasForeignKey("ModuloId");
+
                     b.HasOne("Proyecto_de_practicas.Modules.Security.Entities.Permiso", "Permiso")
                         .WithMany("RolPermisos")
                         .HasForeignKey("PermisoId")
@@ -1037,9 +1050,9 @@ namespace Proyecto_de_practicas.Migrations
 
                     b.HasOne("Proyecto_de_practicas.Modules.Security.Entities.SubModulo", "SubModulo")
                         .WithMany()
-                        .HasForeignKey("SubModuloId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SubModuloId");
+
+                    b.Navigation("Modulo");
 
                     b.Navigation("Permiso");
 

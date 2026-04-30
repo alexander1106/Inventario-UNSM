@@ -5,6 +5,7 @@ using Proyecto_de_practicas.Modules.Ubicaciones.Entities;
 
 namespace Proyecto_de_practicas.Modules.Articulos.Entities
 {
+    [Table("articulos")]
     public class Articulo
     {
         public int Id { get; set; }
