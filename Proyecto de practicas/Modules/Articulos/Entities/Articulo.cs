@@ -15,7 +15,6 @@ namespace Proyecto_de_practicas.Modules.Articulos.Entities
         public DateTime FechaAdquision { get; set; }
         public double ValorAdquisitivo { get; set; }
         public string? Condicion { get; set; }
-        public string? Descripcion { get; set; }
 
         [Column("vidaUtil")]
         public int VidaUtil { get; set; }

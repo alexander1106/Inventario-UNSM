@@ -31,7 +31,8 @@ namespace Proyecto_de_practicas.Modules.Articulos.Services
 
         public async Task<ArticuloDto?> GetByIdAsync(int id)
         {
-            return await _repo.GetByIdConCamposAsync(id);
+            var entity = await _repo.GetByIdAsync(id);
+            return entity == null ? null : _mapper.Map<ArticuloDto>(entity);
         }
 
         public async Task<ArticuloDto> AddAsync(ArticuloDto dto)

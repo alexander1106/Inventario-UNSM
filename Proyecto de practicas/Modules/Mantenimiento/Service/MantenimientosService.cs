@@ -43,7 +43,6 @@ namespace Proyecto_de_practicas.Modules.Mantenimiento.Service
                 ProveedorServicion = dto.ProveedorServicion,
                 Costo = dto.Costo,
                 TipoMantenimiento = dto.TipoMantenimiento,
-                Observaciones = dto.Observaciones,
                 EstadoMantenimiento = true,
                 Estado = true
             };
@@ -65,7 +64,6 @@ namespace Proyecto_de_practicas.Modules.Mantenimiento.Service
             mantenimiento.ProveedorServicion = dto.ProveedorServicion;
             mantenimiento.Costo = dto.Costo;
             mantenimiento.TipoMantenimiento = dto.TipoMantenimiento;
-            mantenimiento.Observaciones = dto.Observaciones;
             mantenimiento.EstadoMantenimiento = dto.EstadoMantenimiento;
 
             _context.Update(mantenimiento);

@@ -1,3 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
 namespace Proyecto_de_practicas.Modules.Articulos.DTO
 {
     public class ArticuloCampoValorDto
@@ -5,7 +10,6 @@ namespace Proyecto_de_practicas.Modules.Articulos.DTO
         public int Id { get; set; }
         public int ArticuloId { get; set; }
         public int CampoArticuloId { get; set; }
-        public string? NombreCampo { get; set; } // Propiedad para el nombre del campo
-        public string Valor { get; set; } = null!;
+        public string Valor { get; set; }
     }
 }
