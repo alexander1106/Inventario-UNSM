@@ -31,6 +31,7 @@ public class PrestamoService : IServicePrestamos
             FechaPrestamo = p.FechaPrestamo,
             FechaDevolucion = p.FechaDevolucion,
             Estado = p.Estado,
+            EstadoPrestamo= p.EstadoPrestamo,
             ArticuloId = p.Articulo.Id
         });
     }
@@ -51,7 +52,7 @@ public class PrestamoService : IServicePrestamos
                 throw new Exception("Artículo no existe");
 
             var yaPrestado = await _context.Prestamos
-                .AnyAsync(p => p.Articulo.Id == request.ArticuloId && p.Estado == 0);
+                .AnyAsync(p => p.Articulo.Id == request.ArticuloId && p.EstadoPrestamo == true);
 
             if (yaPrestado)
                 throw new Exception("El artículo ya está prestado");
@@ -120,12 +121,12 @@ public class PrestamoService : IServicePrestamos
 
 
     // 🔹 Actualizar solo el estado del préstamo
-    public async Task<PrestamoDTO?> UpdateEstadoAsync(int id, int nuevoEstado)
+    public async Task<PrestamoDTO?> UpdateEstadoPrestamoAsync(int id, Boolean nuevoEstado)
     {
         var prestamo = await _context.Prestamos.FindAsync(id);
         if (prestamo == null) return null;
 
-        prestamo.Estado = nuevoEstado; // 0 = pendiente, 1 = activo, 2 = devuelto, etc.
+        prestamo.EstadoPrestamo = nuevoEstado; // 0 = pendiente, 1 = activo, 2 = devuelto, etc.
         await _context.SaveChangesAsync();
 
         return _mapper.Map<PrestamoDTO>(prestamo);
