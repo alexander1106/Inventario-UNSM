@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography.Xml;
+using Microsoft.EntityFrameworkCore;
 using Proyecto_de_practicas.Modules.Prestamos.DTO;
 using Proyecto_de_practicas.Modules.Prestamos.Repository;
 using Proyecto_de_practicas.Modules.Prestamos.Services.IServices;
@@ -33,7 +34,23 @@ namespace Proyecto_de_practicas.Modules.Prestamos.Services
                 UbicacionId = x.UbicacionId
             }).ToList();
         }
+        public async Task<List<SolicitanteDto>> GetByUsuarioAsync(int usuarioId)
+        {
+            var data = await _repository.GetByUsuarioAsync(usuarioId);
 
+            return data.Select(x => new SolicitanteDto
+            {
+                Id = x.Id,
+                Codigo = x.Codigo,
+                Nombres = x.Nombres,
+                Apellidos = x.Apellidos,
+                Correo = x.Correro,
+                Telefono = x.Telefono,
+                Cargo = x.Cargo,
+                Ciclo = x.Ciclo,
+                UbicacionId = x.UbicacionId
+            }).ToList();
+        }
         public async Task<SolicitanteDto?> GetByIdAsync(int id)
         {
             var x = await _repository.GetByIdAsync(id);

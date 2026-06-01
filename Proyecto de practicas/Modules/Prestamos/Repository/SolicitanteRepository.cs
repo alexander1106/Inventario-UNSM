@@ -49,5 +49,12 @@ namespace Proyecto_de_practicas.Modules.Prestamos.Repository
             _context.Set<Solicitantes>().Remove(solicitante);
             await _context.SaveChangesAsync();
         }
+        public async Task<List<Solicitantes>> GetByUsuarioAsync(int usuarioId)
+        {
+            return await _context.Set<Solicitantes>()
+                .Include(x => x.Ubicacion)
+                .Where(x => x.Ubicacion.UsuarioId == usuarioId)
+                .ToListAsync();
+        }
     }
 }

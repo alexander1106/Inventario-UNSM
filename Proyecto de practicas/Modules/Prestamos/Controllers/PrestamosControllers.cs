@@ -1,7 +1,8 @@
-﻿using Proyecto_de_practicas.Config;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Proyecto_de_practicas.Config;
 using Proyecto_de_practicas.Modules.Prestamos.DTO;
 using Proyecto_de_practicas.Modules.Prestamos.Services.IServices;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Proyecto_de_practicas.Modules.Prestamos.Controllers;
 
@@ -28,8 +29,36 @@ public class PrestamosController : ControllerBase
             prestamos
         ));
     }
+    [HttpPost("upload-pdf")]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> UploadPdf([FromForm] UploadPdfDto request)
+    {
+        try
+        {
+            var ruta = await _prestamoService.UploadPdfAsync(
+                request.PrestamoId,
+                request.File
+            );
 
-    // 🔹 GET BY ID
+            return Ok(new ApiResponse<object>(
+                true,
+                "PDF guardado correctamente",
+                new { ruta }
+            ));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new ApiResponse<object>(
+                false,
+                "Error al subir PDF",
+                null,
+                ex.Message
+            ));
+        }
+    }
+
+
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -78,7 +107,7 @@ public class PrestamosController : ControllerBase
 
     // 🔹 UPDATE
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, Boolean nuevoEstado)
+    public async Task<IActionResult> Update(int id, [FromQuery] bool nuevoEstado)
     {
         var prestamoActualizado = await _prestamoService.UpdateEstadoPrestamoAsync(id, nuevoEstado);
 
@@ -132,4 +161,27 @@ public class PrestamosController : ControllerBase
             prestamos
         ));
     }
+
+
+    [HttpPut("{id}/estado/2")]
+    public async Task<IActionResult> CambiarAEstado(int id)
+    {
+        var resultado = await _prestamoService.CambiarEstadoAsync(id, true);
+
+        if (resultado == null)
+        {
+            return NotFound(new ApiResponse<object>(
+                false,
+                "Préstamo no encontrado",
+                null
+            ));
+        }
+
+        return Ok(new ApiResponse<object>(
+            true,
+            "Se aprobo correctamente el prestamo",
+            resultado
+        ));
+    }
+
 }

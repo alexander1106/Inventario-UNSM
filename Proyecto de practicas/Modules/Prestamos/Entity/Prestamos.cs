@@ -7,12 +7,16 @@ namespace Proyecto_de_practicas.Modules.Articulos.Entities;
 public class Prestamos
 {
     public int Id { get; set; }
+
     public virtual Articulo Articulo { get; set; } = null!;
+
     public string? NombreSolicitante { get; set; }
     public DateTime? FechaPrestamo { get; set; }
     public DateTime? FechaDevolucion { get; set; }
     public int Estado { get; set; } = 1;
     public bool EstadoPrestamo { get; set; }
     public int SolicitanteId { get; set; }
+    public string? RutaPdf { get; set; }
+    public bool Aprobar { get; set; }
     public virtual Solicitantes Solicitante { get; set; } = null!;
 }

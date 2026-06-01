@@ -31,11 +31,38 @@ public class PrestamoService : IServicePrestamos
             FechaPrestamo = p.FechaPrestamo,
             FechaDevolucion = p.FechaDevolucion,
             Estado = p.Estado,
-            EstadoPrestamo= p.EstadoPrestamo,
+            RutaPdf = p.RutaPdf,
+            Aprobar= p.Aprobar,
+            EstadoPrestamo = p.EstadoPrestamo,
             ArticuloId = p.Articulo.Id
         });
     }
+    public async Task<string> UploadPdfAsync(int prestamoId, IFormFile file)
+    {
+        var prestamo = await _context.Prestamos.FindAsync(prestamoId);
 
+        if (prestamo == null)
+            throw new Exception("Préstamo no encontrado");
+
+        var folder = Path.Combine(Directory.GetCurrentDirectory(), "Uploads/Prestamos");
+
+        if (!Directory.Exists(folder))
+            Directory.CreateDirectory(folder);
+
+        var fileName = $"prestamo_{prestamoId}_{Guid.NewGuid()}.pdf";
+        var fullPath = Path.Combine(folder, fileName);
+
+        using (var stream = new FileStream(fullPath, FileMode.Create))
+        {
+            await file.CopyToAsync(stream);
+        }
+
+        prestamo.RutaPdf = $"Uploads/Prestamos/{fileName}";
+
+        await _context.SaveChangesAsync();
+
+        return prestamo.RutaPdf;
+    }
     public async Task<PrestamoDTO?> GetByIdAsync(int id)
     {
         var prestamo = await _context.Prestamos.FindAsync(id);
@@ -68,6 +95,7 @@ public class PrestamoService : IServicePrestamos
 
                 Solicitante = solicitante,   // ✅ CORRECTO
                 SolicitanteId = solicitante.Id, // ✅ CORRECTO
+                Aprobar = false,
 
                 NombreSolicitante = request.NombreSolicitante,
                 FechaPrestamo = request.FechaPrestamo,
@@ -125,9 +153,21 @@ public class PrestamoService : IServicePrestamos
     }
 
 
+    public async Task<PrestamoDTO?> CambiarEstadoAsync(int id, bool estado)
+    {
+        var prestamo = await _context.Prestamos.FindAsync(id);
 
+        if (prestamo == null)
+            return null;
+
+        prestamo.Aprobar = estado; // 👈 AQUÍ cambias a 2
+
+        await _context.SaveChangesAsync();
+
+        return _mapper.Map<PrestamoDTO>(prestamo);
+    }
     // 🔹 Actualizar solo el estado del préstamo
-    public async Task<PrestamoDTO?> UpdateEstadoPrestamoAsync(int id, Boolean nuevoEstado)
+    public async Task<PrestamoDTO?> UpdateEstadoPrestamoAsync(int id, bool nuevoEstado)
     {
         var prestamo = await _context.Prestamos.FindAsync(id);
         if (prestamo == null) return null;

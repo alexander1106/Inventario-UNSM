@@ -30,7 +30,7 @@ public class MappingProfile : Profile
 
         CreateMap<CreatePrestamoDTO, Prestamos>();
         CreateMap<UpdatePrestamosDTO, Prestamos>();
-
+        CreateMap<Prestamos, PrestamoDTO>();
         // ====== MÓDULOS ======
         CreateMap<Modulo, ModuloDTO>();
         CreateMap<ModuloDTO, Modulo>();

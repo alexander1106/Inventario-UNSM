@@ -36,6 +36,17 @@ namespace Proyecto_de_practicas.Modules.Mantenimiento.Service
 
         public async Task<Mantenimientos> Create(MantenimientosCreateDTO dto)
         {
+            // 🔴 VALIDACIÓN: verificar si ya existe mantenimiento activo
+            var existeMantenimientoActivo = await _context.Set<Mantenimientos>()
+                .AnyAsync(m => m.ArticuloId == dto.ArticuloId
+                            && m.EstadoMantenimiento == true
+                            && m.Estado == true);
+
+            if (existeMantenimientoActivo)
+            {
+                throw new Exception("El artículo ya tiene un mantenimiento activo.");
+            }
+
             var mantenimiento = new Mantenimientos
             {
                 ArticuloId = dto.ArticuloId,

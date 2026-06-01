@@ -8,5 +8,6 @@
         Task UpdateAsync(Solicitantes solicitante);
         Task<bool> ExisteCodigoAsync(string codigo);
         Task DeleteAsync(Solicitantes solicitante);
+        Task<List<Solicitantes>> GetByUsuarioAsync(int usuarioId);
     }
 }

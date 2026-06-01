@@ -93,6 +93,18 @@ public async Task<IActionResult> Create(SolicitanteDto dto)
             ));
         }
 
+        [HttpGet("por-usuario/{usuarioId}")]
+        public async Task<IActionResult> GetByUsuario(int usuarioId)
+        {
+            var data = await _service.GetByUsuarioAsync(usuarioId);
+
+            return Ok(new ApiResponse<object>(
+                true,
+                "Solicitantes filtrados por usuario",
+                data
+            ));
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

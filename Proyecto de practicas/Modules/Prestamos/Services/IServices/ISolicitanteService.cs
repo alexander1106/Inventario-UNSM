@@ -9,5 +9,7 @@ namespace Proyecto_de_practicas.Modules.Prestamos.Services.IServices
         Task<SolicitanteDto> CreateAsync(SolicitanteDto dto);
         Task<bool> UpdateAsync(int id, SolicitanteDto dto);
         Task<bool> DeleteAsync(int id);
+        Task<List<SolicitanteDto>> GetByUsuarioAsync(int usuarioId);
+
     }
 }

@@ -34,14 +34,27 @@ namespace Proyecto_de_practicas.Modules.Mantenimiento.Controller
 
             return Ok(data);
         }
-
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] MantenimientosCreateDTO dto)
         {
             var result = await _service.Create(dto);
-            return Ok(result);
-        }
 
+            if (result == null)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = "El artículo ya tiene un mantenimiento activo"
+                });
+            }
+
+            return Ok(new
+            {
+                success = true,
+                message = "Mantenimiento creado correctamente",
+                data = result
+            });
+        }
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateEstado(int id, [FromBody] MantenimientosUpdateDTO dto)
         {

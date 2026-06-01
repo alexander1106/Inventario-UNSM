@@ -9,6 +9,7 @@ namespace Proyecto_de_practicas.Modules.Prestamos.DTO
         public DateTime? FechaDevolucion { get; set; }
 
         public int Estado { get; set; } = 1;
+        
         public bool EstadoPrestamo
         {
             get; set;

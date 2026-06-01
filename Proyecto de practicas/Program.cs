@@ -12,7 +12,6 @@ using Proyecto_de_practicas.Modules.Mantenimiento.Service;
 using Proyecto_de_practicas.Modules.Mantenimiento.Service.IService;
 using Proyecto_de_practicas.Modules.Prestamos.Services;
 using Proyecto_de_practicas.Modules.Prestamos.Services.IServices;
-
 using Proyecto_de_practicas.Modules.Reporte.Service;
 using Proyecto_de_practicas.Modules.Reporte.Service.IService;
 using Proyecto_de_practicas.Modules.Security.Entities;
@@ -63,12 +62,13 @@ internal class Program
         // ========================
         //        CONTROLLERS
         // ========================
-        builder.Services.AddControllers();
-        builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler =
+            System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    });        builder.Services.AddEndpointsApiExplorer();
 
-        // ========================
-        //        SWAGGER + JWT
-        // ========================
         builder.Services.AddSwaggerGen(options =>
         {
             options.SwaggerDoc("v1", new OpenApiInfo
@@ -88,24 +88,25 @@ internal class Program
             });
 
             options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
             {
+                Reference = new OpenApiReference
                 {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                        }
-                    },
-                    new string[] {}
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
                 }
-            });
+            },
+            new string[] {}
+        }
+    });
+
+            // 🔥 IMPORTANTE (esto NO duplica swagger doc)
+            options.CustomSchemaIds(type => type.FullName);
         });
 
-        // ========================
-        //           CORS
-        // ========================
+
         builder.Services.AddCors(options =>
         {
             options.AddPolicy("AllowAll",
@@ -200,16 +201,12 @@ internal class Program
         builder.Services.AddScoped<ISolicitanteService, SolicitanteService>();
         builder.Services.AddScoped<ISolicitanteRepository, SolicitanteRepository>();
 
-        builder.Services.AddScoped<IMantenimientosService, MantenimientosService>();
-        builder.Services.AddScoped<IServicePrestamos, PrestamoService>();
 
         // Register the Repository first
         builder.Services.AddScoped<IReporteRepository, ReporteRepository>();
-        builder.Services.AddScoped<IReportesService, ReportesService>();
 
         // Then your Service (which you likely already have)
-        builder.Services.AddScoped<IReportesService, ReportesService>();
-
+      
 
         builder.Services.AddHttpContextAccessor();
 
@@ -220,10 +217,18 @@ internal class Program
         {
             app.UseSwagger();
             app.UseSwaggerUI();
+            app.UseDeveloperExceptionPage(); // 👈 AGREGAR
         }
 
         app.UseStaticFiles();
 
+        app.UseStaticFiles(new StaticFileOptions
+        {
+            FileProvider = new PhysicalFileProvider(
+                Path.Combine(builder.Environment.ContentRootPath, "Uploads")
+            ),
+            RequestPath = "/Uploads"
+        });
         var imagenesPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "imagenes");
 
         if (!Directory.Exists(imagenesPath))
