@@ -27,5 +27,7 @@ namespace Proyecto_de_practicas.Service
         Task<ArticuloDto?> GetByCodigoCortoAsync(string codigoCorto);
 
         // 🔹 Método agregado para campos dinámicos
+
+        Task<string> ProcesarCargaMasivaExcelAsync(IFormFile archivo);
     }
 }

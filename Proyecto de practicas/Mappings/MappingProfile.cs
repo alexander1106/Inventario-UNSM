@@ -46,12 +46,9 @@ public class MappingProfile : Profile
         CreateMap<RolPermisos, RolPermisos>();
         CreateMap<RolPermisos, RolPermisosDTO>().ReverseMap();
 
-        // ====== UBICACIONES ======
-        CreateMap<Ubicacion, UbicacionDto>();
-        CreateMap<UbicacionDto, Ubicacion>()
-            .ForMember(dest => dest.TipoUbicacion, opt => opt.Ignore());
-        
-
+        CreateMap<Ubicacion, UbicacionDto>()
+            .ForMember(dest => dest.UsuarioId,
+                opt => opt.MapFrom(src => src.UsuarioId));
         // ====== TIPOS DE ARTÍCULO ======
         CreateMap<TipoArticulo, TipoArticuloDTO>()
             .ForMember(dest => dest.Imagen, opt => opt.Ignore())

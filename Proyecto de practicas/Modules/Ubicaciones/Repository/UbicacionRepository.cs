@@ -14,20 +14,32 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Repository
         {
             _context = context;
         }
-
         public async Task<List<Ubicacion>> GetAllAsync()
         {
             return await _context.Ubicaciones
+       .Include(u => u.TipoUbicacion)
+       .Include(u => u.Articulos)
+       .Include(u => u.Usuario)
+       .Include(u => u.Padre)
+       .Include(u => u.Hijos)
+       .ToListAsync();
+        }
+        public async Task<List<Ubicacion>> GetByPadreAsync(int padreId)
+        {
+            return await _context.Ubicaciones
                 .Include(u => u.TipoUbicacion)
-                .Include(u => u.Articulos)
+                .Include(u => u.Usuario)
+                .Include(u => u.Padre)
+                .Include(u => u.Hijos)
+                .Where(u => u.PadreId == padreId)
                 .ToListAsync();
         }
-
         public async Task<Ubicacion?> GetByIdAsync(int id)
         {
             return await _context.Ubicaciones
                 .Include(u => u.TipoUbicacion)
                 .Include(u => u.Articulos)
+                .Include(u => u.Usuario) // 👈 AÑADE ESTO
                 .FirstOrDefaultAsync(u => u.Id == id);
         }
 

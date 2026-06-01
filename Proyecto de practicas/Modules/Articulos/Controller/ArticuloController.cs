@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MiniExcelLibs;
 using Proyecto_de_practicas.Config;
 using Proyecto_de_practicas.Modules.Articulos.DTO;
 using Proyecto_de_practicas.Service;
@@ -188,6 +189,34 @@ namespace Proyecto_de_practicas.Modules.Articulos.Controller
                 $"Datos pivot obtenidos para tipoArticuloId {tipoArticuloId}",
                 result
             ));
+        }
+
+        [HttpPost("cargar-masiva-excel")]
+        public async Task<IActionResult> CargarMasivaExcel(IFormFile archivo)
+        {
+            if (archivo == null || archivo.Length == 0)
+            {
+                return BadRequest(new ApiResponse<object>(false, "Por favor, seleccione un archivo de Excel válido.", null));
+            }
+
+            // Validamos que sea un archivo Excel por la extensión
+            var extension = Path.GetExtension(archivo.FileName).ToLower();
+            if (extension != ".xlsx" && extension != ".xls")
+            {
+                return BadRequest(new ApiResponse<object>(false, "El archivo debe ser un formato de Excel (.xlsx o .xls).", null));
+            }
+
+            try
+            {
+                // El controlador llama al método de la interfaz de servicio
+                var resultadoMensaje = await _service.ProcesarCargaMasivaExcelAsync(archivo);
+
+                return Ok(new ApiResponse<object>(true, resultadoMensaje, null));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ApiResponse<object>(false, $"Error interno al procesar el lote: {ex.Message}", null));
+            }
         }
     }
 }

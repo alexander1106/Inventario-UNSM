@@ -9,6 +9,7 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Repository.IUbicacionesRepos
         Task<Ubicacion> AddAsync(Ubicacion ubicacion);
         Task<Ubicacion> UpdateAsync(Ubicacion ubicacion);
         Task<bool> DeleteAsync(int id);
+        Task<List<Ubicacion>> GetByPadreAsync(int padreId);
     }
 }
 

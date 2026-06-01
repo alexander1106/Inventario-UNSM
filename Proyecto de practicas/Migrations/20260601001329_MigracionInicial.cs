@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Proyecto_de_practicas.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class MigracionInicial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -172,28 +172,6 @@ namespace Proyecto_de_practicas.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Ubicaciones",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Piso = table.Column<int>(type: "int", nullable: false),
-                    TipoUbicacionId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Ubicaciones", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Ubicaciones_TipoUbicacion_TipoUbicacionId",
-                        column: x => x.TipoUbicacionId,
-                        principalTable: "TipoUbicacion",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "RolPermisos",
                 columns: table => new
                 {
@@ -232,6 +210,41 @@ namespace Proyecto_de_practicas.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Ubicaciones",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Piso = table.Column<int>(type: "int", nullable: false),
+                    TipoUbicacionId = table.Column<int>(type: "int", nullable: false),
+                    ImagenUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UsuarioId = table.Column<int>(type: "int", nullable: true),
+                    PadreId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ubicaciones", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Ubicaciones_TipoUbicacion_TipoUbicacionId",
+                        column: x => x.TipoUbicacionId,
+                        principalTable: "TipoUbicacion",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Ubicaciones_Ubicaciones_PadreId",
+                        column: x => x.PadreId,
+                        principalTable: "Ubicaciones",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Ubicaciones_Usuarios_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "Usuarios",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "articulos",
                 columns: table => new
                 {
@@ -246,6 +259,19 @@ namespace Proyecto_de_practicas.Migrations
                     vidaUtil = table.Column<int>(type: "int", nullable: false),
                     TipoArticuloId = table.Column<int>(type: "int", nullable: false),
                     UbicacionId = table.Column<int>(type: "int", nullable: true),
+                    CodigoBarra = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Marca = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Modelo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NroSerie = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Medidas = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Color = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Mayor = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SubCta = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HValorInicial = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    HDeprInicial = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    HDeprAjustada = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    HDeprEjercicio = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ValorNeto = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Estado = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -302,6 +328,7 @@ namespace Proyecto_de_practicas.Migrations
                     ProveedorServicion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Costo = table.Column<double>(type: "float", nullable: false),
                     TipoMantenimiento = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Observaciones = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EstadoMantenimiento = table.Column<bool>(type: "bit", nullable: false),
                     Estado = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -325,7 +352,7 @@ namespace Proyecto_de_practicas.Migrations
                     ArticuloId = table.Column<int>(type: "int", nullable: false),
                     NombreSolicitante = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FechaPrestamo = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    FechaDevolucion = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FechaDevolucion = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Estado = table.Column<int>(type: "int", nullable: false),
                     EstadoPrestamo = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -418,6 +445,16 @@ namespace Proyecto_de_practicas.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "TipoArticulos",
+                columns: new[] { "Id", "Descripcion", "Estado", "ImagenPath", "Nombre" },
+                values: new object[] { 100, "Otros", 1, null, "Otros" });
+
+            migrationBuilder.InsertData(
+                table: "TipoUbicacion",
+                columns: new[] { "Id", "Descripcion", "Nombre" },
+                values: new object[] { 100, "General", "General" });
+
+            migrationBuilder.InsertData(
                 table: "SubModulos",
                 columns: new[] { "Id", "Estado", "Icon", "ModuloId", "Nombre", "Ruta" },
                 values: new object[,]
@@ -431,6 +468,11 @@ namespace Proyecto_de_practicas.Migrations
                     { 7, 1, "fa-solid fa-key", 8, "Permisos", "/permisos" },
                     { 8, 1, "fa-solid fa-layer-group", 8, "Modulos", "/modulos" }
                 });
+
+            migrationBuilder.InsertData(
+                table: "Ubicaciones",
+                columns: new[] { "Id", "Descripcion", "ImagenUrl", "Nombre", "PadreId", "Piso", "TipoUbicacionId", "UsuarioId" },
+                values: new object[] { 100, "Ubicación por defecto para artículos sin ubicación especificada", null, "Otros", null, 0, 100, null });
 
             migrationBuilder.InsertData(
                 table: "RolPermisos",
@@ -556,9 +598,19 @@ namespace Proyecto_de_practicas.Migrations
                 column: "UsuarioId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Ubicaciones_PadreId",
+                table: "Ubicaciones",
+                column: "PadreId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Ubicaciones_TipoUbicacionId",
                 table: "Ubicaciones",
                 column: "TipoUbicacionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ubicaciones_UsuarioId",
+                table: "Ubicaciones",
+                column: "UsuarioId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Usuarios_RolId",
@@ -597,16 +649,10 @@ namespace Proyecto_de_practicas.Migrations
                 name: "SubModulos");
 
             migrationBuilder.DropTable(
-                name: "Usuarios");
-
-            migrationBuilder.DropTable(
                 name: "articulos");
 
             migrationBuilder.DropTable(
                 name: "Modulos");
-
-            migrationBuilder.DropTable(
-                name: "Roles");
 
             migrationBuilder.DropTable(
                 name: "TipoArticulos");
@@ -616,6 +662,12 @@ namespace Proyecto_de_practicas.Migrations
 
             migrationBuilder.DropTable(
                 name: "TipoUbicacion");
+
+            migrationBuilder.DropTable(
+                name: "Usuarios");
+
+            migrationBuilder.DropTable(
+                name: "Roles");
         }
     }
 }

@@ -10,105 +10,111 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Controller
     public class UbicacionController : ControllerBase
     {
         private readonly IUbicacionService _service;
+
         public UbicacionController(IUbicacionService service)
         {
             _service = service;
         }
+        [HttpGet("por-padre/{padreId}")]
+        public async Task<ActionResult<ApiResponse<List<UbicacionDto>>>> GetByPadre(int padreId)
+        {
+            var result = await _service.GetByPadreAsync(padreId);
 
+            return Ok(new ApiResponse<List<UbicacionDto>>(
+                true,
+                result.Any() ? "OK" : "Sin datos",
+                result
+            ));
+        }
         [HttpGet]
         public async Task<ActionResult<ApiResponse<List<UbicacionDto>>>> GetAll()
         {
             var result = await _service.GetAllAsync();
-            return Ok(new ApiResponse<List<UbicacionDto>>(
-                true,
-                "Lista de ubicaciones obtenida correctamente",
-                result
-            ));
+            return Ok(new ApiResponse<List<UbicacionDto>>(true, "Lista obtenida", result));
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<ApiResponse<UbicacionDto>>> GetById(int id)
         {
             var result = await _service.GetByIdAsync(id);
+
             if (result == null)
-            {
-                return NotFound(new ApiResponse<UbicacionDto>(
-                    false,
-                    $"No se encontró ninguna ubicación con el ID {id}",
-                    null
-                ));
-            }
-            return Ok(new ApiResponse<UbicacionDto>(
-                true,
-                "Ubicación encontrada",
-                result
-            ));
+                return NotFound(new ApiResponse<UbicacionDto>(false, "No encontrado", null));
+
+            return Ok(new ApiResponse<UbicacionDto>(true, "OK", result));
         }
 
         [HttpGet("por-tipo/{tipoId}")]
         public async Task<ActionResult<ApiResponse<List<UbicacionDto>>>> GetByTipo(int tipoId)
         {
             var result = await _service.GetByTipoAsync(tipoId);
-            if (result == null || !result.Any())
-            {
-                return NotFound(new ApiResponse<List<UbicacionDto>>(
-                    false,
-                    $"No se encontraron ubicaciones para este tipo de ubicacion",
-                    null
-                ));
-            }
+
             return Ok(new ApiResponse<List<UbicacionDto>>(
                 true,
-                "Ubicaciones encontradas",
+                result.Any() ? "OK" : "Sin datos",
                 result
             ));
         }
 
+        // ✅ CREATE CON IMAGEN
         [HttpPost]
-        public async Task<ActionResult<ApiResponse<UbicacionDto>>> Create([FromBody] UbicacionDto dto)
+        public async Task<ActionResult<ApiResponse<UbicacionDto>>> Create(
+            [FromForm] UbicacionDto dto,
+            IFormFile? imagen)
         {
             try
             {
-                var result = await _service.AddAsync(dto);
+                var result = await _service.AddAsync(dto, imagen);
+
                 return CreatedAtAction(nameof(GetById), new { id = result.Id },
-                    new ApiResponse<UbicacionDto>(
-                        true,
-                        "Ubicación creada correctamente",
-                        result
-                    )
-                );
+                    new ApiResponse<UbicacionDto>(true, "Creado correctamente", result));
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex)
             {
-                return BadRequest(new ApiResponse<UbicacionDto>(
-                    false,
-                    ex.Message,
-                    null,
-                    ex.Message
-                ));
+                return BadRequest(new ApiResponse<UbicacionDto>(false, ex.Message, null));
             }
         }
+        [HttpGet("usuario/{usuarioId}")]
+        public async Task<IActionResult> GetByUsuario(int usuarioId)
+        {
+            var result = await _service.GetByUsuarioAsync(usuarioId);
+            return Ok(result);
+        }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<ApiResponse<UbicacionDto>>> Update(int id, [FromBody] UbicacionDto dto)
+        [HttpPut("{id}/asignar-usuario")]
+        public async Task<IActionResult> AsignarUsuario(int id, [FromBody] AsignarUsuarioUbicacionDto dto)
         {
             try
             {
-                var result = await _service.UpdateAsync(id, dto);
+                var ubicacion = await _service.AsignarUsuarioAsync(id, dto.UsuarioId);
+
                 return Ok(new ApiResponse<UbicacionDto>(
                     true,
-                    "Ubicación actualizada correctamente",
-                    result
+                    "Usuario asignado correctamente",
+                    ubicacion
                 ));
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex)
             {
-                return BadRequest(new ApiResponse<UbicacionDto>(
-                    false,
-                    ex.Message,
-                    null,
-                    ex.Message
-                ));
+                return BadRequest(new ApiResponse<object>(false, ex.Message, null));
+            }
+        }
+        // ✅ UPDATE CON IMAGEN
+        [HttpPut("{id}")]
+        public async Task<ActionResult<ApiResponse<UbicacionDto>>> Update(
+            int id,
+            [FromForm] UbicacionDto dto,
+            IFormFile? imagen)
+        {
+            try
+            {
+                var result = await _service.UpdateAsync(id, dto, imagen);
+
+                return Ok(new ApiResponse<UbicacionDto>(true, "Actualizado", result));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse<UbicacionDto>(false, ex.Message, null));
             }
         }
 
@@ -116,20 +122,11 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Controller
         public async Task<ActionResult<ApiResponse<object>>> Delete(int id)
         {
             var success = await _service.DeleteAsync(id);
-            if (!success)
-            {
-                return NotFound(new ApiResponse<object>(
-                    false,
-                    $"No se encontró la ubicación con ID {id}",
-                    null
-                ));
-            }
 
-            return Ok(new ApiResponse<object>(
-                true,
-                "Ubicación eliminada correctamente",
-                null
-            ));
+            if (!success)
+                return NotFound(new ApiResponse<object>(false, "No encontrado", null));
+
+            return Ok(new ApiResponse<object>(true, "Eliminado", null));
         }
     }
 }

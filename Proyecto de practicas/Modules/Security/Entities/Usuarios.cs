@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Proyecto_de_practicas.Modules.Ubicaciones.Entities;
 
 namespace Proyecto_de_practicas.Modules.Security.Entities
 {

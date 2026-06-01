@@ -12,8 +12,8 @@ using Proyecto_de_practicas.Data;
 namespace Proyecto_de_practicas.Migrations
 {
     [DbContext(typeof(AplicationDBContext))]
-    [Migration("20260429042234_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260601003244_InitialUbicacion")]
+    partial class InitialUbicacion
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,7 +33,13 @@ namespace Proyecto_de_practicas.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("CodigoBarra")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("CodigoPatrimonial")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Color")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Condicion")
@@ -45,10 +51,40 @@ namespace Proyecto_de_practicas.Migrations
                     b.Property<DateTime>("FechaAdquision")
                         .HasColumnType("datetime2");
 
+                    b.Property<decimal>("HDeprAjustada")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("HDeprEjercicio")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("HDeprInicial")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("HValorInicial")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Marca")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Mayor")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Medidas")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Modelo")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Nombre")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("NroSerie")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("QRCodeBase64")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SubCta")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TipoArticuloId")
@@ -59,6 +95,9 @@ namespace Proyecto_de_practicas.Migrations
 
                     b.Property<double>("ValorAdquisitivo")
                         .HasColumnType("float");
+
+                    b.Property<decimal>("ValorNeto")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("VidaUtil")
                         .HasColumnType("int")
@@ -152,7 +191,7 @@ namespace Proyecto_de_practicas.Migrations
                     b.Property<bool>("EstadoPrestamo")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("FechaDevolucion")
+                    b.Property<DateTime?>("FechaDevolucion")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("FechaPrestamo")
@@ -193,6 +232,15 @@ namespace Proyecto_de_practicas.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TipoArticulos");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 100,
+                            Descripcion = "Otros",
+                            Estado = 1,
+                            Nombre = "Otros"
+                        });
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Mantenimiento.Entity.Mantenimientos", b =>
@@ -217,6 +265,9 @@ namespace Proyecto_de_practicas.Migrations
 
                     b.Property<DateTime>("FechaMantenimiento")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Observaciones")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProveedorServicion")
                         .IsRequired()
@@ -911,6 +962,14 @@ namespace Proyecto_de_practicas.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TipoUbicacion");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 100,
+                            Descripcion = "General",
+                            Nombre = "General"
+                        });
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Ubicacion", b =>
@@ -925,9 +984,15 @@ namespace Proyecto_de_practicas.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ImagenUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PadreId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Piso")
                         .HasColumnType("int");
@@ -935,11 +1000,28 @@ namespace Proyecto_de_practicas.Migrations
                     b.Property<int>("TipoUbicacionId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("UsuarioId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("PadreId");
 
                     b.HasIndex("TipoUbicacionId");
 
+                    b.HasIndex("UsuarioId");
+
                     b.ToTable("Ubicaciones");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 100,
+                            Descripcion = "Ubicación por defecto para artículos sin ubicación especificada",
+                            Nombre = "Otros",
+                            Piso = 0,
+                            TipoUbicacionId = 100
+                        });
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.Articulo", b =>
@@ -1101,13 +1183,25 @@ namespace Proyecto_de_practicas.Migrations
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Ubicacion", b =>
                 {
+                    b.HasOne("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Ubicacion", "Padre")
+                        .WithMany("Hijos")
+                        .HasForeignKey("PadreId");
+
                     b.HasOne("Proyecto_de_practicas.Modules.Ubicaciones.Entities.TipoUbicacion", "TipoUbicacion")
                         .WithMany("Ubicaciones")
                         .HasForeignKey("TipoUbicacionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Proyecto_de_practicas.Modules.Security.Entities.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId");
+
+                    b.Navigation("Padre");
+
                     b.Navigation("TipoUbicacion");
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.Articulo", b =>
@@ -1150,6 +1244,8 @@ namespace Proyecto_de_practicas.Migrations
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Ubicacion", b =>
                 {
                     b.Navigation("Articulos");
+
+                    b.Navigation("Hijos");
                 });
 #pragma warning restore 612, 618
         }

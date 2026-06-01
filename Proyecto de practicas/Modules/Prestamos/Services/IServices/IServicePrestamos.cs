@@ -9,7 +9,7 @@ namespace Proyecto_de_practicas.Modules.Prestamos.Services.IServices
         Task<PrestamoDTO> CreateAsync(CreatePrestamoDTO request);
         Task<PrestamoDTO?> UpdateAsync(int id, UpdatePrestamosDTO request);
         Task<bool> DeleteAsync(int id);
-        Task<PrestamoDTO?> UpdateEstadoAsync(int id, int nuevoEstado);
+        Task<PrestamoDTO?> UpdateEstadoPrestamoAsync(int id, Boolean nuevoEstado);
         Task<IEnumerable<PrestamoDTO>> GetPrestamosActivosAsync();
         Task<bool> ExistePrestamoAsync(int id);
         Task<int> CountAsync();

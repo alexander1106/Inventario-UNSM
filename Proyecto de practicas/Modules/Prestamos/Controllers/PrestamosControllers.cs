@@ -78,9 +78,9 @@ public class PrestamosController : ControllerBase
 
     // 🔹 UPDATE
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, int nuevoEstado)
+    public async Task<IActionResult> Update(int id, Boolean nuevoEstado)
     {
-        var prestamoActualizado = await _prestamoService.UpdateEstadoAsync(id, nuevoEstado);
+        var prestamoActualizado = await _prestamoService.UpdateEstadoPrestamoAsync(id, nuevoEstado);
 
         if (prestamoActualizado == null)
         {
