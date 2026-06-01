@@ -42,7 +42,6 @@ public class PrestamoService : IServicePrestamos
         return _mapper.Map<PrestamoDTO>(prestamo);
     }
 
-
     public async Task<PrestamoDTO> CreateAsync(CreatePrestamoDTO request)
     {
         try
@@ -51,15 +50,25 @@ public class PrestamoService : IServicePrestamos
             if (articulo == null)
                 throw new Exception("Artículo no existe");
 
+            var solicitante = await _context.Solicitantes
+                .FindAsync(request.SolicitanteId);
+
+            if (solicitante == null)
+                throw new Exception("Solicitante no existe");
+
             var yaPrestado = await _context.Prestamos
                 .AnyAsync(p => p.Articulo.Id == request.ArticuloId && p.EstadoPrestamo == true);
 
             if (yaPrestado)
                 throw new Exception("El artículo ya está prestado");
-           
+
             var prestamo = new Prestamos
             {
                 Articulo = articulo,
+
+                Solicitante = solicitante,   // ✅ CORRECTO
+                SolicitanteId = solicitante.Id, // ✅ CORRECTO
+
                 NombreSolicitante = request.NombreSolicitante,
                 FechaPrestamo = request.FechaPrestamo,
                 FechaDevolucion = request.FechaDevolucion,
@@ -78,9 +87,6 @@ public class PrestamoService : IServicePrestamos
             throw new Exception($"Error al guardar el préstamo: {inner}");
         }
     }
-
-
-
     // 🔹 Eliminar
     public async Task<bool> DeleteAsync(int id)
     {

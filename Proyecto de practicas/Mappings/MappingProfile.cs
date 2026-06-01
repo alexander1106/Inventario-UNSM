@@ -28,9 +28,6 @@ public class MappingProfile : Profile
         CreateMap<Roles, RolesDTO>();
         CreateMap<RolesDTO, Roles>();
 
-        CreateMap<Prestamos, PrestamoDTO>()
-    .ForMember(dest => dest.NombreArticulo,
-               opt => opt.MapFrom(src => src.Articulo != null ? src.Articulo.Nombre : "Artículo no encontrado"));
         CreateMap<CreatePrestamoDTO, Prestamos>();
         CreateMap<UpdatePrestamosDTO, Prestamos>();
 

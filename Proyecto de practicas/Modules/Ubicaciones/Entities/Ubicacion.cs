@@ -30,7 +30,8 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Entities
 
         [JsonIgnore]
         public virtual Ubicacion? Padre { get; set; }
-
+        public virtual ICollection<Solicitantes> Solicitantes { get; set; }
+    = new List<Solicitantes>();
         public virtual ICollection<Ubicacion> Hijos { get; set; } = new List<Ubicacion>();
     }
 }

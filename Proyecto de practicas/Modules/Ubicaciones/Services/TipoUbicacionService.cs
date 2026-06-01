@@ -57,7 +57,10 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Services
                 throw new InvalidOperationException("Ya existe un tipo de ubicación con ese nombre.");
 
             // ✅ Actualizar los campos permitidos
+
             existing.Nombre = tipoUbicacion.Nombre;
+            existing.Descripcion = tipoUbicacion.Descripcion;
+
 
             var result = await _repo.UpdateAsync(existing);
             return _mapper.Map<TipoUbicacion>(result);

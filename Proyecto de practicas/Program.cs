@@ -38,6 +38,7 @@ using Proyecto_de_practicas.Service;
 using Serilog;
 using Proyecto_de_practicas.Modules.Reporte.Repository.IRepository;
 using Proyecto_de_practicas.Modules.Reporte.Repository;
+using Proyecto_de_practicas.Modules.Prestamos.Repository;
 
 internal class Program
 {
@@ -195,6 +196,9 @@ internal class Program
         builder.Services.AddScoped<IReportesService, ReportesService>();
         builder.Services.AddScoped<IServicePrestamos, PrestamoService>();
         builder.Services.AddScoped<IMantenimientosService, MantenimientosService>();
+
+        builder.Services.AddScoped<ISolicitanteService, SolicitanteService>();
+        builder.Services.AddScoped<ISolicitanteRepository, SolicitanteRepository>();
 
         builder.Services.AddScoped<IMantenimientosService, MantenimientosService>();
         builder.Services.AddScoped<IServicePrestamos, PrestamoService>();

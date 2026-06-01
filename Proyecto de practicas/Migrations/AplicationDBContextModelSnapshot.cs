@@ -149,7 +149,7 @@ namespace Proyecto_de_practicas.Migrations
                     b.Property<bool>("EstadoPrestamo")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("FechaDevolucion")
+                    b.Property<DateTime?>("FechaDevolucion")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("FechaPrestamo")
@@ -158,9 +158,14 @@ namespace Proyecto_de_practicas.Migrations
                     b.Property<string>("NombreSolicitante")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("SolicitanteId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ArticuloId");
+
+                    b.HasIndex("SolicitanteId");
 
                     b.ToTable("Prestamos");
                 });
@@ -214,6 +219,9 @@ namespace Proyecto_de_practicas.Migrations
 
                     b.Property<DateTime>("FechaMantenimiento")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Observaciones")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProveedorServicion")
                         .IsRequired()
@@ -922,9 +930,15 @@ namespace Proyecto_de_practicas.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ImagenUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PadreId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Piso")
                         .HasColumnType("int");
@@ -932,11 +946,64 @@ namespace Proyecto_de_practicas.Migrations
                     b.Property<int>("TipoUbicacionId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("UsuarioId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("PadreId");
 
                     b.HasIndex("TipoUbicacionId");
 
+                    b.HasIndex("UsuarioId");
+
                     b.ToTable("Ubicaciones");
+                });
+
+            modelBuilder.Entity("Solicitantes", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Apellidos")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Cargo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Ciclo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Codigo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Correro")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Nombres")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Telefono")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UbicacionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UbicacionId");
+
+                    b.ToTable("Solicitantes");
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.Articulo", b =>
@@ -994,7 +1061,15 @@ namespace Proyecto_de_practicas.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Solicitantes", "Solicitante")
+                        .WithMany("Prestamo")
+                        .HasForeignKey("SolicitanteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Articulo");
+
+                    b.Navigation("Solicitante");
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Mantenimiento.Entity.Mantenimientos", b =>
@@ -1098,13 +1173,36 @@ namespace Proyecto_de_practicas.Migrations
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Ubicacion", b =>
                 {
+                    b.HasOne("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Ubicacion", "Padre")
+                        .WithMany("Hijos")
+                        .HasForeignKey("PadreId");
+
                     b.HasOne("Proyecto_de_practicas.Modules.Ubicaciones.Entities.TipoUbicacion", "TipoUbicacion")
                         .WithMany("Ubicaciones")
                         .HasForeignKey("TipoUbicacionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Proyecto_de_practicas.Modules.Security.Entities.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId");
+
+                    b.Navigation("Padre");
+
                     b.Navigation("TipoUbicacion");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("Solicitantes", b =>
+                {
+                    b.HasOne("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Ubicacion", "Ubicacion")
+                        .WithMany("Solicitantes")
+                        .HasForeignKey("UbicacionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Ubicacion");
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.Articulo", b =>
@@ -1147,6 +1245,15 @@ namespace Proyecto_de_practicas.Migrations
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Ubicacion", b =>
                 {
                     b.Navigation("Articulos");
+
+                    b.Navigation("Hijos");
+
+                    b.Navigation("Solicitantes");
+                });
+
+            modelBuilder.Entity("Solicitantes", b =>
+                {
+                    b.Navigation("Prestamo");
                 });
 #pragma warning restore 612, 618
         }

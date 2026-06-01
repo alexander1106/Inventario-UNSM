@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Proyecto_de_practicas.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class primeramigracion : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -172,28 +172,6 @@ namespace Proyecto_de_practicas.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Ubicaciones",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Piso = table.Column<int>(type: "int", nullable: false),
-                    TipoUbicacionId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Ubicaciones", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Ubicaciones_TipoUbicacion_TipoUbicacionId",
-                        column: x => x.TipoUbicacionId,
-                        principalTable: "TipoUbicacion",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "RolPermisos",
                 columns: table => new
                 {
@@ -232,6 +210,41 @@ namespace Proyecto_de_practicas.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Ubicaciones",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Piso = table.Column<int>(type: "int", nullable: false),
+                    TipoUbicacionId = table.Column<int>(type: "int", nullable: false),
+                    ImagenUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UsuarioId = table.Column<int>(type: "int", nullable: true),
+                    PadreId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ubicaciones", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Ubicaciones_TipoUbicacion_TipoUbicacionId",
+                        column: x => x.TipoUbicacionId,
+                        principalTable: "TipoUbicacion",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Ubicaciones_Ubicaciones_PadreId",
+                        column: x => x.PadreId,
+                        principalTable: "Ubicaciones",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Ubicaciones_Usuarios_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "Usuarios",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "articulos",
                 columns: table => new
                 {
@@ -262,6 +275,32 @@ namespace Proyecto_de_practicas.Migrations
                         column: x => x.UbicacionId,
                         principalTable: "Ubicaciones",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Solicitantes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Codigo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Nombres = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Apellidos = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Correro = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Cargo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Ciclo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UbicacionId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Solicitantes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Solicitantes_Ubicaciones_UbicacionId",
+                        column: x => x.UbicacionId,
+                        principalTable: "Ubicaciones",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -302,6 +341,7 @@ namespace Proyecto_de_practicas.Migrations
                     ProveedorServicion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Costo = table.Column<double>(type: "float", nullable: false),
                     TipoMantenimiento = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Observaciones = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EstadoMantenimiento = table.Column<bool>(type: "bit", nullable: false),
                     Estado = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -310,30 +350,6 @@ namespace Proyecto_de_practicas.Migrations
                     table.PrimaryKey("PK_Mantenimientos", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Mantenimientos_articulos_ArticuloId",
-                        column: x => x.ArticuloId,
-                        principalTable: "articulos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Prestamos",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ArticuloId = table.Column<int>(type: "int", nullable: false),
-                    NombreSolicitante = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FechaPrestamo = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    FechaDevolucion = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Estado = table.Column<int>(type: "int", nullable: false),
-                    EstadoPrestamo = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Prestamos", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Prestamos_articulos_ArticuloId",
                         column: x => x.ArticuloId,
                         principalTable: "articulos",
                         principalColumn: "Id",
@@ -376,6 +392,37 @@ namespace Proyecto_de_practicas.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Traslado_articulos_ArticuloId",
+                        column: x => x.ArticuloId,
+                        principalTable: "articulos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Prestamos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ArticuloId = table.Column<int>(type: "int", nullable: false),
+                    NombreSolicitante = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FechaPrestamo = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    FechaDevolucion = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Estado = table.Column<int>(type: "int", nullable: false),
+                    EstadoPrestamo = table.Column<bool>(type: "bit", nullable: false),
+                    SolicitanteId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Prestamos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Prestamos_Solicitantes_SolicitanteId",
+                        column: x => x.SolicitanteId,
+                        principalTable: "Solicitantes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Prestamos_articulos_ArticuloId",
                         column: x => x.ArticuloId,
                         principalTable: "articulos",
                         principalColumn: "Id",
@@ -511,6 +558,11 @@ namespace Proyecto_de_practicas.Migrations
                 column: "ArticuloId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Prestamos_SolicitanteId",
+                table: "Prestamos",
+                column: "SolicitanteId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RolPermisos_ModuloId",
                 table: "RolPermisos",
                 column: "ModuloId");
@@ -529,6 +581,11 @@ namespace Proyecto_de_practicas.Migrations
                 name: "IX_RolPermisos_SubModuloId",
                 table: "RolPermisos",
                 column: "SubModuloId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Solicitantes_UbicacionId",
+                table: "Solicitantes",
+                column: "UbicacionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SubModulos_ModuloId",
@@ -556,9 +613,19 @@ namespace Proyecto_de_practicas.Migrations
                 column: "UsuarioId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Ubicaciones_PadreId",
+                table: "Ubicaciones",
+                column: "PadreId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Ubicaciones_TipoUbicacionId",
                 table: "Ubicaciones",
                 column: "TipoUbicacionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ubicaciones_UsuarioId",
+                table: "Ubicaciones",
+                column: "UsuarioId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Usuarios_RolId",
@@ -591,22 +658,19 @@ namespace Proyecto_de_practicas.Migrations
                 name: "CamposArticulos");
 
             migrationBuilder.DropTable(
+                name: "Solicitantes");
+
+            migrationBuilder.DropTable(
                 name: "Permisos");
 
             migrationBuilder.DropTable(
                 name: "SubModulos");
 
             migrationBuilder.DropTable(
-                name: "Usuarios");
-
-            migrationBuilder.DropTable(
                 name: "articulos");
 
             migrationBuilder.DropTable(
                 name: "Modulos");
-
-            migrationBuilder.DropTable(
-                name: "Roles");
 
             migrationBuilder.DropTable(
                 name: "TipoArticulos");
@@ -616,6 +680,12 @@ namespace Proyecto_de_practicas.Migrations
 
             migrationBuilder.DropTable(
                 name: "TipoUbicacion");
+
+            migrationBuilder.DropTable(
+                name: "Usuarios");
+
+            migrationBuilder.DropTable(
+                name: "Roles");
         }
     }
 }

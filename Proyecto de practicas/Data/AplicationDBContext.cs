@@ -24,6 +24,7 @@ namespace Proyecto_de_practicas.Data
         public DbSet<Prestamos> Prestamos { get; set; }
 
         public DbSet<Articulo> Articulo { get; set; }
+        public DbSet<Solicitantes> Solicitantes { get; set; }
         public DbSet<Mantenimientos> Mantenimientos { get; set; }
 
         public DbSet<CampoArticulo> CamposArticulos { get; set; }
@@ -51,7 +52,7 @@ namespace Proyecto_de_practicas.Data
                 new Modulo { Id = 8, Nombre = "Seguridad", Ruta = "/seguridad", Icon = "fa-solid fa-shield-alt", Estado = 1 }
             );
 
-     
+
             modelBuilder.Entity<Roles>().HasData(
                 new Roles { Id = 1, Nombre = "Administrador", Estado = 1 },
                 new Roles { Id = 2, Nombre = "Usuario", Estado = 1 }
@@ -63,7 +64,7 @@ namespace Proyecto_de_practicas.Data
             modelBuilder.Entity<SubModulo>().HasData(
                 new SubModulo { Id = 1, Nombre = "Artículos", Ruta = "/articulos", ModuloId = 2, Icon = "fa-solid fa-box-open", Estado = 1 },
                 new SubModulo { Id = 2, Nombre = "Tipos de Artículo", Ruta = "/tipos-articulos", ModuloId = 2, Icon = "fa-solid fa-tags", Estado = 1 },
- 
+
                 new SubModulo { Id = 3, Nombre = "Ubicaciones", Ruta = "/ubicaciones", ModuloId = 3, Icon = "fa-solid fa-map-marker", Estado = 1 },
                 new SubModulo { Id = 4, Nombre = "Tipos de Ubicación", Ruta = "/tipo-ubicacion", ModuloId = 3, Icon = "fa-solid fa-layer-group", Estado = 1 },
 
@@ -71,7 +72,7 @@ namespace Proyecto_de_practicas.Data
                 new SubModulo { Id = 6, Nombre = "Roles", Ruta = "/roles", ModuloId = 8, Icon = "fa-solid fa-user-shield", Estado = 1 },
                 new SubModulo { Id = 7, Nombre = "Permisos", Ruta = "/permisos", ModuloId = 8, Icon = "fa-solid fa-key", Estado = 1 },
                 new SubModulo { Id = 8, Nombre = "Modulos", Ruta = "/modulos", ModuloId = 8, Icon = "fa-solid fa-layer-group", Estado = 1 }
-            
+
 
 
                 );
@@ -82,7 +83,7 @@ namespace Proyecto_de_practicas.Data
                 .WithMany()
                 .HasForeignKey(u => u.RolId)
                 .OnDelete(DeleteBehavior.Restrict); // 🔥 CLAVE
-       
+
             modelBuilder.Entity<Permiso>().HasData(
                 new Permiso { Id = 1, Nombre = "Crear", Activo = true },
                 new Permiso { Id = 2, Nombre = "Editar", Activo = true },
@@ -166,8 +167,8 @@ namespace Proyecto_de_practicas.Data
                 .HasForeignKey(u => u.UsuarioId)
                 .IsRequired(false); // 👈 CLAVE
 
-
-            modelBuilder.Entity<Traslado>(entity =>
+         
+        modelBuilder.Entity<Traslado>(entity =>
             {
                 entity.HasOne(t => t.Articulo)
                       .WithMany()
@@ -190,6 +191,11 @@ namespace Proyecto_de_practicas.Data
                       .HasForeignKey(t => t.UbicacionDestinoId)
                       .OnDelete(DeleteBehavior.Restrict);
             });
+            modelBuilder.Entity<Solicitantes>()
+          .HasOne(s => s.Ubicacion)
+          .WithMany(u => u.Solicitantes)
+          .HasForeignKey(s => s.UbicacionId)
+          .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

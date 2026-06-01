@@ -29,7 +29,6 @@
     <Folder Include="Mappings\" />
     <Folder Include="Migrations\" />
     <Folder Include="Modules\Mantenimiento\Repository\" />
-    <Folder Include="Modules\Prestamos\Repository\" />
   </ItemGroup>
 
 </Project>
