@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,17 +20,17 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
             _context = context;
         }
 
-        // 🔹 Obtener todos los artículos
+        // 🔹 Obtener todos los artículos (Entidad base)
         public async Task<List<Articulo>> GetAllAsync() =>
-            await _context.Articulo.ToListAsync();
+            await _context.Articulos.ToListAsync();
 
-        // 🔹 Obtener artículo por ID (con campos dinámicos)
+        // 🔹 Obtener artículo por ID (con campos dinámicos y nuevos atributos)
         public async Task<ArticuloDto?> GetByIdConCamposAsync(int id)
         {
-            var articulo = await _context.Articulo.FirstOrDefaultAsync(a => a.Id == id);
+            var articulo = await _context.Articulos.FirstOrDefaultAsync(a => a.Id == id);
             if (articulo == null) return null;
 
-            // Traer los valores de campos
+            // Traer los valores de campos dinámicos
             var camposValores = await _context.ArticuloCamposValores
                 .Where(cv => cv.ArticuloId == id)
                 .Select(cv => new ArticuloCampoValorDto
@@ -41,7 +41,7 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
                     Valor = cv.Valor
                 }).ToListAsync();
 
-            // Mapear al DTO del artículo
+            // Mapear al DTO del artículo incluyendo los campos nuevos
             var articuloDto = new ArticuloDto
             {
                 Id = articulo.Id,
@@ -49,12 +49,28 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
                 CodigoPatrimonial = articulo.CodigoPatrimonial,
                 Nombre = articulo.Nombre,
                 FechaAdquision = articulo.FechaAdquision,
-                ValorAdquisitivo = articulo.ValorAdquisitivo,
+                ValorAdquisitivo = (decimal)articulo.ValorAdquisitivo, // Casteo seguro a decimal
                 Condicion = articulo.Condicion,
                 TipoArticuloId = articulo.TipoArticuloId,
                 UbicacionId = articulo.UbicacionId,
                 VidaUtil = articulo.VidaUtil,
                 Estado = articulo.Estado,
+
+                // ✨ Nuevos campos asignados al DTO
+                CodigoBarra = articulo.CodigoBarra,
+                Marca = articulo.Marca,
+                Modelo = articulo.Modelo,
+                NroSerie = articulo.NroSerie,
+                Medidas = articulo.Medidas,
+                Color = articulo.Color,
+                Mayor = articulo.Mayor,
+                SubCta = articulo.SubCta,
+                HValorInicial = articulo.HValorInicial,
+                HDeprInicial = articulo.HDeprInicial,
+                HDeprAjustada = articulo.HDeprAjustada,
+                HDeprEjercicio = articulo.HDeprEjercicio,
+                ValorNeto = articulo.ValorNeto,
+
                 CamposValores = camposValores
             };
 
@@ -63,19 +79,21 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
 
         // 🔹 Obtener artículo por ID (solo entidad)
         public async Task<Articulo?> GetByIdAsync(int id) =>
-            await _context.Articulo.FirstOrDefaultAsync(x => x.Id == id);
+            await _context.Articulos.FirstOrDefaultAsync(x => x.Id == id);
 
         // 🔹 Obtener artículo por QR
         public async Task<Articulo?> GetByCodigoCortoAsync(string codigoCorto) =>
-            await _context.Articulo.FirstOrDefaultAsync(a => a.QRCodeBase64 == codigoCorto);
+            await _context.Articulos.FirstOrDefaultAsync(a => a.QRCodeBase64 == codigoCorto);
 
-        // 🔹 Agregar artículo
+        // 🔹 Agregar artículo (Entidad básica)
         public async Task<Articulo> AddAsync(Articulo articulo)
         {
-            _context.Articulo.Add(articulo);
+            _context.Articulos.Add(articulo);
             await _context.SaveChangesAsync();
             return articulo;
         }
+
+        // 🔹 Actualizar artículo mediante Stored Procedure con Campos Dinámicos e Historiales
         public async Task<string> UpdateArticuloConCampos(int id, ArticuloConCamposRequest request)
         {
             var camposJson = System.Text.Json.JsonSerializer.Serialize(
@@ -96,18 +114,33 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
                 command.CommandText = "sp_UpdateArticuloConCampos";
                 command.CommandType = System.Data.CommandType.StoredProcedure;
 
-                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@Id", id));
-                command.Parameters.Add(new SqlParameter("@QRCodeBase64", DBNull.Value));
-                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@CodigoPatrimonial", request.CodigoPatrimonial));
-                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@Nombre", request.Nombre));
-                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@FechaAdquision", request.FechaAdquision));
-                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@ValorAdquisitivo", request.ValorAdquisitivo));
-                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@Condicion", request.Condicion));
-                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@TipoArticuloId", request.TipoArticuloId));
-                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@UbicacionId", request.UbicacionId));
-                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@Estado", request.Estado));
-                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@VidaUtil", request.VidaUtil));
-                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@CamposJSON", camposJson));
+                command.Parameters.Add(new SqlParameter("@ArticuloId", id)); command.Parameters.Add(new SqlParameter("@QRCodeBase64", DBNull.Value));
+                command.Parameters.Add(new SqlParameter("@CodigoPatrimonial", request.CodigoPatrimonial ?? (object)DBNull.Value));
+                command.Parameters.Add(new SqlParameter("@Nombre", request.Nombre ?? (object)DBNull.Value));
+                command.Parameters.Add(new SqlParameter("@FechaAdquision", request.FechaAdquision));
+                command.Parameters.Add(new SqlParameter("@ValorAdquisitivo", request.ValorAdquisitivo));
+                command.Parameters.Add(new SqlParameter("@Condicion", request.Condicion ?? (object)DBNull.Value));
+                command.Parameters.Add(new SqlParameter("@TipoArticuloId", request.TipoArticuloId));
+                command.Parameters.Add(new SqlParameter("@UbicacionId", request.UbicacionId ?? (object)DBNull.Value));
+                command.Parameters.Add(new SqlParameter("@Estado", request.Estado));
+                command.Parameters.Add(new SqlParameter("@VidaUtil", request.VidaUtil ?? (object)DBNull.Value));
+
+                // ✨ Parámetros de los nuevos campos agregados al SP de actualización
+                command.Parameters.Add(new SqlParameter("@CodigoBarra", request.CodigoBarra ?? (object)DBNull.Value));
+                command.Parameters.Add(new SqlParameter("@Marca", request.Marca ?? (object)DBNull.Value));
+                command.Parameters.Add(new SqlParameter("@Modelo", request.Modelo ?? (object)DBNull.Value));
+                command.Parameters.Add(new SqlParameter("@NroSerie", request.NroSerie ?? (object)DBNull.Value));
+                command.Parameters.Add(new SqlParameter("@Medidas", request.Medidas ?? (object)DBNull.Value));
+                command.Parameters.Add(new SqlParameter("@Color", request.Color ?? (object)DBNull.Value));
+                command.Parameters.Add(new SqlParameter("@Mayor", request.Mayor ?? (object)DBNull.Value));
+                command.Parameters.Add(new SqlParameter("@SubCta", request.SubCta ?? (object)DBNull.Value));
+                command.Parameters.Add(new SqlParameter("@HValorInicial", request.HValorInicial));
+                command.Parameters.Add(new SqlParameter("@HDeprInicial", request.HDeprInicial));
+                command.Parameters.Add(new SqlParameter("@HDeprAjustada", request.HDeprAjustada));
+                command.Parameters.Add(new SqlParameter("@HDeprEjercicio", request.HDeprEjercicio));
+                command.Parameters.Add(new SqlParameter("@ValorNeto", request.ValorNeto));
+
+                command.Parameters.Add(new SqlParameter("@CamposJSON", camposJson));
 
                 await command.ExecuteNonQueryAsync();
             }
@@ -118,10 +151,11 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
 
             return "Artículo actualizado correctamente con campos dinámicos";
         }
-        // 🔹 Actualizar artículo
+
+        // 🔹 Actualizar artículo (Entidad básica)
         public async Task<Articulo> UpdateAsync(Articulo articulo)
         {
-            _context.Articulo.Update(articulo);
+            _context.Articulos.Update(articulo);
             await _context.SaveChangesAsync();
             return articulo;
         }
@@ -129,64 +163,54 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
         // 🔹 Eliminar artículo
         public async Task<bool> DeleteAsync(int id)
         {
-            var entity = await _context.Articulo.FindAsync(id);
+            var entity = await _context.Articulos.FindAsync(id);
             if (entity == null) return false;
 
-            _context.Articulo.Remove(entity);
+            _context.Articulos.Remove(entity);
             await _context.SaveChangesAsync();
             return true;
         }
 
         // 🔹 Obtener artículos por tipo
         public async Task<List<Articulo>> GetByTipoArticuloIdAsync(int tipoArticuloId) =>
-            await _context.Articulo
+            await _context.Articulos
                 .Where(a => a.TipoArticuloId == tipoArticuloId)
                 .ToListAsync();
 
         // 🔹 Obtener artículos por ubicación
         public async Task<List<Articulo>> GetByUbicacionIdAsync(int ubicacionId) =>
-            await _context.Articulo
+            await _context.Articulos
                 .Where(a => a.UbicacionId == ubicacionId)
                 .ToListAsync();
 
-        
-        // 🔹 Guardar artículo con campos dinámicos
+        // 🔹 Guardar artículo con campos dinámicos mediante Stored Procedure
         public async Task<string> GuardarArticuloConCampos(ArticuloConCamposRequest request)
         {
-            // 🔹 Validar request
             if (request == null)
                 throw new Exception("El request está vacío");
 
-            if (request.CamposValores == null || !request.CamposValores.Any())
-                throw new Exception("No se enviaron campos");
+            
 
-            // 🔹 Obtener IDs de campos enviados
-            var camposIds = request.CamposValores
-                .Select(c => c.CampoArticuloId)
-                .ToList();
+            var camposIds = request.CamposValores.Select(c => c.CampoArticuloId).ToList();
 
-            // 🔹 Traer todos los campos en una sola consulta (evita N+1)
             var camposDb = await _context.CamposArticulos
                 .Where(ca => camposIds.Contains(ca.Id))
                 .ToDictionaryAsync(ca => ca.Id, ca => ca.NombreCampo);
 
-            // 🔹 Validar que todos los campos existan
             foreach (var id in camposIds)
             {
                 if (!camposDb.ContainsKey(id))
                     throw new Exception($"El CampoArticuloId {id} no existe en la base de datos");
             }
 
-            // 🔹 Construir JSON correctamente
             var camposJson = System.Text.Json.JsonSerializer.Serialize(
                 request.CamposValores.Select(c => new
                 {
-                    campo = camposDb[c.CampoArticuloId], // ya validado
+                    campo = camposDb[c.CampoArticuloId],
                     valor = c.Valor
                 })
             );
 
-            // 🔹 Ejecutar SP
             await _context.Database.OpenConnectionAsync();
             try
             {
@@ -194,17 +218,33 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
                 command.CommandText = "sp_GuardarArticuloConCampos";
                 command.CommandType = System.Data.CommandType.StoredProcedure;
 
-                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@QRCodeBase64", ""));
-                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@CodigoPatrimonial", request.CodigoPatrimonial ?? ""));
-                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@Nombre", request.Nombre ?? ""));
-                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@FechaAdquision", request.FechaAdquision));
-                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@ValorAdquisitivo", request.ValorAdquisitivo));
-                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@Condicion", request.Condicion ?? ""));
-                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@TipoArticuloId", request.TipoArticuloId));
-                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@UbicacionId", request.UbicacionId));
-                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@Estado", request.Estado));
-                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@VidaUtil", request.VidaUtil));
-                command.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@CamposJSON", camposJson));
+                command.Parameters.Add(new SqlParameter("@QRCodeBase64", ""));
+                command.Parameters.Add(new SqlParameter("@CodigoPatrimonial", request.CodigoPatrimonial ?? ""));
+                command.Parameters.Add(new SqlParameter("@Nombre", request.Nombre ?? ""));
+                command.Parameters.Add(new SqlParameter("@FechaAdquision", request.FechaAdquision));
+                command.Parameters.Add(new SqlParameter("@ValorAdquisitivo", request.ValorAdquisitivo));
+                command.Parameters.Add(new SqlParameter("@Condicion", request.Condicion ?? ""));
+                command.Parameters.Add(new SqlParameter("@TipoArticuloId", request.TipoArticuloId));
+                command.Parameters.Add(new SqlParameter("@UbicacionId", request.UbicacionId ?? (object)DBNull.Value));
+                command.Parameters.Add(new SqlParameter("@Estado", request.Estado));
+                command.Parameters.Add(new SqlParameter("@VidaUtil", request.VidaUtil ?? (object)DBNull.Value));
+
+                // ✨ Parámetros de los nuevos campos agregados al SP de guardado
+                command.Parameters.Add(new SqlParameter("@CodigoBarra", request.CodigoBarra ?? (object)DBNull.Value));
+                command.Parameters.Add(new SqlParameter("@Marca", request.Marca ?? (object)DBNull.Value));
+                command.Parameters.Add(new SqlParameter("@Modelo", request.Modelo ?? (object)DBNull.Value));
+                command.Parameters.Add(new SqlParameter("@NroSerie", request.NroSerie ?? (object)DBNull.Value));
+                command.Parameters.Add(new SqlParameter("@Medidas", request.Medidas ?? (object)DBNull.Value));
+                command.Parameters.Add(new SqlParameter("@Color", request.Color ?? (object)DBNull.Value));
+                command.Parameters.Add(new SqlParameter("@Mayor", request.Mayor ?? (object)DBNull.Value));
+                command.Parameters.Add(new SqlParameter("@SubCta", request.SubCta ?? (object)DBNull.Value));
+                command.Parameters.Add(new SqlParameter("@HValorInicial", request.HValorInicial));
+                command.Parameters.Add(new SqlParameter("@HDeprInicial", request.HDeprInicial));
+                command.Parameters.Add(new SqlParameter("@HDeprAjustada", request.HDeprAjustada));
+                command.Parameters.Add(new SqlParameter("@HDeprEjercicio", request.HDeprEjercicio));
+                command.Parameters.Add(new SqlParameter("@ValorNeto", request.ValorNeto));
+
+                command.Parameters.Add(new SqlParameter("@CamposJSON", camposJson));
 
                 await command.ExecuteNonQueryAsync();
             }
@@ -213,58 +253,33 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
                 await _context.Database.CloseConnectionAsync();
             }
 
-            var articulo = await _context.Articulo
+            var articulo = await _context.Articulos
                 .FirstOrDefaultAsync(a => a.CodigoPatrimonial == request.CodigoPatrimonial
                                       && a.TipoArticuloId == request.TipoArticuloId);
 
             if (articulo != null)
             {
                 articulo.QRCodeBase64 = GenerarUrlAngular(articulo.Id);
-                _context.Articulo.Update(articulo);
+                _context.Articulos.Update(articulo);
                 await _context.SaveChangesAsync();
             }
 
             return "Artículo guardado correctamente con QR URL.";
         }
 
-        // 🔹 Generar URL completa para Angular
         private string GenerarUrlAngular(int articuloId)
         {
-            string baseUrl = "http://localhost:4200/tipos-articulos/articulo/";
-            return baseUrl + articuloId;
+            return "http://localhost:4200/tipos-articulos/articulo/" + articuloId;
         }
 
-        private string GenerarCodigoCorto(string codigoPatrimonial, int articuloId)
-        {
-            codigoPatrimonial = codigoPatrimonial.Length > 6
-                ? codigoPatrimonial[^6..]
-                : codigoPatrimonial.PadLeft(6, '0');
-
-            string idBase36 = ConvertToBase36(articuloId).PadLeft(4, '0');
-            return codigoPatrimonial + idBase36;
-        }
-
-        private string ConvertToBase36(int value)
-        {
-            const string chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            string result = "";
-            while (value > 0)
-            {
-                result = chars[value % 36] + result;
-                value /= 36;
-            }
-            return string.IsNullOrEmpty(result) ? "0" : result;
-        }
-        // 🔹 Obtener todos los artículos con sus campos dinámicos
+        // 🔹 Obtener todos los artículos con sus campos dinámicos mapeados
         public async Task<List<ArticuloDto>> GetAllConCamposAsync()
         {
-            // Traer todos los artículos
-            var articulos = await _context.Articulo.ToListAsync();
+            var articulos = await _context.Articulos.ToListAsync();
             var result = new List<ArticuloDto>();
 
             foreach (var articulo in articulos)
             {
-                // Traer los valores de los campos para cada artículo
                 var camposValores = await _context.ArticuloCamposValores
                     .Where(cv => cv.ArticuloId == articulo.Id)
                     .Select(cv => new ArticuloCampoValorDto
@@ -275,7 +290,6 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
                         Valor = cv.Valor
                     }).ToListAsync();
 
-                // Mapear al DTO del artículo incluyendo campos
                 result.Add(new ArticuloDto
                 {
                     Id = articulo.Id,
@@ -283,19 +297,34 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
                     CodigoPatrimonial = articulo.CodigoPatrimonial,
                     Nombre = articulo.Nombre,
                     FechaAdquision = articulo.FechaAdquision,
-                    ValorAdquisitivo = articulo.ValorAdquisitivo,
+                    ValorAdquisitivo = (decimal)articulo.ValorAdquisitivo,
                     Condicion = articulo.Condicion,
                     TipoArticuloId = articulo.TipoArticuloId,
                     UbicacionId = articulo.UbicacionId,
                     VidaUtil = articulo.VidaUtil,
                     Estado = articulo.Estado,
+
+                    // ✨ Mapeo masivo en el listado general
+                    CodigoBarra = articulo.CodigoBarra,
+                    Marca = articulo.Marca,
+                    Modelo = articulo.Modelo,
+                    NroSerie = articulo.NroSerie,
+                    Medidas = articulo.Medidas,
+                    Color = articulo.Color,
+                    Mayor = articulo.Mayor,
+                    SubCta = articulo.SubCta,
+                    HValorInicial = articulo.HValorInicial,
+                    HDeprInicial = articulo.HDeprInicial,
+                    HDeprAjustada = articulo.HDeprAjustada,
+                    HDeprEjercicio = articulo.HDeprEjercicio,
+                    ValorNeto = articulo.ValorNeto,
+
                     CamposValores = camposValores
                 });
             }
 
             return result;
         }
-
 
         // 🔹 Obtener campos por tipo de artículo
         public async Task<List<CampoArticuloDto>> GetCamposPorTipoArticuloAsync(int tipoArticuloId)
@@ -339,6 +368,50 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
             }
 
             return result;
+        }
+
+        public async Task<string> ProcesarCargaMasivaExcel(List<object> filas)
+        {
+            int insertados = 0;
+            int errores = 0;
+
+            foreach (IDictionary<string, object> fila in filas)
+            {
+                try
+                {
+                    // Mapeas las columnas de tu Excel tal cual tengan los nombres en la primera fila
+                    var nuevoArticulo = new ArticuloConCamposRequest
+                    {
+                        CodigoPatrimonial = fila.ContainsKey("CodigoPatrimonial") ? fila["CodigoPatrimonial"]?.ToString() : "",
+                        Nombre = fila.ContainsKey("Nombre") ? fila["Nombre"]?.ToString() : "Artículo Sin Nombre",
+                        FechaAdquision = DateTime.Now, // O mapear si viene en el Excel
+                        Condicion = fila.ContainsKey("Condicion") ? fila["Condicion"]?.ToString() : "Usado",
+                        TipoArticuloId = fila.ContainsKey("TipoId") ? Convert.ToInt32(fila["TipoId"]) : 1, // Tipo por defecto
+                        Estado = 1,
+
+                        // 🔥 AQUÍ LA MAGIA: Si el Excel no trae Ubicación, le encajamos el ID 100 directo
+                        UbicacionId = fila.ContainsKey("UbicacionId") && fila["UbicacionId"] != null
+                            ? Convert.ToInt32(fila["UbicacionId"])
+                            : 100,
+
+                        // Campos contables que agregaste antes
+                        Marca = fila.ContainsKey("Marca") ? fila["Marca"]?.ToString() : null,
+                        Modelo = fila.ContainsKey("Modelo") ? fila["Modelo"]?.ToString() : null,
+                        NroSerie = fila.ContainsKey("NroSerie") ? fila["NroSerie"]?.ToString() : null,
+                        CamposValores = new List<CampoValorDto>() // Lista vacía gracias a tu cambio anterior de permitir nulos/vacíos 🙌
+                    };
+
+                    // Llamas a tu método normal de guardar que ya no te rebota por CamposValores vacíos
+                    await GuardarArticuloConCampos(nuevoArticulo);
+                    insertados++;
+                }
+                catch
+                {
+                    errores++;
+                }
+            }
+
+            return $"Proceso terminado. Éxito: {insertados} registros. Errores saltados: {errores}.";
         }
     }
 }

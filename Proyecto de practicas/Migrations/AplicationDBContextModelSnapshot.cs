@@ -30,7 +30,13 @@ namespace Proyecto_de_practicas.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("CodigoBarra")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("CodigoPatrimonial")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Color")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Condicion")
@@ -42,10 +48,40 @@ namespace Proyecto_de_practicas.Migrations
                     b.Property<DateTime>("FechaAdquision")
                         .HasColumnType("datetime2");
 
+                    b.Property<decimal>("HDeprAjustada")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("HDeprEjercicio")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("HDeprInicial")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("HValorInicial")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Marca")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Mayor")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Medidas")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Modelo")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Nombre")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("NroSerie")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("QRCodeBase64")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SubCta")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TipoArticuloId")
@@ -57,6 +93,9 @@ namespace Proyecto_de_practicas.Migrations
                     b.Property<double>("ValorAdquisitivo")
                         .HasColumnType("float");
 
+                    b.Property<decimal>("ValorNeto")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("VidaUtil")
                         .HasColumnType("int")
                         .HasColumnName("vidaUtil");
@@ -67,7 +106,7 @@ namespace Proyecto_de_practicas.Migrations
 
                     b.HasIndex("UbicacionId");
 
-                    b.ToTable("articulos");
+                    b.ToTable("Articulos", (string)null);
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.ArticuloCampoValor", b =>
@@ -140,6 +179,9 @@ namespace Proyecto_de_practicas.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("Aprobar")
+                        .HasColumnType("bit");
+
                     b.Property<int>("ArticuloId")
                         .HasColumnType("int");
 
@@ -156,6 +198,9 @@ namespace Proyecto_de_practicas.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("NombreSolicitante")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RutaPdf")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SolicitanteId")
@@ -195,6 +240,15 @@ namespace Proyecto_de_practicas.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TipoArticulos");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 100,
+                            Descripcion = "Otros",
+                            Estado = 1,
+                            Nombre = "Otros"
+                        });
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Mantenimiento.Entity.Mantenimientos", b =>
@@ -916,6 +970,14 @@ namespace Proyecto_de_practicas.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TipoUbicacion");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 100,
+                            Descripcion = "General",
+                            Nombre = "General"
+                        });
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Ubicacion", b =>
@@ -958,6 +1020,16 @@ namespace Proyecto_de_practicas.Migrations
                     b.HasIndex("UsuarioId");
 
                     b.ToTable("Ubicaciones");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 100,
+                            Descripcion = "Ubicación por defecto para artículos sin ubicación especificada",
+                            Nombre = "Otros",
+                            Piso = 0,
+                            TipoUbicacionId = 100
+                        });
                 });
 
             modelBuilder.Entity("Solicitantes", b =>

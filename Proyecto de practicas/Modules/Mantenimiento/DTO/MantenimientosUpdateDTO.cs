@@ -1,4 +1,4 @@
-﻿namespace Proyecto_de_practicas.Modules.Mantenimiento.DTO
+namespace Proyecto_de_practicas.Modules.Mantenimiento.DTO
 {
     public class MantenimientosUpdateDTO
     {

@@ -34,7 +34,30 @@ public class PrestamoService : IServicePrestamos
             RutaPdf = p.RutaPdf,
             Aprobar= p.Aprobar,
             EstadoPrestamo = p.EstadoPrestamo,
-            ArticuloId = p.Articulo.Id
+            ArticuloId = p.Articulo.Id,
+            SolicitanteId =p.SolicitanteId
+        });
+    }
+
+    public async Task<IEnumerable<PrestamoDTO>> GetByUbicacionAsync(int ubicacionId)
+    {
+        var prestamos = await _context.Prestamos
+            .Include(p => p.Articulo)
+            .Where(p => p.Articulo.UbicacionId == ubicacionId)
+            .ToListAsync();
+
+        return prestamos.Select(p => new PrestamoDTO
+        {
+            Id = p.Id,
+            NombreSolicitante = p.NombreSolicitante,
+            FechaPrestamo = p.FechaPrestamo,
+            FechaDevolucion = p.FechaDevolucion,
+            Estado = p.Estado,
+            RutaPdf = p.RutaPdf,
+            Aprobar = p.Aprobar,
+            EstadoPrestamo = p.EstadoPrestamo,
+            ArticuloId = p.Articulo.Id,
+            SolicitanteId = p.SolicitanteId
         });
     }
     public async Task<string> UploadPdfAsync(int prestamoId, IFormFile file)
@@ -73,7 +96,7 @@ public class PrestamoService : IServicePrestamos
     {
         try
         {
-            var articulo = await _context.Articulo.FindAsync(request.ArticuloId);
+            var articulo = await _context.Articulos.FindAsync(request.ArticuloId);
             if (articulo == null)
                 throw new Exception("Artículo no existe");
 

@@ -1,4 +1,4 @@
-﻿using Proyecto_de_practicas.Modules.Articulos.DTO;
+﻿ using Proyecto_de_practicas.Modules.Articulos.DTO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,6 +12,7 @@ namespace Proyecto_de_practicas.Service
         Task<ArticuloDto> UpdateAsync(int id, ArticuloDto dto);
 
         // 🔹 Métodos para campos dinámicos
+
         Task<List<CampoArticuloDto>> GetCamposPorTipoArticuloAsync(int tipoArticuloId);
 
         // 🔹 Nuevo: obtener todos con campos
@@ -27,5 +28,7 @@ namespace Proyecto_de_practicas.Service
         Task<ArticuloDto?> GetByCodigoCortoAsync(string codigoCorto);
 
         // 🔹 Método agregado para campos dinámicos
+
+        Task<string> ProcesarCargaMasivaExcelAsync(IFormFile archivo, int ubicacionId);
     }
 }

@@ -58,9 +58,14 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
             return true;
         }
 
+        public async Task<List<Articulo>> GetByUbicacionIdAsync(int ubicacionId) =>
+    await _context.Articulos
+        .Where(a => a.UbicacionId == ubicacionId)
+        .ToListAsync();
+
         public async Task<bool> TieneRelacionConArticulosAsync(int id)
         {
-            return await _context.Articulo.AnyAsync(a => a.TipoArticuloId == id);
+            return await _context.Articulos.AnyAsync(a => a.TipoArticuloId == id);
         }
         public async Task<bool> TieneRelacionConCamposAsync(int id)
         {

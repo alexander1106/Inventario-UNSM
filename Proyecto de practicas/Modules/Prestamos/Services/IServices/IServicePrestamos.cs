@@ -15,6 +15,7 @@ namespace Proyecto_de_practicas.Modules.Prestamos.Services.IServices
         Task<int> CountAsync();
         Task<string> UploadPdfAsync(int prestamoId, IFormFile file);
         Task<PrestamoDTO?> CambiarEstadoAsync(int id, bool estado);
+        Task<IEnumerable<PrestamoDTO>> GetByUbicacionAsync(int ubicacionId);
     }
 }
 

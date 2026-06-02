@@ -1,10 +1,15 @@
-﻿namespace Proyecto_de_practicas.Modules.Articulos.DTO
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace Proyecto_de_practicas.Modules.Articulos.DTO
 {
     public class ArticuloCampoValorDto
     {
         public int Id { get; set; }
         public int ArticuloId { get; set; }
         public int CampoArticuloId { get; set; }
-        public string Valor { get; set; } = null!;
+        public string Valor { get; set; }
     }
 }

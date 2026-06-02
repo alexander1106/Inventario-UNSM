@@ -25,9 +25,10 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository.IArticulosRepositor
         // Métodos para artículos con campos dinámicos
         Task<string> GuardarArticuloConCampos(ArticuloConCamposRequest request);
         Task<List<ArticuloDto>> GetAllConCamposAsync();
-
         Task<Articulo?> GetByCodigoCortoAsync(string codigoCorto);
         Task<List<CampoArticuloDto>> GetCamposPorTipoArticuloAsync(int tipoArticuloId);
+        Task<ArticuloDto?> GetByIdConCamposAsync(int id);
 
+        Task<string> ProcesarCargaMasivaExcel(List<object> filas);
     }
 }

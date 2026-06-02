@@ -1,4 +1,4 @@
-﻿using global::Proyecto_de_practicas.Data;
+using global::Proyecto_de_practicas.Data;
 using global::Proyecto_de_practicas.Modules.Mantenimiento.DTO;
 using global::Proyecto_de_practicas.Modules.Mantenimiento.Entity;
 using global::Proyecto_de_practicas.Modules.Mantenimiento.Service.IService;

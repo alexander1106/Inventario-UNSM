@@ -161,7 +161,17 @@ public class PrestamosController : ControllerBase
             prestamos
         ));
     }
+    [HttpGet("ubicacion/{ubicacionId}")]
+    public async Task<IActionResult> GetByUbicacion(int ubicacionId)
+    {
+        var prestamos = await _prestamoService.GetByUbicacionAsync(ubicacionId);
 
+        return Ok(new ApiResponse<object>(
+            true,
+            "Préstamos filtrados por ubicación",
+            prestamos
+        ));
+    }
 
     [HttpPut("{id}/estado/2")]
     public async Task<IActionResult> CambiarAEstado(int id)

@@ -59,9 +59,6 @@ internal class Program
         // 🔥 CONECTAR SERILOG
         builder.Host.UseSerilog();
 
-        // ========================
-        //        CONTROLLERS
-        // ========================
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -202,11 +199,11 @@ builder.Services.AddControllers()
         builder.Services.AddScoped<ISolicitanteRepository, SolicitanteRepository>();
 
 
-        // Register the Repository first
         builder.Services.AddScoped<IReporteRepository, ReporteRepository>();
 
-        // Then your Service (which you likely already have)
-      
+
+        builder.Services.AddScoped<IReportesService, ReportesService>();
+
 
         builder.Services.AddHttpContextAccessor();
 
