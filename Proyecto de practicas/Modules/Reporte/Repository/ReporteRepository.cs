@@ -68,11 +68,16 @@ namespace Proyecto_de_practicas.Modules.Reporte.Repository
                         {
                             prestQuery = prestQuery.Where(p =>
                                 p.Articulo != null &&
-                                p.Articulo.UbicacionId.HasValue &&
-                                filtros.UbicacionIds.Contains(p.Articulo.UbicacionId.Value)
+                                p.Articulo.Ubicacion != null &&
+                                (
+                                    (p.Articulo.UbicacionId.HasValue &&
+                                     filtros.UbicacionIds.Contains(p.Articulo.UbicacionId.Value))
+                                    ||
+                                    (p.Articulo.Ubicacion.PadreId.HasValue &&
+                                     filtros.UbicacionIds.Contains(p.Articulo.Ubicacion.PadreId.Value))
+                                )
                             );
                         }
-
                         if (filtros.FechaInicio.HasValue)
                             prestQuery = prestQuery.Where(p => p.FechaPrestamo >= filtros.FechaInicio);
 
@@ -165,7 +170,6 @@ namespace Proyecto_de_practicas.Modules.Reporte.Repository
 
                         break;
                     }
-
                 case 3: // TRASLADOS
                     {
                         var trasQuery = _context.Traslado
@@ -180,11 +184,14 @@ namespace Proyecto_de_practicas.Modules.Reporte.Repository
                         if (filtros.FechaFin.HasValue)
                             trasQuery = trasQuery.Where(t => t.FechaTraslado <= filtros.FechaFin);
 
-                        if (filtros.UbicacionOrigenId > 0)
-                            trasQuery = trasQuery.Where(t => t.UbicacionOrigenId == filtros.UbicacionOrigenId);
-
-                        if (filtros.UbicacionDestinoId > 0)
-                            trasQuery = trasQuery.Where(t => t.UbicacionDestinoId == filtros.UbicacionDestinoId);
+                        // 🔥 FILTRO POR UBICACIONES SELECCIONADAS
+                        if (filtros.UbicacionIds != null && filtros.UbicacionIds.Any())
+                        {
+                            trasQuery = trasQuery.Where(t =>
+                                filtros.UbicacionIds.Contains(t.UbicacionOrigenId) ||
+                                filtros.UbicacionIds.Contains(t.UbicacionDestinoId)
+                            );
+                        }
 
                         var traslados = await trasQuery.AsNoTracking().ToListAsync();
 
@@ -204,7 +211,7 @@ namespace Proyecto_de_practicas.Modules.Reporte.Repository
                         }).ToList();
 
                         break;
-                    }
+                    }   
             }
             // --- LÓGICA DINÁMICA PARA EL GRÁFICO ---
             if (filtros.FechaInicio.HasValue && filtros.FechaFin.HasValue)

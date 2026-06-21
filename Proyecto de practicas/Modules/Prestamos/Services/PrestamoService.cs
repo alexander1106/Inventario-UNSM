@@ -6,7 +6,9 @@ using Proyecto_de_practicas.Data;
 using Proyecto_de_practicas.Modules.Articulos.Entities;
 using Proyecto_de_practicas.Modules.Prestamos.DTO;
 using Proyecto_de_practicas.Modules.Prestamos.Services.IServices;
-
+using PdfSharpCore.Pdf;
+using PdfSharpCore.Pdf.IO;
+using PdfSharpCore.Drawing;
 public class PrestamoService : IServicePrestamos
 {
     private readonly AplicationDBContext _context;
@@ -39,11 +41,15 @@ public class PrestamoService : IServicePrestamos
         });
     }
 
-    public async Task<IEnumerable<PrestamoDTO>> GetByUbicacionAsync(int ubicacionId)
+    public async Task<IEnumerable<PrestamoDTO>> GetByUbicacionAsync(int tipoUbicacionId)
     {
         var prestamos = await _context.Prestamos
             .Include(p => p.Articulo)
-            .Where(p => p.Articulo.UbicacionId == ubicacionId)
+                .ThenInclude(a => a.Ubicacion)
+            .Where(p =>
+                p.Articulo.Ubicacion.PadreId == tipoUbicacionId ||
+                p.Articulo.Ubicacion.TipoUbicacionId == tipoUbicacionId
+            )
             .ToListAsync();
 
         return prestamos.Select(p => new PrestamoDTO
@@ -137,6 +143,27 @@ public class PrestamoService : IServicePrestamos
             var inner = ex.InnerException?.Message ?? ex.Message;
             throw new Exception($"Error al guardar el préstamo: {inner}");
         }
+    }
+    private void AgregarSello(string rutaPdf)
+    {
+        var document = PdfReader.Open(rutaPdf, PdfDocumentOpenMode.Modify);
+
+        foreach (var page in document.Pages)
+        {
+            var gfx = XGraphics.FromPdfPage(page);
+
+            var font = new XFont("Arial", 40, XFontStyle.Bold);
+
+            gfx.DrawString(
+                "APROBADO",
+                font,
+                XBrushes.Red,
+                new XRect(0, 0, page.Width, page.Height),
+                XStringFormats.Center
+            );
+        }
+
+        document.Save(rutaPdf);
     }
     // 🔹 Eliminar
     public async Task<bool> DeleteAsync(int id)

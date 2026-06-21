@@ -203,7 +203,14 @@ builder.Services.AddControllers()
 
 
         builder.Services.AddScoped<IReportesService, ReportesService>();
-
+        //Ubicaciones service
+        builder.Services.AddScoped<ISedesService, SedesService>();
+        builder.Services.AddScoped<IFacultadesService, FacultadesService>();
+        builder.Services.AddScoped<IEscuelasService, EscuelasService>();
+        //ubicaacion respository
+        builder.Services.AddScoped<ISedesRepository, SedesRepository>();
+        builder.Services.AddScoped<IFacultadesRepository, FacultadesRepository>();
+        builder.Services.AddScoped<IEscuelasRepository, EscuelasRepository>();
 
         builder.Services.AddHttpContextAccessor();
 

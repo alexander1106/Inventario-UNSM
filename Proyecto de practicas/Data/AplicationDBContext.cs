@@ -34,6 +34,10 @@ namespace Proyecto_de_practicas.Data
         public DbSet<Ubicacion> Ubicaciones { get; set; }
         public DbSet<Traslado> Traslado { get; set; }
 
+        // Ubicacion
+        public DbSet<Sedes> Sedes { get; set; }
+        public DbSet<Facultades> Facultades { get; set; }
+        public DbSet<Escuelas> Escuelas { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -51,7 +55,14 @@ namespace Proyecto_de_practicas.Data
                 new Modulo { Id = 5, Nombre = "Prestamos", Ruta = "/prestamos", Icon = "fa-solid fa-handshake", Estado = 1 },
                 new Modulo { Id = 6, Nombre = "Mantenimiento", Ruta = "/mantenimiento", Icon = "fa-solid fa-screwdriver-wrench", Estado = 1 },
                 new Modulo { Id = 7, Nombre = "Reportes", Ruta = "/reportes", Icon = "fa-solid fa-chart-line", Estado = 1 },
-                new Modulo { Id = 8, Nombre = "Seguridad", Ruta = "/seguridad", Icon = "fa-solid fa-shield-alt", Estado = 1 }
+                new Modulo { Id = 8, Nombre = "Seguridad", Ruta = "/seguridad", Icon = "fa-solid fa-shield-alt", Estado = 1 },
+                new Modulo { Id = 9, Nombre = "Sedes", Ruta = "/sedes", Icon = "fa-solid fa-shield-alt", Estado = 1 },
+                new Modulo { Id = 10, Nombre = "Facultades", Ruta = "/facultades", Icon = "fa-solid fa-shield-alt", Estado = 1 },
+                new Modulo { Id = 11, Nombre = "Escuelas", Ruta = "/escuelas", Icon = "fa-solid fa-shield-alt", Estado = 1 },
+                new Modulo { Id = 12, Nombre = "Inventario", Ruta = "/inventario", Icon = "fa-solid fa-shield-alt", Estado = 1 }
+
+
+
             );
             modelBuilder.Entity<Articulo>().ToTable("Articulos");
 
@@ -66,7 +77,6 @@ namespace Proyecto_de_practicas.Data
             modelBuilder.Entity<SubModulo>().HasData(
                 new SubModulo { Id = 1, Nombre = "Artículos", Ruta = "/articulos", ModuloId = 2, Icon = "fa-solid fa-box-open", Estado = 1 },
                 new SubModulo { Id = 2, Nombre = "Tipos de Artículo", Ruta = "/tipos-articulos", ModuloId = 2, Icon = "fa-solid fa-tags", Estado = 1 },
-
                 new SubModulo { Id = 3, Nombre = "Ubicaciones", Ruta = "/ubicaciones", ModuloId = 3, Icon = "fa-solid fa-map-marker", Estado = 1 },
                 new SubModulo { Id = 4, Nombre = "Tipos de Ubicación", Ruta = "/tipo-ubicacion", ModuloId = 3, Icon = "fa-solid fa-layer-group", Estado = 1 },
                 new SubModulo { Id = 5, Nombre = "Usuarios", Ruta = "/usuarios", ModuloId = 8, Icon = "fa-solid fa-user", Estado = 1 },
@@ -172,6 +182,7 @@ namespace Proyecto_de_practicas.Data
                 new RolPermisos { Id = 34, RolId = 2, SubModuloId = 2, PermisoId = 3 },
                 new RolPermisos { Id = 35, RolId = 2, SubModuloId = 3, PermisoId = 3 },
                 new RolPermisos { Id = 36, RolId = 2, SubModuloId = 4, PermisoId = 3 }
+
             );
 
             modelBuilder.Entity<ArticuloCampoValor>()
@@ -187,10 +198,10 @@ namespace Proyecto_de_practicas.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Ubicacion>()
-                .HasOne(u => u.Usuario)
-                .WithMany()
-                .HasForeignKey(u => u.UsuarioId)
-                .IsRequired(false); // 👈 CLAVE
+         .HasOne(u => u.Escuela)
+         .WithMany(e => e.Ubicaciones)
+         .HasForeignKey(u => u.EscuelaId)
+         .OnDelete(DeleteBehavior.Restrict);
 
 
             modelBuilder.Entity<Traslado>(entity =>

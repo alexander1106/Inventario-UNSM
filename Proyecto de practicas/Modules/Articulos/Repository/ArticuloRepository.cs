@@ -114,7 +114,8 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
                 command.CommandText = "sp_UpdateArticuloConCampos";
                 command.CommandType = System.Data.CommandType.StoredProcedure;
 
-                command.Parameters.Add(new SqlParameter("@ArticuloId", id)); command.Parameters.Add(new SqlParameter("@QRCodeBase64", DBNull.Value));
+                command.Parameters.Add(new SqlParameter("@Id", id));
+                command.Parameters.Add(new SqlParameter("@QRCodeBase64", DBNull.Value));
                 command.Parameters.Add(new SqlParameter("@CodigoPatrimonial", request.CodigoPatrimonial ?? (object)DBNull.Value));
                 command.Parameters.Add(new SqlParameter("@Nombre", request.Nombre ?? (object)DBNull.Value));
                 command.Parameters.Add(new SqlParameter("@FechaAdquision", request.FechaAdquision));

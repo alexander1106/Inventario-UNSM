@@ -381,6 +381,38 @@ namespace Proyecto_de_practicas.Migrations
                             Icon = "fa-solid fa-shield-alt",
                             Nombre = "Seguridad",
                             Ruta = "/seguridad"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Estado = 1,
+                            Icon = "fa-solid fa-shield-alt",
+                            Nombre = "Sedes",
+                            Ruta = "/sedes"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Estado = 1,
+                            Icon = "fa-solid fa-shield-alt",
+                            Nombre = "Facultades",
+                            Ruta = "/facultades"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Estado = 1,
+                            Icon = "fa-solid fa-shield-alt",
+                            Nombre = "Escuelas",
+                            Ruta = "/escuelas"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Estado = 1,
+                            Icon = "fa-solid fa-shield-alt",
+                            Nombre = "Inventario",
+                            Ruta = "/inventario"
                         });
                 });
 
@@ -951,6 +983,81 @@ namespace Proyecto_de_practicas.Migrations
                     b.ToTable("Traslado");
                 });
 
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Escuelas", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("FacultadId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FacultadId");
+
+                    b.ToTable("Escuelas");
+                });
+
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Facultades", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Direccion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SedeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SedeId");
+
+                    b.ToTable("Facultades");
+                });
+
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Sedes", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Direccion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Sedes");
+                });
+
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Ubicaciones.Entities.TipoUbicacion", b =>
                 {
                     b.Property<int>("Id")
@@ -992,6 +1099,9 @@ namespace Proyecto_de_practicas.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("EscuelaId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ImagenUrl")
                         .HasColumnType("nvarchar(max)");
 
@@ -1012,6 +1122,8 @@ namespace Proyecto_de_practicas.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EscuelaId");
 
                     b.HasIndex("PadreId");
 
@@ -1243,8 +1355,35 @@ namespace Proyecto_de_practicas.Migrations
                     b.Navigation("Usuario");
                 });
 
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Escuelas", b =>
+                {
+                    b.HasOne("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Facultades", "Facultad")
+                        .WithMany("Escuelas")
+                        .HasForeignKey("FacultadId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Facultad");
+                });
+
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Facultades", b =>
+                {
+                    b.HasOne("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Sedes", "Sede")
+                        .WithMany("Facultades")
+                        .HasForeignKey("SedeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Sede");
+                });
+
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Ubicacion", b =>
                 {
+                    b.HasOne("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Escuelas", "Escuela")
+                        .WithMany("Ubicaciones")
+                        .HasForeignKey("EscuelaId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Ubicacion", "Padre")
                         .WithMany("Hijos")
                         .HasForeignKey("PadreId");
@@ -1258,6 +1397,8 @@ namespace Proyecto_de_practicas.Migrations
                     b.HasOne("Proyecto_de_practicas.Modules.Security.Entities.Usuario", "Usuario")
                         .WithMany()
                         .HasForeignKey("UsuarioId");
+
+                    b.Navigation("Escuela");
 
                     b.Navigation("Padre");
 
@@ -1307,6 +1448,21 @@ namespace Proyecto_de_practicas.Migrations
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Security.Entities.Roles", b =>
                 {
                     b.Navigation("RolPermisos");
+                });
+
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Escuelas", b =>
+                {
+                    b.Navigation("Ubicaciones");
+                });
+
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Facultades", b =>
+                {
+                    b.Navigation("Escuelas");
+                });
+
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Sedes", b =>
+                {
+                    b.Navigation("Facultades");
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Ubicaciones.Entities.TipoUbicacion", b =>
