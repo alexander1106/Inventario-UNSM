@@ -5,7 +5,6 @@ namespace Proyecto_de_practicas.Modules.Security.DTO
     public class UsuarioResponseDTO
     {
         public int Id { get; set; }
-        public string? ImagenUrl { get; set; }
         public string? Nombre { get; set; }
         public string? Apellido { get; set; }
         public string? Email { get; set; }

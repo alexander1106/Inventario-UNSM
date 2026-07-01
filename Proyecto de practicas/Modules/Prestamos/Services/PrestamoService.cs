@@ -47,7 +47,7 @@ public class PrestamoService : IServicePrestamos
             .Include(p => p.Articulo)
                 .ThenInclude(a => a.Ubicacion)
             .Where(p =>
-                p.Articulo.Ubicacion.PadreId == tipoUbicacionId ||
+              
                 p.Articulo.Ubicacion.TipoUbicacionId == tipoUbicacionId
             )
             .ToListAsync();
@@ -151,9 +151,7 @@ public class PrestamoService : IServicePrestamos
         foreach (var page in document.Pages)
         {
             var gfx = XGraphics.FromPdfPage(page);
-
             var font = new XFont("Arial", 40, XFontStyle.Bold);
-
             gfx.DrawString(
                 "APROBADO",
                 font,
@@ -164,6 +162,72 @@ public class PrestamoService : IServicePrestamos
         }
 
         document.Save(rutaPdf);
+    }
+
+    private void AgregarFirma(string rutaPdf, string firmante, DateTime fechaFirma)
+    {
+        var document = PdfReader.Open(rutaPdf, PdfDocumentOpenMode.Modify);
+        var lastPage = document.Pages[document.PageCount - 1];
+        var gfx = XGraphics.FromPdfPage(lastPage);
+
+        var fontFirma = new XFont("Arial", 12, XFontStyle.Bold);
+        var fontFecha = new XFont("Arial", 10, XFontStyle.Regular);
+        var pen = new XPen(XColors.Black, 1.5);
+
+        double margen = 60;
+        double anchoRect = 220;
+        double altoRect = 55;
+        double baseY = lastPage.Height - margen - altoRect;
+
+        // Rectángulo contenedor
+        gfx.DrawRectangle(pen, margen, baseY, anchoRect, altoRect);
+
+        // Texto "Firmado por: nombre"
+        gfx.DrawString(
+            $"Firmado por: {firmante}",
+            fontFirma,
+            XBrushes.Black,
+            new XRect(margen + 8, baseY + 10, anchoRect - 16, 20),
+            XStringFormats.TopLeft
+        );
+
+        // Fecha de firma
+        gfx.DrawString(
+            $"Fecha: {fechaFirma:dd/MM/yyyy HH:mm}",
+            fontFecha,
+            XBrushes.Black,
+            new XRect(margen + 8, baseY + 30, anchoRect - 16, 20),
+            XStringFormats.TopLeft
+        );
+
+        document.Save(rutaPdf);
+    }
+
+    public async Task<PrestamoDTO?> FirmarPrestamoAsync(int id, string firmante)
+    {
+        var prestamo = await _context.Prestamos.FindAsync(id);
+        if (prestamo == null)
+            return null;
+
+        if (string.IsNullOrWhiteSpace(prestamo.RutaPdf))
+            throw new Exception("El préstamo no tiene un PDF adjunto para firmar.");
+
+        if (prestamo.FirmadoPor != null)
+            throw new Exception("Este préstamo ya fue firmado.");
+
+        var rutaAbsoluta = Path.Combine(Directory.GetCurrentDirectory(), prestamo.RutaPdf);
+        if (!File.Exists(rutaAbsoluta))
+            throw new Exception("No se encontró el archivo PDF del préstamo.");
+
+        var fechaFirma = DateTime.Now;
+        AgregarFirma(rutaAbsoluta, firmante, fechaFirma);
+
+        prestamo.FirmadoPor = firmante;
+        prestamo.FechaFirma = fechaFirma;
+        prestamo.Aprobar = true;
+        await _context.SaveChangesAsync();
+
+        return _mapper.Map<PrestamoDTO>(prestamo);
     }
     // 🔹 Eliminar
     public async Task<bool> DeleteAsync(int id)

@@ -17,30 +17,11 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Services
             _mapper = mapper;
         }
 
-        // =========================
-        private async Task<string?> GuardarImagen(IFormFile? file)
-        {
-            if (file == null) return null;
-
-            var folder = Path.Combine("wwwroot", "uploads", "ubicaciones");
-            Directory.CreateDirectory(folder);
-
-            var fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
-            var path = Path.Combine(folder, fileName);
-
-            using (var stream = new FileStream(path, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-
-            return "/uploads/ubicaciones/" + fileName;
-        }
         public async Task<List<UbicacionDto>> GetByPadreAsync(int padreId)
         {
             var entities = await _repo.GetAllAsync();
 
             var filtradas = entities
-                .Where(u => u.PadreId == padreId)
                 .ToList();
 
             return _mapper.Map<List<UbicacionDto>>(filtradas);
@@ -66,11 +47,7 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Services
             var entity = await _repo.GetByIdAsync(id);
             return entity == null ? null : _mapper.Map<UbicacionDto>(entity);
         }
-
-        // =========================
-        // 🔥 CREATE CON IMAGEN
-        // =========================
-        public async Task<UbicacionDto> AddAsync(UbicacionDto dto, IFormFile? imagen)
+        public async Task<UbicacionDto> AddAsync(UbicacionDto dto)
         {
             var existentes = await _repo.GetAllAsync();
 
@@ -89,18 +66,14 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Services
                 Piso = dto.Piso,
                 TipoUbicacionId = dto.TipoUbicacionId,
                 UsuarioId = dto.UsuarioId,
-                PadreId = dto.PadreId, // 🔥 AQUÍ
-                ImagenUrl = await GuardarImagen(imagen)
+                EscuelaId = dto.EscuelaId,   // ✅ FIX IMPORTANTE
             };
 
             var result = await _repo.AddAsync(entity);
             return _mapper.Map<UbicacionDto>(result);
         }
 
-        // =========================
-        // 🔥 UPDATE CON IMAGEN
-        // =========================
-        public async Task<UbicacionDto> UpdateAsync(int id, UbicacionDto dto, IFormFile? imagen)
+        public async Task<UbicacionDto> UpdateAsync(int id, UbicacionDto dto)
         {
             var existentes = await _repo.GetAllAsync();
 
@@ -122,12 +95,9 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Services
             existingEntity.Descripcion = dto.Descripcion;
             existingEntity.Piso = dto.Piso;
             existingEntity.TipoUbicacionId = dto.TipoUbicacionId;
-            existingEntity.PadreId = dto.PadreId; // 🔥 AQUÍ
 
-            if (imagen != null)
-            {
-                existingEntity.ImagenUrl = await GuardarImagen(imagen);
-            }
+            existingEntity.EscuelaId = dto.EscuelaId; // ✅ FIX IMPORTANTE
+            existingEntity.UsuarioId = dto.UsuarioId;
 
             var result = await _repo.UpdateAsync(existingEntity);
             return _mapper.Map<UbicacionDto>(result);
@@ -160,6 +130,15 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Services
             var result = await _repo.UpdateAsync(ubicacion);
 
             return _mapper.Map<UbicacionDto>(result);
+        }
+
+        public async Task<List<UbicacionDto>> GetByEscuelaIdAsync(int escuelaId)
+        {
+            var entities = await _repo.GetAllAsync();
+            var filtradas = entities
+                .Where(u => u.EscuelaId == escuelaId)
+                .ToList();
+            return _mapper.Map<List<UbicacionDto>>(filtradas);
         }
     }
 }

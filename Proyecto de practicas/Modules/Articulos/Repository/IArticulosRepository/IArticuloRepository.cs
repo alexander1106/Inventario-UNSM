@@ -30,5 +30,8 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository.IArticulosRepositor
         Task<ArticuloDto?> GetByIdConCamposAsync(int id);
 
         Task<string> ProcesarCargaMasivaExcel(List<object> filas);
+
+        Task<ArticuloEstadisticasDto> GetEstadisticasAsync();
+        Task<List<Articulo>> GetByEscuelaIdAsync(int escuelaId);
     }
 }

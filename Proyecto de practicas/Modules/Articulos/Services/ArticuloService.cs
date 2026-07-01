@@ -39,6 +39,9 @@ namespace Proyecto_de_practicas.Modules.Articulos.Services
         public async Task<ArticuloDto> AddAsync(ArticuloDto dto)
         {
             var entity = _mapper.Map<Articulo>(dto);
+            entity.FechaAdquision = DateTime.Now;
+            entity.Estado = 1;
+            entity.DepreciacionAnual = entity.TiempoVidaUtil > 0 ? 100.0 / entity.TiempoVidaUtil : 0;
             var result = await _repo.AddAsync(entity);
             return _mapper.Map<ArticuloDto>(result);
         }
@@ -125,69 +128,38 @@ namespace Proyecto_de_practicas.Modules.Articulos.Services
 
                         // 🎯 CLAVE 2: Mapeamos con los nombres exactos que vimos en tu consola de debug
                         string codigoPatrimonial = ObtenerValor("codigo_patrimonial");
-                        string codigoBarra = ObtenerValor("codigo_barra");
                         string descripcion = ObtenerValor("descripcion");
                         string estadoConserv = ObtenerValor("estado_conserv");
-                        string fecha_adquisicion = ObtenerValor("fecha_adquisicion");
                         string valorNetoTexto = ObtenerValor("valor_neto");
 
-                        // Campos complementarios que vienen en tu log por si deseas guardarlos de una vez:
+                        // Campos complementarios del excel
                         string marca = ObtenerValor("marca");
                         string modelo = ObtenerValor("modelo");
                         string nroSerie = ObtenerValor("nro_serie");
                         string color = ObtenerValor("color");
                         string medidas = ObtenerValor("medidas");
-                        string cuentaMayor = ObtenerValor("mayor");
-                        string subCuenta = ObtenerValor("sub_cta");
-                        string hvalor_inicial = ObtenerValor("hvalor_inicial");
-                        string hdepr_inicial = ObtenerValor("hdepr_inicial");
-                        string hdepr_ajustada = ObtenerValor("hdepr_ajustada");
-                        string hdepr_ejercicio = ObtenerValor("hdepr_ejercicio");
 
-                        // 🧮 Conversión limpia del valor decimal
-                        decimal valorNetoNumerico = 0;
+                        // Conversión limpia del valor
+                        double valorNumerico = 0;
                         if (!string.IsNullOrEmpty(valorNetoTexto))
                         {
-                            // Cambiamos comas por puntos si el servidor maneja formato inglés
                             string limpio = valorNetoTexto.Replace("S/.", "").Replace("$", "").Replace(",", ".").Trim();
-                            decimal.TryParse(limpio, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out valorNetoNumerico);
+                            double.TryParse(limpio, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out valorNumerico);
                         }
 
-                        // 📝 Construimos el Request bajo tus reglas de negocio
                         var nuevoArticulo = new ArticuloConCamposRequest
                         {
-                            // Lo que está en descripción pasa como Nombre de la BD
                             Nombre = !string.IsNullOrEmpty(descripcion) ? descripcion : "Artículo Sin Descripción",
-
                             CodigoPatrimonial = codigoPatrimonial,
-                            CodigoBarra = codigoBarra,
                             Condicion = !string.IsNullOrEmpty(estadoConserv) ? estadoConserv : "Bueno",
-                            FechaAdquision = DateTime.Parse(fecha_adquisicion),
-
-                            // El valor neto se registra en ambos campos
-                            ValorAdquisitivo = valorNetoNumerico,
-                            ValorNeto = valorNetoNumerico,
-
-                            // Automatizaciones solicitadas
-                            TipoArticuloId = 100, // Tipo "Otros"
+                            ValorAdquisitivo = valorNumerico,
+                            TipoArticuloId = 100,
                             UbicacionId = ubicacionId,
-                            VidaUtil = 0,         // Forzado a 0 en todos
-                            Estado = 1,
-
-                            // Mapeos técnicos adicionales rescatados del excel
                             Marca = !string.IsNullOrEmpty(marca) ? marca : null,
                             Modelo = !string.IsNullOrEmpty(modelo) ? modelo : null,
                             NroSerie = !string.IsNullOrEmpty(nroSerie) ? nroSerie : null,
                             Color = !string.IsNullOrEmpty(color) ? color : null,
                             Medidas = !string.IsNullOrEmpty(medidas) ? medidas : null,
-                            Mayor = !string.IsNullOrEmpty(cuentaMayor) ? cuentaMayor : null,
-                            SubCta = !string.IsNullOrEmpty(subCuenta) ? subCuenta : null,
-                            HValorInicial = decimal.Parse(hvalor_inicial),
-                            HDeprInicial = decimal.Parse(hdepr_inicial),
-                            HDeprAjustada = decimal.Parse(hdepr_ajustada),
-                            HDeprEjercicio = decimal.Parse(hdepr_ejercicio),
-
-                            // Lista vacía permitida por el DTO
                             CamposValores = new List<CampoValorDto>()
                         };
 
@@ -204,6 +176,17 @@ namespace Proyecto_de_practicas.Modules.Articulos.Services
             }
 
             return $"Carga masiva finalizada. Éxito: {insertados} registros procesados. Errores: {errores}.";
+        }
+
+        public async Task<ArticuloEstadisticasDto> GetEstadisticasAsync()
+        {
+            return await _repo.GetEstadisticasAsync();
+        }
+
+        public async Task<List<ArticuloDto>> GetByEscuelaIdAsync(int escuelaId)
+        {
+            var entities = await _repo.GetByEscuelaIdAsync(escuelaId);
+            return _mapper.Map<List<ArticuloDto>>(entities);
         }
 
     }

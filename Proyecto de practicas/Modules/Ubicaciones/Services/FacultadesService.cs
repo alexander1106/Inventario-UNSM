@@ -94,5 +94,6 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Services
 
             await _repository.DeleteAsync(id);
         }
+
     }
 }

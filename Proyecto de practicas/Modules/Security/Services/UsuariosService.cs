@@ -28,14 +28,6 @@ public class UsuariosService : IUsuariosServices
         _passwordHasher = new PasswordHasher<Usuario>();
     }
 
-    private string ConstruirUrl(string? path)
-    {
-        if (string.IsNullOrEmpty(path)) return "";
-
-        var request = _httpContextAccessor.HttpContext.Request;
-        return $"{request.Scheme}://{request.Host}/{path}";
-    }
-
     private async Task<string?> GuardarImagenAsync(IFormFile? imagen, string carpeta)
     {
         if (imagen == null || imagen.Length == 0) return null;
@@ -63,7 +55,6 @@ public class UsuariosService : IUsuariosServices
         return usuarios.Select(u =>
         {
             var dto = _mapper.Map<UsuarioResponseDTO>(u);
-            dto.ImagenUrl = ConstruirUrl(u.ImagenPath);
             return dto;
         }).ToList();
     }
@@ -74,7 +65,6 @@ public class UsuariosService : IUsuariosServices
         if (usuario == null) return null;
 
         var dto = _mapper.Map<UsuarioResponseDTO>(usuario);
-        dto.ImagenUrl = ConstruirUrl(usuario.ImagenPath);
 
         return dto;
     }
@@ -106,7 +96,6 @@ public class UsuariosService : IUsuariosServices
             _logger.LogInformation("Usuario creado con ID {Id}", nuevo.Id);
 
             var dto = _mapper.Map<UsuarioResponseDTO>(nuevo);
-            dto.ImagenUrl = ConstruirUrl(nuevo.ImagenPath);
 
             return dto;
         }
@@ -142,7 +131,6 @@ public class UsuariosService : IUsuariosServices
         var actualizado = await _usuariosRepository.UpdateAsync(existente);
 
         var response = _mapper.Map<UsuarioResponseDTO>(actualizado);
-        response.ImagenUrl = ConstruirUrl(actualizado.ImagenPath);
 
         return response;
     }
@@ -168,7 +156,6 @@ public class UsuariosService : IUsuariosServices
         if (usuario == null) return null;
 
         var dto = _mapper.Map<UsuarioResponseDTO>(usuario);
-        dto.ImagenUrl = ConstruirUrl(usuario.ImagenPath);
 
         return dto;
     }
@@ -204,7 +191,6 @@ public class UsuariosService : IUsuariosServices
         return usuarios.Select(u =>
         {
             var dto = _mapper.Map<UsuarioResponseDTO>(u);
-            dto.ImagenUrl = ConstruirUrl(u.ImagenPath);
             return dto;
         }).ToList();
     }
@@ -215,7 +201,6 @@ public class UsuariosService : IUsuariosServices
         var data = usuarios.Select(u =>
         {
             var dto = _mapper.Map<UsuarioResponseDTO>(u);
-            dto.ImagenUrl = ConstruirUrl(u.ImagenPath);
             return dto;
         }).ToList();
 

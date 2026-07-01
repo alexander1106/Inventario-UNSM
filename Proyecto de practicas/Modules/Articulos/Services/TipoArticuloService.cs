@@ -48,7 +48,6 @@ namespace Proyecto_de_practicas.Modules.Articulos.Services
                     "No se puede editar este tipo de artículo porque tiene artículos relacionados."
                 );
 
-            // 🔒 Validar nombre duplicado (excluyendo el mismo ID)
             bool existe = await _repo.ExisteNombreAsync(dto.Nombre, id);
             if (existe)
                 throw new InvalidOperationException(
@@ -57,7 +56,6 @@ namespace Proyecto_de_practicas.Modules.Articulos.Services
 
             var entity = _mapper.Map<TipoArticulo>(dto);
             entity.Id = id;
-
             var result = await _repo.UpdateAsync(entity);
             return _mapper.Map<TipoArticuloDTO>(result);
         }

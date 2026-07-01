@@ -19,6 +19,18 @@ namespace Proyecto_de_practicas.Modules.Articulos.Controller
             _service = service;
         }
 
+        [HttpGet("estadisticas")]
+        public async Task<IActionResult> GetEstadisticas()
+        {
+            var result = await _service.GetEstadisticasAsync();
+
+            return Ok(new ApiResponse<object>(
+                true,
+                "Estadísticas de artículos obtenidas correctamente",
+                result
+            ));
+        }
+
         [HttpGet("con-campos")]
         public async Task<IActionResult> GetAllConCampos()
         {
@@ -39,6 +51,18 @@ namespace Proyecto_de_practicas.Modules.Articulos.Controller
             return Ok(new ApiResponse<object>(
                 true,
                 $"Se encontraron {result.Count} artículos",
+                result
+            ));
+        }
+
+        [HttpGet("por-escuela/{escuelaId}")]
+        public async Task<IActionResult> GetByEscuela(int escuelaId)
+        {
+            var result = await _service.GetByEscuelaIdAsync(escuelaId);
+
+            return Ok(new ApiResponse<object>(
+                true,
+                $"Se encontraron {result.Count} artículos en la escuela {escuelaId}",
                 result
             ));
         }

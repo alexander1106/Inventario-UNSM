@@ -8,7 +8,8 @@
         public int NroEscuelas { get; set; }
         public int NroBienes { get; set; }
         public Boolean Estado { get; set; }
-
+        // ✅ AGREGAR ESTO
+        public int SedeId { get; set; }
     }
 }
 

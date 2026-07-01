@@ -56,15 +56,13 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Controller
             ));
         }
 
-        // ✅ CREATE CON IMAGEN
         [HttpPost]
         public async Task<ActionResult<ApiResponse<UbicacionDto>>> Create(
-            [FromForm] UbicacionDto dto,
-            IFormFile? imagen)
+            [FromBody] UbicacionDto dto)
         {
             try
             {
-                var result = await _service.AddAsync(dto, imagen);
+                var result = await _service.AddAsync(dto);
 
                 return CreatedAtAction(nameof(GetById), new { id = result.Id },
                     new ApiResponse<UbicacionDto>(true, "Creado correctamente", result));
@@ -79,6 +77,17 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Controller
         {
             var result = await _service.GetByUsuarioAsync(usuarioId);
             return Ok(result);
+        }
+
+        [HttpGet("por-escuela/{escuelaId}")]
+        public async Task<ActionResult<ApiResponse<List<UbicacionDto>>>> GetByEscuela(int escuelaId)
+        {
+            var result = await _service.GetByEscuelaIdAsync(escuelaId);
+            return Ok(new ApiResponse<List<UbicacionDto>>(
+                true,
+                result.Any() ? "OK" : "Sin datos",
+                result
+            ));
         }
 
         [HttpPut("{id}/asignar-usuario")]
@@ -99,16 +108,14 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Controller
                 return BadRequest(new ApiResponse<object>(false, ex.Message, null));
             }
         }
-        // ✅ UPDATE CON IMAGEN
         [HttpPut("{id}")]
         public async Task<ActionResult<ApiResponse<UbicacionDto>>> Update(
             int id,
-            [FromForm] UbicacionDto dto,
-            IFormFile? imagen)
+            [FromBody] UbicacionDto dto)
         {
             try
             {
-                var result = await _service.UpdateAsync(id, dto, imagen);
+                var result = await _service.UpdateAsync(id, dto);
 
                 return Ok(new ApiResponse<UbicacionDto>(true, "Actualizado", result));
             }

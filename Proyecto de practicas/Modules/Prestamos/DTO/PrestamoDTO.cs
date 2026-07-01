@@ -14,9 +14,8 @@ namespace Proyecto_de_practicas.Modules.Prestamos.DTO
         public string RutaPdf { get; set; }
         public bool Aprobar { get; set; }
         public int ArticuloId { get; set; }
-        public bool EstadoPrestamo
-        {
-            get; set;
-        }
+        public bool EstadoPrestamo { get; set; }
+        public string? FirmadoPor { get; set; }
+        public DateTime? FechaFirma { get; set; }
     }
 }

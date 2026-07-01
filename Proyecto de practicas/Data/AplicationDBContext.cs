@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore;
 using Proyecto_de_practicas.Modules.Articulos.Entities;
 using Proyecto_de_practicas.Modules.Mantenimiento.Entity;
 using Proyecto_de_practicas.Modules.Security.Entities;
@@ -56,21 +57,30 @@ namespace Proyecto_de_practicas.Data
                 new Modulo { Id = 6, Nombre = "Mantenimiento", Ruta = "/mantenimiento", Icon = "fa-solid fa-screwdriver-wrench", Estado = 1 },
                 new Modulo { Id = 7, Nombre = "Reportes", Ruta = "/reportes", Icon = "fa-solid fa-chart-line", Estado = 1 },
                 new Modulo { Id = 8, Nombre = "Seguridad", Ruta = "/seguridad", Icon = "fa-solid fa-shield-alt", Estado = 1 },
-                new Modulo { Id = 9, Nombre = "Sedes", Ruta = "/sedes", Icon = "fa-solid fa-shield-alt", Estado = 1 },
-                new Modulo { Id = 10, Nombre = "Facultades", Ruta = "/facultades", Icon = "fa-solid fa-shield-alt", Estado = 1 },
-                new Modulo { Id = 11, Nombre = "Escuelas", Ruta = "/escuelas", Icon = "fa-solid fa-shield-alt", Estado = 1 },
-                new Modulo { Id = 12, Nombre = "Inventario", Ruta = "/inventario", Icon = "fa-solid fa-shield-alt", Estado = 1 }
+                new Modulo { Id = 9, Nombre = "Gestion institucional", Ruta = "/gestion-institucional", Icon = "fa-solid fa-shield-alt", Estado = 1 },
 
-
+                new Modulo { Id = 10, Nombre = "Inventario", Ruta = "/inventario", Icon = "fa-solid fa-shield-alt", Estado = 1 }
 
             );
             modelBuilder.Entity<Articulo>().ToTable("Articulos");
+            modelBuilder.Entity<Articulo>()
+                .Property(a => a.ValorActual)
+                .HasPrecision(18, 2);
 
             modelBuilder.Entity<Roles>().HasData(
                 new Roles { Id = 1, Nombre = "Administrador", Estado = 1 },
                 new Roles { Id = 2, Nombre = "Usuario", Estado = 1 }
             );
-
+            modelBuilder.Entity<Sedes>().HasData(
+                new Sedes { Id = 1, Nombre = "Rioja", Direccion = "Jr. Santo Toribio N° 1200 ", Estado = true },
+                new Sedes { Id = 2, Nombre = "Moyobamba", Direccion = "Prolongación 20 de Abril S/N (Cuadra 3, Barrio Calvario)", Estado = true },
+                new Sedes { Id = 3, Nombre = "Lamas", Direccion = "Jr. Reynaldo Bartra S/N, Lamas", Estado = true },
+                new Sedes { Id = 4, Nombre = "Morales", Direccion = " Jr. Amorarca N° 334, Morales", Estado = true }
+                );
+            modelBuilder.Entity<TipoArticulo>().HasData(
+                new TipoArticulo { Id = 1, Nombre = "Equipo de computo personal", Descripcion = "Computadoras personales de escritorio, computadoras protales, computadores personales todo (AIO), Estaciones de trabajo, Thin Client, Tablets", Estado = 1, ImagenPath = "/" },
+                new TipoArticulo { Id = 2, Nombre = "Impresoras & Escaner", Descripcion = "Sillas, mesas y mobiliario de oficina", Estado = 1, ImagenPath = "/" }
+            );
             // ============================
             // 🚀 SUBMODULOS SEED
             // ============================
@@ -82,8 +92,10 @@ namespace Proyecto_de_practicas.Data
                 new SubModulo { Id = 5, Nombre = "Usuarios", Ruta = "/usuarios", ModuloId = 8, Icon = "fa-solid fa-user", Estado = 1 },
                 new SubModulo { Id = 6, Nombre = "Roles", Ruta = "/roles", ModuloId = 8, Icon = "fa-solid fa-user-shield", Estado = 1 },
                 new SubModulo { Id = 7, Nombre = "Permisos", Ruta = "/permisos", ModuloId = 8, Icon = "fa-solid fa-key", Estado = 1 },
-                new SubModulo { Id = 8, Nombre = "Modulos", Ruta = "/modulos", ModuloId = 8, Icon = "fa-solid fa-layer-group", Estado = 1 }
-
+                new SubModulo { Id = 8, Nombre = "Modulos", Ruta = "/modulos", ModuloId = 8, Icon = "fa-solid fa-layer-group", Estado = 1 },
+                new SubModulo { Id = 9, Nombre = "Sedes", Ruta = "/sedes", ModuloId = 3,  Icon = "fa-solid fa-shield-alt", Estado = 1 },
+                new SubModulo { Id = 10, Nombre = "Facultades", Ruta = "/facultades", ModuloId = 3, Icon = "fa-solid fa-shield-alt", Estado = 1 },
+                new SubModulo { Id = 11, Nombre = "Escuelas", Ruta = "/escuelas", ModuloId = 3, Icon = "fa-solid fa-shield-alt", Estado = 1 }
             );
 
 
@@ -96,33 +108,38 @@ namespace Proyecto_de_practicas.Data
             );
 
             // ==============================================================
-            // ✨ NUEVO: TIPO UBICACION SEED (Obligatorio para la FK de Ubicación)
+            // TIPO UBICACION SEED
             // ==============================================================
             modelBuilder.Entity<TipoUbicacion>().HasData(
-                new TipoUbicacion
-                {
-                    Id = 100,
-                    Nombre = "General",
-                    Descripcion = "General"
-                }
+                new TipoUbicacion { Id = 1,   Nombre = "Aula",        Descripcion = "Aulas de clase presencial" },
+                new TipoUbicacion { Id = 2,   Nombre = "Laboratorio", Descripcion = "Laboratorios de cómputo y ciencias" },
+                new TipoUbicacion { Id = 100, Nombre = "General",     Descripcion = "Ubicación general sin clasificar" }
             );
 
             // ==============================================================
-            // ✨ NUEVO: UBICACION SEED (Para Carga Masiva Automatizada)
+            // UBICACION SEED — Aulas
             // ==============================================================
             modelBuilder.Entity<Ubicacion>().HasData(
-                new Ubicacion
-                {
-                    Id = 100,
-                    Nombre = "Otros",
-                    Descripcion = "Ubicación por defecto para artículos sin ubicación especificada",
-                    Piso = 0,
-                    TipoUbicacionId = 100,
-                    ImagenUrl = null,
-                    UsuarioId = null,
-                    PadreId = null
-                    // 💡 No inicialices "Articulos" ni "Hijos" aquí, HasData se encarga de las propiedades primitivas.
-                }
+                // Aulas
+                new Ubicacion { Id = 1,  Nombre = "Aula 101", Descripcion = "Aula de clases piso 1", Piso = 1, TipoUbicacionId = 1, EscuelaId = 1 },
+                new Ubicacion { Id = 2,  Nombre = "Aula 102", Descripcion = "Aula de clases piso 1", Piso = 1, TipoUbicacionId = 1, EscuelaId = 1 },
+                new Ubicacion { Id = 3,  Nombre = "Aula 103", Descripcion = "Aula de clases piso 1", Piso = 1, TipoUbicacionId = 1, EscuelaId = 1 },
+                new Ubicacion { Id = 4,  Nombre = "Aula 201", Descripcion = "Aula de clases piso 2", Piso = 2, TipoUbicacionId = 1, EscuelaId = 1 },
+                new Ubicacion { Id = 5,  Nombre = "Aula 202", Descripcion = "Aula de clases piso 2", Piso = 2, TipoUbicacionId = 1, EscuelaId = 1 },
+                new Ubicacion { Id = 6,  Nombre = "Aula 203", Descripcion = "Aula de clases piso 2", Piso = 2, TipoUbicacionId = 1, EscuelaId = 2 },
+                new Ubicacion { Id = 7,  Nombre = "Aula 301", Descripcion = "Aula de clases piso 3", Piso = 3, TipoUbicacionId = 1, EscuelaId = 2 },
+                new Ubicacion { Id = 8,  Nombre = "Aula 302", Descripcion = "Aula de clases piso 3", Piso = 3, TipoUbicacionId = 1, EscuelaId = 2 },
+
+                // Laboratorios
+                new Ubicacion { Id = 9,  Nombre = "Laboratorio de Redes",          Descripcion = "Lab. de redes y comunicaciones",       Piso = 1, TipoUbicacionId = 2, EscuelaId = 1 },
+                new Ubicacion { Id = 10, Nombre = "Laboratorio de Programación I",  Descripcion = "Lab. de programación básica",          Piso = 1, TipoUbicacionId = 2, EscuelaId = 1 },
+                new Ubicacion { Id = 11, Nombre = "Laboratorio de Programación II", Descripcion = "Lab. de programación avanzada",        Piso = 2, TipoUbicacionId = 2, EscuelaId = 1 },
+                new Ubicacion { Id = 12, Nombre = "Laboratorio de Base de Datos",   Descripcion = "Lab. de bases de datos y SQL",         Piso = 2, TipoUbicacionId = 2, EscuelaId = 1 },
+                new Ubicacion { Id = 13, Nombre = "Laboratorio de Hardware",        Descripcion = "Lab. de mantenimiento de equipos",     Piso = 3, TipoUbicacionId = 2, EscuelaId = 1 },
+                new Ubicacion { Id = 14, Nombre = "Laboratorio de Ciencias",        Descripcion = "Lab. de ciencias básicas",             Piso = 1, TipoUbicacionId = 2, EscuelaId = 3 },
+
+                // General (por defecto para carga masiva)
+                new Ubicacion { Id = 100, Nombre = "Otros", Descripcion = "Ubicación por defecto para artículos sin ubicación especificada", Piso = 0, TipoUbicacionId = 100 }
             );
 
             modelBuilder.Entity<Usuario>()
@@ -176,6 +193,18 @@ namespace Proyecto_de_practicas.Data
                 new RolPermisos { Id = 30, RolId = 1, SubModuloId = 8, PermisoId = 2 },
                 new RolPermisos { Id = 31, RolId = 1, SubModuloId = 8, PermisoId = 3 },
                 new RolPermisos { Id = 32, RolId = 1, SubModuloId = 8, PermisoId = 4 },
+                new RolPermisos { Id = 37, RolId = 1, SubModuloId = 9,  PermisoId = 1 },
+                new RolPermisos { Id = 38, RolId = 1, SubModuloId = 9,  PermisoId = 2 },
+                new RolPermisos { Id = 39, RolId = 1, SubModuloId = 9,  PermisoId = 3 },
+                new RolPermisos { Id = 40, RolId = 1, SubModuloId = 9,  PermisoId = 4 },
+                new RolPermisos { Id = 41, RolId = 1, SubModuloId = 10, PermisoId = 1 },
+                new RolPermisos { Id = 42, RolId = 1, SubModuloId = 10, PermisoId = 2 },
+                new RolPermisos { Id = 43, RolId = 1, SubModuloId = 10, PermisoId = 3 },
+                new RolPermisos { Id = 44, RolId = 1, SubModuloId = 10, PermisoId = 4 },
+                new RolPermisos { Id = 45, RolId = 1, SubModuloId = 11, PermisoId = 1 },
+                new RolPermisos { Id = 46, RolId = 1, SubModuloId = 11, PermisoId = 2 },
+                new RolPermisos { Id = 47, RolId = 1, SubModuloId = 11, PermisoId = 3 },
+                new RolPermisos { Id = 48, RolId = 1, SubModuloId = 11, PermisoId = 4 },
 
                 // USUARIO
                 new RolPermisos { Id = 33, RolId = 2, SubModuloId = 1, PermisoId = 3 },
@@ -202,6 +231,12 @@ namespace Proyecto_de_practicas.Data
          .WithMany(e => e.Ubicaciones)
          .HasForeignKey(u => u.EscuelaId)
          .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Escuelas>()
+                .HasOne(e => e.Usuario)
+                .WithMany()
+                .HasForeignKey(e => e.UsuarioId)
+                .OnDelete(DeleteBehavior.SetNull);
 
 
             modelBuilder.Entity<Traslado>(entity =>
@@ -231,6 +266,70 @@ namespace Proyecto_de_practicas.Data
           .WithMany(u => u.Solicitantes)
           .HasForeignKey(s => s.UbicacionId)
           .OnDelete(DeleteBehavior.Restrict);
+
+            // ============================
+            // FACULTADES SEED
+            // ============================
+            modelBuilder.Entity<Facultades>().HasData(
+                new Facultades { Id = 1, Nombre = "Facultad de Ingeniería de Sistemas e Informática", Direccion = "Jr. Amorarca N° 334, Morales", Estado = true, SedeId = 4 },
+                new Facultades { Id = 2, Nombre = "Facultad de Ciencias Económicas", Direccion = "Jr. Amorarca N° 334, Morales", Estado = true, SedeId = 4 },
+                new Facultades { Id = 3, Nombre = "Facultad de Ingeniería Agroindustrial", Direccion = "Jr. Amorarca N° 334, Morales", Estado = true, SedeId = 4 },
+                new Facultades { Id = 4, Nombre = "Facultad de Educación y Humanidades", Direccion = "Jr. Amorarca N° 334, Morales", Estado = true, SedeId = 4 }
+            );
+
+            // ============================
+            // ESCUELAS SEED
+            // ============================
+            modelBuilder.Entity<Escuelas>().HasData(
+                new Escuelas { Id = 1, Nombre = "Ingeniería de Sistemas e Informática", FacultadId = 1 },
+                new Escuelas { Id = 2, Nombre = "Contabilidad", FacultadId = 2 },
+                new Escuelas { Id = 3, Nombre = "Administración", FacultadId = 2 },
+                new Escuelas { Id = 4, Nombre = "Ingeniería Agroindustrial", FacultadId = 3 },
+                new Escuelas { Id = 5, Nombre = "Educación Primaria", FacultadId = 4 }
+            );
+
+            // ============================
+            // ARTICULOS SEED
+            // ============================
+            modelBuilder.Entity<Articulo>().HasData(
+                new Articulo
+                {
+                    Id = 1,
+                    CodigoPatrimonial = "UNSM-001",
+                    Nombre = "Computadora de Escritorio HP",
+                    FechaAdquision = new DateTime(2022, 3, 10),
+                    ValorAdquisitivo = 2500.00,
+                    Condicion = "Bueno",
+                    TipoArticuloId = 1,
+                    UbicacionId = 100,
+                    Marca = "HP",
+                    Modelo = "ProDesk 400 G7",
+                    NroSerie = "SN-HP-001",
+                    Color = "Negro",
+                    TiempoVidaUtil = 5,
+                    DepreciacionAnual = 20,
+                    ValorActual = 2000.00m,
+                    Estado = 1
+                },
+                new Articulo
+                {
+                    Id = 2,
+                    CodigoPatrimonial = "UNSM-002",
+                    Nombre = "Silla Ergonómica",
+                    FechaAdquision = new DateTime(2023, 6, 1),
+                    ValorAdquisitivo = 350.00,
+                    Condicion = "Bueno",
+                    TipoArticuloId = 2,
+                    UbicacionId = 100,
+                    Marca = "Norditalia",
+                    Modelo = "Ejecutiva-X",
+                    Color = "Negro",
+                    TiempoVidaUtil = 10,
+                    DepreciacionAnual = 10,
+                    ValorActual = 315.00m,
+                    Estado = 1
+                }
+            );
         }
     }
 }

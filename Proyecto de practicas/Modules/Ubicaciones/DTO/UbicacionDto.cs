@@ -11,11 +11,12 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.DTO
 
         public int TipoUbicacionId { get; set; }
 
-        public string? ImagenUrl { get; set; }
 
         public int? UsuarioId { get; set; }
+        public int? EscuelaId { get; set; }
 
-        // 🔥 NUEVO
-        public int? PadreId { get; set; }
+
+
+
     }
 }

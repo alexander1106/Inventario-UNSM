@@ -24,6 +24,8 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Repository
                     Nombre = f.Nombre,
                     Direccion = f.Direccion,
                     Estado = f.Estado,
+                    SedeId = f.SedeId, // ✅ AQUI
+
                     NroEscuelas = f.Escuelas.Count(),
                     NroBienes = 0
                 })
@@ -40,6 +42,7 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Repository
                     Nombre = f.Nombre,
                     Direccion = f.Direccion,
                     Estado = f.Estado,
+                    SedeId = f.SedeId,
                     NroEscuelas = f.Escuelas.Count(),
                     NroBienes = 0
                 })
@@ -90,5 +93,6 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Repository
                 await _context.SaveChangesAsync();
             }
         }
+
     }
 }

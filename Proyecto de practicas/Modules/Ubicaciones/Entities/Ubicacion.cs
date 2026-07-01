@@ -18,7 +18,7 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Entities
 
         public virtual ICollection<Articulo> Articulos { get; set; } = new List<Articulo>();
 
-        public string? ImagenUrl { get; set; }
+       
 
         public int? UsuarioId { get; set; }
 
@@ -29,13 +29,9 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Entities
         [JsonIgnore]
         public virtual Escuelas? Escuela { get; set; }
         // 🔥 NUEVO: jerarquía
-        public int? PadreId { get; set; }
 
-        [JsonIgnore]
-        public virtual Ubicacion? Padre { get; set; }
         public virtual ICollection<Solicitantes> Solicitantes { get; set; }
     = new List<Solicitantes>();
-        public virtual ICollection<Ubicacion> Hijos { get; set; } = new List<Ubicacion>();
 
     }
 

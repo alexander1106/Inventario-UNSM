@@ -20,8 +20,8 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Repository
        .Include(u => u.TipoUbicacion)
        .Include(u => u.Articulos)
        .Include(u => u.Usuario)
-       .Include(u => u.Padre)
-       .Include(u => u.Hijos)
+       .Include(u => u.Escuela) // ✅ IMPORTANTE
+
        .ToListAsync();
         }
         public async Task<List<Ubicacion>> GetByPadreAsync(int padreId)
@@ -29,9 +29,6 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Repository
             return await _context.Ubicaciones
                 .Include(u => u.TipoUbicacion)
                 .Include(u => u.Usuario)
-                .Include(u => u.Padre)
-                .Include(u => u.Hijos)
-                .Where(u => u.PadreId == padreId)
                 .ToListAsync();
         }
         public async Task<Ubicacion?> GetByIdAsync(int id)

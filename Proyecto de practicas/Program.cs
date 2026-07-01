@@ -168,6 +168,7 @@ builder.Services.AddControllers()
 
         builder.Services.AddScoped<IArticuloRepository, ArticuloRepository>();
         builder.Services.AddScoped<IArticuloService, ArticuloService>();
+        builder.Services.AddHostedService<RecalculoValorActualBackgroundService>();
 
         builder.Services.AddScoped<ICampoArticuloRepository, CampoArticuloRepository>();
         builder.Services.AddScoped<ICampoArticuloService, CampoArticuloService>();

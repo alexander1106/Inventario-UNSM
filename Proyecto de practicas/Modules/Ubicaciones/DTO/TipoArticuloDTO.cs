@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Proyecto_de_practicas.Modules.Articulos.DTO;
 
 namespace Proyecto_de_practicas.Modules.Ubicaciones.DTO
@@ -13,9 +14,9 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.DTO
         public int Estado { get; set; } = 1;
 
         [NotMapped]
-        public IFormFile? Imagen { get; set; }  // Para subir la imagen
+        public IFormFile? Imagen { get; set; }
 
-        public string? ImagenPath { get; set; } // Para guardar la ruta en DB
+        public string? ImagenPath { get; set; }
     }
 
 }

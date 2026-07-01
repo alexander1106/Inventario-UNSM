@@ -71,11 +71,8 @@ namespace Proyecto_de_practicas.Modules.Reporte.Repository
                                 p.Articulo.Ubicacion != null &&
                                 (
                                     (p.Articulo.UbicacionId.HasValue &&
-                                     filtros.UbicacionIds.Contains(p.Articulo.UbicacionId.Value))
-                                    ||
-                                    (p.Articulo.Ubicacion.PadreId.HasValue &&
-                                     filtros.UbicacionIds.Contains(p.Articulo.Ubicacion.PadreId.Value))
-                                )
+                                     filtros.UbicacionIds.Contains(p.Articulo.UbicacionId.Value)))
+                                
                             );
                         }
                         if (filtros.FechaInicio.HasValue)

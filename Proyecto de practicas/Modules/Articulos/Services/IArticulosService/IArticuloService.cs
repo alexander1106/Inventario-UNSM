@@ -30,5 +30,8 @@ namespace Proyecto_de_practicas.Service
         // 🔹 Método agregado para campos dinámicos
 
         Task<string> ProcesarCargaMasivaExcelAsync(IFormFile archivo, int ubicacionId);
+
+        Task<ArticuloEstadisticasDto> GetEstadisticasAsync();
+        Task<List<ArticuloDto>> GetByEscuelaIdAsync(int escuelaId);
     }
 }

@@ -102,5 +102,6 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Controller
                 return BadRequest(ex.Message);
             }
         }
+
     }
 }

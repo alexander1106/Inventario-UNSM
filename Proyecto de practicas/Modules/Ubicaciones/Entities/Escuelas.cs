@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Proyecto_de_practicas.Modules.Security.Entities;
 
 namespace Proyecto_de_practicas.Modules.Ubicaciones.Entities
 {
@@ -8,10 +9,16 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Entities
 
         public string Nombre { get; set; } = string.Empty;
 
+        public string? ImagenUrl { get; set; }
+
         public int FacultadId { get; set; }
+        public int? UsuarioId { get; set; }
 
         [JsonIgnore]
         public Facultades? Facultad { get; set; }
+
+        [JsonIgnore]
+        public virtual Usuario? Usuario { get; set; }
 
         // Relación 1:N
         public virtual ICollection<Ubicacion> Ubicaciones { get; set; }

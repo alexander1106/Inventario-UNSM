@@ -11,5 +11,7 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Repository.IUbicacionesRepos
         Task<Escuelas> CreateAsync(Escuelas escuela);
         Task UpdateAsync(Escuelas escuela);
         Task DeleteAsync(int id);
+        Task<Escuelas> AsignarUsuarioAsync(int escuelaId, int usuarioId);
+        Task<Escuelas?> GetByUsuarioIdAsync(int usuarioId);
     }
 }

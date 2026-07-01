@@ -173,6 +173,27 @@ public class PrestamosController : ControllerBase
         ));
     }
 
+    [HttpPut("{id}/firmar")]
+    public async Task<IActionResult> Firmar(int id, [FromQuery] string firmante)
+    {
+        if (string.IsNullOrWhiteSpace(firmante))
+            return BadRequest(new ApiResponse<object>(false, "El nombre del firmante es requerido", null));
+
+        try
+        {
+            var resultado = await _prestamoService.FirmarPrestamoAsync(id, firmante);
+
+            if (resultado == null)
+                return NotFound(new ApiResponse<object>(false, "Préstamo no encontrado", null));
+
+            return Ok(new ApiResponse<object>(true, $"Préstamo firmado correctamente por {firmante}", resultado));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new ApiResponse<object>(false, "Error al firmar el préstamo", null, ex.Message));
+        }
+    }
+
     [HttpPut("{id}/estado/2")]
     public async Task<IActionResult> CambiarAEstado(int id)
     {

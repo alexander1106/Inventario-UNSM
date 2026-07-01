@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Proyecto_de_practicas.Modules.Ubicaciones.DTO;
 using Proyecto_de_practicas.Modules.Ubicaciones.Entities;
 using Proyecto_de_practicas.Modules.Ubicaciones.Services.IUbicacionesServices;
 
@@ -39,11 +40,11 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Controller
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Escuelas escuela)
+        public async Task<IActionResult> Create([FromForm] Escuelas escuela, IFormFile? imagen)
         {
             try
             {
-                var result = await _service.CreateAsync(escuela);
+                var result = await _service.CreateAsync(escuela, imagen);
 
                 return CreatedAtAction(
                     nameof(GetById),
@@ -57,11 +58,11 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Controller
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] Escuelas escuela)
+        public async Task<IActionResult> Update(int id, [FromForm] Escuelas escuela, IFormFile? imagen)
         {
             try
             {
-                var result = await _service.UpdateAsync(id, escuela);
+                var result = await _service.UpdateAsync(id, escuela, imagen);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -81,6 +82,30 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Controller
                 {
                     mensaje = "Escuela eliminada correctamente."
                 });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("usuario/{usuarioId}")]
+        public async Task<IActionResult> GetByUsuario(int usuarioId)
+        {
+            var escuela = await _service.GetByUsuarioIdAsync(usuarioId);
+            if (escuela == null)
+                return NotFound(new { success = false, mensaje = "No hay escuela asignada a este usuario." });
+
+            return Ok(new { success = true, data = escuela });
+        }
+
+        [HttpPut("{id}/asignar-usuario")]
+        public async Task<IActionResult> AsignarUsuario(int id, [FromBody] AsignarUsuarioUbicacionDto dto)
+        {
+            try
+            {
+                var result = await _service.AsignarUsuarioAsync(id, dto.UsuarioId);
+                return Ok(new { mensaje = "Usuario asignado correctamente a la escuela.", escuela = result });
             }
             catch (Exception ex)
             {

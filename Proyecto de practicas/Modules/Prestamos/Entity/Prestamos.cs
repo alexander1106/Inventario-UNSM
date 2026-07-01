@@ -18,5 +18,7 @@ public class Prestamos
     public int SolicitanteId { get; set; }
     public string? RutaPdf { get; set; }
     public bool Aprobar { get; set; }
+    public string? FirmadoPor { get; set; }
+    public DateTime? FechaFirma { get; set; }
     public virtual Solicitantes Solicitante { get; set; } = null!;
 }

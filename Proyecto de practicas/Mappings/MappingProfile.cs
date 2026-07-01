@@ -61,8 +61,30 @@ public class MappingProfile : Profile
 
         
 
-        CreateMap<Articulo, ArticuloDto>();
-        CreateMap<ArticuloDto, Articulo>();
+        CreateMap<Articulo, ArticuloDto>()
+            .ForMember(dest => dest.Id,               opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.CodigoPatrimonial, opt => opt.MapFrom(src => src.CodigoPatrimonial))
+            .ForMember(dest => dest.CodigoBarra,       opt => opt.MapFrom(src => src.CodigoBarra))
+            .ForMember(dest => dest.Nombre,            opt => opt.MapFrom(src => src.Nombre))
+            .ForMember(dest => dest.FechaAdquision,    opt => opt.MapFrom(src => src.FechaAdquision))
+            .ForMember(dest => dest.ValorAdquisitivo,  opt => opt.MapFrom(src => src.ValorAdquisitivo))
+            .ForMember(dest => dest.Condicion,         opt => opt.MapFrom(src => src.Condicion))
+            .ForMember(dest => dest.TipoArticuloId,    opt => opt.MapFrom(src => src.TipoArticuloId))
+            .ForMember(dest => dest.UbicacionId,       opt => opt.MapFrom(src => src.UbicacionId))
+            .ForMember(dest => dest.Marca,             opt => opt.MapFrom(src => src.Marca))
+            .ForMember(dest => dest.Modelo,            opt => opt.MapFrom(src => src.Modelo))
+            .ForMember(dest => dest.NroSerie,          opt => opt.MapFrom(src => src.NroSerie))
+            .ForMember(dest => dest.Medidas,           opt => opt.MapFrom(src => src.Medidas))
+            .ForMember(dest => dest.Color,             opt => opt.MapFrom(src => src.Color))
+            .ForMember(dest => dest.TiempoVidaUtil,    opt => opt.MapFrom(src => src.TiempoVidaUtil))
+            .ForMember(dest => dest.DepreciacionAnual, opt => opt.MapFrom(src => src.DepreciacionAnual))
+            .ForMember(dest => dest.ValorActual,       opt => opt.MapFrom(src => src.ValorActual))
+            .ForMember(dest => dest.Estado,            opt => opt.MapFrom(src => src.Estado));
+
+        CreateMap<ArticuloDto, Articulo>()
+            .ForMember(dest => dest.TipoArticulo, opt => opt.Ignore())
+            .ForMember(dest => dest.Ubicacion,    opt => opt.Ignore())
+            .ForMember(dest => dest.Prestamos,    opt => opt.Ignore());
 
         CreateMap<ArticuloCampoValor, ArticuloCampoValorDto>();
         CreateMap<ArticuloCampoValorDto, ArticuloCampoValor>();

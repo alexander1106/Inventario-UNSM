@@ -6,7 +6,7 @@ namespace Proyecto_de_practicas.Modules.Articulos.Entities
     public class TipoArticulo
     {
         public int Id { get; set; }
-        public string Nombre { get; set; } = null!; 
+        public string Nombre { get; set; } = null!;
         public string Descripcion { get; set; } = null!;
         public int Estado { get; set; } = 1;
         [NotMapped]

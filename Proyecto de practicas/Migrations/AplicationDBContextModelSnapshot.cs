@@ -42,28 +42,16 @@ namespace Proyecto_de_practicas.Migrations
                     b.Property<string>("Condicion")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double>("DepreciacionAnual")
+                        .HasColumnType("float");
+
                     b.Property<int>("Estado")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("FechaAdquision")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("HDeprAjustada")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("HDeprEjercicio")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("HDeprInicial")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("HValorInicial")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<string>("Marca")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Mayor")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Medidas")
@@ -78,11 +66,8 @@ namespace Proyecto_de_practicas.Migrations
                     b.Property<string>("NroSerie")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("QRCodeBase64")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SubCta")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double>("TiempoVidaUtil")
+                        .HasColumnType("float");
 
                     b.Property<int>("TipoArticuloId")
                         .HasColumnType("int");
@@ -90,15 +75,12 @@ namespace Proyecto_de_practicas.Migrations
                     b.Property<int?>("UbicacionId")
                         .HasColumnType("int");
 
-                    b.Property<double>("ValorAdquisitivo")
-                        .HasColumnType("float");
-
-                    b.Property<decimal>("ValorNeto")
+                    b.Property<decimal>("ValorActual")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("VidaUtil")
-                        .HasColumnType("int")
-                        .HasColumnName("vidaUtil");
+                    b.Property<double>("ValorAdquisitivo")
+                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
@@ -107,6 +89,45 @@ namespace Proyecto_de_practicas.Migrations
                     b.HasIndex("UbicacionId");
 
                     b.ToTable("Articulos", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CodigoPatrimonial = "UNSM-001",
+                            Color = "Negro",
+                            Condicion = "Bueno",
+                            DepreciacionAnual = 20.0,
+                            Estado = 1,
+                            FechaAdquision = new DateTime(2022, 3, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Marca = "HP",
+                            Modelo = "ProDesk 400 G7",
+                            Nombre = "Computadora de Escritorio HP",
+                            NroSerie = "SN-HP-001",
+                            TiempoVidaUtil = 5.0,
+                            TipoArticuloId = 1,
+                            UbicacionId = 100,
+                            ValorActual = 2000.00m,
+                            ValorAdquisitivo = 2500.0
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CodigoPatrimonial = "UNSM-002",
+                            Color = "Negro",
+                            Condicion = "Bueno",
+                            DepreciacionAnual = 10.0,
+                            Estado = 1,
+                            FechaAdquision = new DateTime(2023, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Marca = "Norditalia",
+                            Modelo = "Ejecutiva-X",
+                            Nombre = "Silla Ergonómica",
+                            TiempoVidaUtil = 10.0,
+                            TipoArticuloId = 2,
+                            UbicacionId = 100,
+                            ValorActual = 315.00m,
+                            ValorAdquisitivo = 350.0
+                        });
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.ArticuloCampoValor", b =>
@@ -194,8 +215,14 @@ namespace Proyecto_de_practicas.Migrations
                     b.Property<DateTime?>("FechaDevolucion")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("FechaFirma")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime?>("FechaPrestamo")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("FirmadoPor")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NombreSolicitante")
                         .HasColumnType("nvarchar(max)");
@@ -242,6 +269,22 @@ namespace Proyecto_de_practicas.Migrations
                     b.ToTable("TipoArticulos");
 
                     b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Descripcion = "Computadoras personales de escritorio, computadoras protales, computadores personales todo (AIO), Estaciones de trabajo, Thin Client, Tablets",
+                            Estado = 1,
+                            ImagenPath = "/",
+                            Nombre = "Equipo de computo personal"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Descripcion = "Sillas, mesas y mobiliario de oficina",
+                            Estado = 1,
+                            ImagenPath = "/",
+                            Nombre = "Impresoras & Escaner"
+                        },
                         new
                         {
                             Id = 100,
@@ -387,28 +430,12 @@ namespace Proyecto_de_practicas.Migrations
                             Id = 9,
                             Estado = 1,
                             Icon = "fa-solid fa-shield-alt",
-                            Nombre = "Sedes",
-                            Ruta = "/sedes"
+                            Nombre = "Gestion institucional",
+                            Ruta = "/gestion-institucional"
                         },
                         new
                         {
                             Id = 10,
-                            Estado = 1,
-                            Icon = "fa-solid fa-shield-alt",
-                            Nombre = "Facultades",
-                            Ruta = "/facultades"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            Estado = 1,
-                            Icon = "fa-solid fa-shield-alt",
-                            Nombre = "Escuelas",
-                            Ruta = "/escuelas"
-                        },
-                        new
-                        {
-                            Id = 12,
                             Estado = 1,
                             Icon = "fa-solid fa-shield-alt",
                             Nombre = "Inventario",
@@ -598,6 +625,33 @@ namespace Proyecto_de_practicas.Migrations
                             ModuloId = 8,
                             Nombre = "Modulos",
                             Ruta = "/modulos"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Estado = 1,
+                            Icon = "fa-solid fa-shield-alt",
+                            ModuloId = 3,
+                            Nombre = "Sedes",
+                            Ruta = "/sedes"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Estado = 1,
+                            Icon = "fa-solid fa-shield-alt",
+                            ModuloId = 3,
+                            Nombre = "Facultades",
+                            Ruta = "/facultades"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Estado = 1,
+                            Icon = "fa-solid fa-shield-alt",
+                            ModuloId = 3,
+                            Nombre = "Escuelas",
+                            Ruta = "/escuelas"
                         });
                 });
 
@@ -915,6 +969,90 @@ namespace Proyecto_de_practicas.Migrations
                         },
                         new
                         {
+                            Id = 37,
+                            PermisoId = 1,
+                            RolId = 1,
+                            SubModuloId = 9
+                        },
+                        new
+                        {
+                            Id = 38,
+                            PermisoId = 2,
+                            RolId = 1,
+                            SubModuloId = 9
+                        },
+                        new
+                        {
+                            Id = 39,
+                            PermisoId = 3,
+                            RolId = 1,
+                            SubModuloId = 9
+                        },
+                        new
+                        {
+                            Id = 40,
+                            PermisoId = 4,
+                            RolId = 1,
+                            SubModuloId = 9
+                        },
+                        new
+                        {
+                            Id = 41,
+                            PermisoId = 1,
+                            RolId = 1,
+                            SubModuloId = 10
+                        },
+                        new
+                        {
+                            Id = 42,
+                            PermisoId = 2,
+                            RolId = 1,
+                            SubModuloId = 10
+                        },
+                        new
+                        {
+                            Id = 43,
+                            PermisoId = 3,
+                            RolId = 1,
+                            SubModuloId = 10
+                        },
+                        new
+                        {
+                            Id = 44,
+                            PermisoId = 4,
+                            RolId = 1,
+                            SubModuloId = 10
+                        },
+                        new
+                        {
+                            Id = 45,
+                            PermisoId = 1,
+                            RolId = 1,
+                            SubModuloId = 11
+                        },
+                        new
+                        {
+                            Id = 46,
+                            PermisoId = 2,
+                            RolId = 1,
+                            SubModuloId = 11
+                        },
+                        new
+                        {
+                            Id = 47,
+                            PermisoId = 3,
+                            RolId = 1,
+                            SubModuloId = 11
+                        },
+                        new
+                        {
+                            Id = 48,
+                            PermisoId = 4,
+                            RolId = 1,
+                            SubModuloId = 11
+                        },
+                        new
+                        {
                             Id = 33,
                             PermisoId = 3,
                             RolId = 2,
@@ -994,15 +1132,55 @@ namespace Proyecto_de_practicas.Migrations
                     b.Property<int>("FacultadId")
                         .HasColumnType("int");
 
+                    b.Property<string>("ImagenUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("UsuarioId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("FacultadId");
 
+                    b.HasIndex("UsuarioId");
+
                     b.ToTable("Escuelas");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            FacultadId = 1,
+                            Nombre = "Ingeniería de Sistemas e Informática"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            FacultadId = 2,
+                            Nombre = "Contabilidad"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            FacultadId = 2,
+                            Nombre = "Administración"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            FacultadId = 3,
+                            Nombre = "Ingeniería Agroindustrial"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            FacultadId = 4,
+                            Nombre = "Educación Primaria"
+                        });
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Facultades", b =>
@@ -1032,6 +1210,40 @@ namespace Proyecto_de_practicas.Migrations
                     b.HasIndex("SedeId");
 
                     b.ToTable("Facultades");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Direccion = "Jr. Amorarca N° 334, Morales",
+                            Estado = true,
+                            Nombre = "Facultad de Ingeniería de Sistemas e Informática",
+                            SedeId = 4
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Direccion = "Jr. Amorarca N° 334, Morales",
+                            Estado = true,
+                            Nombre = "Facultad de Ciencias Económicas",
+                            SedeId = 4
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Direccion = "Jr. Amorarca N° 334, Morales",
+                            Estado = true,
+                            Nombre = "Facultad de Ingeniería Agroindustrial",
+                            SedeId = 4
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Direccion = "Jr. Amorarca N° 334, Morales",
+                            Estado = true,
+                            Nombre = "Facultad de Educación y Humanidades",
+                            SedeId = 4
+                        });
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Sedes", b =>
@@ -1056,6 +1268,36 @@ namespace Proyecto_de_practicas.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Sedes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Direccion = "Jr. Santo Toribio N° 1200 ",
+                            Estado = true,
+                            Nombre = "Rioja"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Direccion = "Prolongación 20 de Abril S/N (Cuadra 3, Barrio Calvario)",
+                            Estado = true,
+                            Nombre = "Moyobamba"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Direccion = "Jr. Reynaldo Bartra S/N, Lamas",
+                            Estado = true,
+                            Nombre = "Lamas"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Direccion = " Jr. Amorarca N° 334, Morales",
+                            Estado = true,
+                            Nombre = "Morales"
+                        });
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Ubicaciones.Entities.TipoUbicacion", b =>
@@ -1081,8 +1323,20 @@ namespace Proyecto_de_practicas.Migrations
                     b.HasData(
                         new
                         {
+                            Id = 1,
+                            Descripcion = "Aulas de clase presencial",
+                            Nombre = "Aula"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Descripcion = "Laboratorios de cómputo y ciencias",
+                            Nombre = "Laboratorio"
+                        },
+                        new
+                        {
                             Id = 100,
-                            Descripcion = "General",
+                            Descripcion = "Ubicación general sin clasificar",
                             Nombre = "General"
                         });
                 });
@@ -1102,15 +1356,9 @@ namespace Proyecto_de_practicas.Migrations
                     b.Property<int?>("EscuelaId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ImagenUrl")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("PadreId")
-                        .HasColumnType("int");
 
                     b.Property<int>("Piso")
                         .HasColumnType("int");
@@ -1125,8 +1373,6 @@ namespace Proyecto_de_practicas.Migrations
 
                     b.HasIndex("EscuelaId");
 
-                    b.HasIndex("PadreId");
-
                     b.HasIndex("TipoUbicacionId");
 
                     b.HasIndex("UsuarioId");
@@ -1134,6 +1380,132 @@ namespace Proyecto_de_practicas.Migrations
                     b.ToTable("Ubicaciones");
 
                     b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Descripcion = "Aula de clases piso 1",
+                            EscuelaId = 1,
+                            Nombre = "Aula 101",
+                            Piso = 1,
+                            TipoUbicacionId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Descripcion = "Aula de clases piso 1",
+                            EscuelaId = 1,
+                            Nombre = "Aula 102",
+                            Piso = 1,
+                            TipoUbicacionId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Descripcion = "Aula de clases piso 1",
+                            EscuelaId = 1,
+                            Nombre = "Aula 103",
+                            Piso = 1,
+                            TipoUbicacionId = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Descripcion = "Aula de clases piso 2",
+                            EscuelaId = 1,
+                            Nombre = "Aula 201",
+                            Piso = 2,
+                            TipoUbicacionId = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Descripcion = "Aula de clases piso 2",
+                            EscuelaId = 1,
+                            Nombre = "Aula 202",
+                            Piso = 2,
+                            TipoUbicacionId = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Descripcion = "Aula de clases piso 2",
+                            EscuelaId = 2,
+                            Nombre = "Aula 203",
+                            Piso = 2,
+                            TipoUbicacionId = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Descripcion = "Aula de clases piso 3",
+                            EscuelaId = 2,
+                            Nombre = "Aula 301",
+                            Piso = 3,
+                            TipoUbicacionId = 1
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Descripcion = "Aula de clases piso 3",
+                            EscuelaId = 2,
+                            Nombre = "Aula 302",
+                            Piso = 3,
+                            TipoUbicacionId = 1
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Descripcion = "Lab. de redes y comunicaciones",
+                            EscuelaId = 1,
+                            Nombre = "Laboratorio de Redes",
+                            Piso = 1,
+                            TipoUbicacionId = 2
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Descripcion = "Lab. de programación básica",
+                            EscuelaId = 1,
+                            Nombre = "Laboratorio de Programación I",
+                            Piso = 1,
+                            TipoUbicacionId = 2
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Descripcion = "Lab. de programación avanzada",
+                            EscuelaId = 1,
+                            Nombre = "Laboratorio de Programación II",
+                            Piso = 2,
+                            TipoUbicacionId = 2
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Descripcion = "Lab. de bases de datos y SQL",
+                            EscuelaId = 1,
+                            Nombre = "Laboratorio de Base de Datos",
+                            Piso = 2,
+                            TipoUbicacionId = 2
+                        },
+                        new
+                        {
+                            Id = 13,
+                            Descripcion = "Lab. de mantenimiento de equipos",
+                            EscuelaId = 1,
+                            Nombre = "Laboratorio de Hardware",
+                            Piso = 3,
+                            TipoUbicacionId = 2
+                        },
+                        new
+                        {
+                            Id = 14,
+                            Descripcion = "Lab. de ciencias básicas",
+                            EscuelaId = 3,
+                            Nombre = "Laboratorio de Ciencias",
+                            Piso = 1,
+                            TipoUbicacionId = 2
+                        },
                         new
                         {
                             Id = 100,
@@ -1363,7 +1735,14 @@ namespace Proyecto_de_practicas.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Proyecto_de_practicas.Modules.Security.Entities.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.Navigation("Facultad");
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Facultades", b =>
@@ -1384,10 +1763,6 @@ namespace Proyecto_de_practicas.Migrations
                         .HasForeignKey("EscuelaId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Ubicacion", "Padre")
-                        .WithMany("Hijos")
-                        .HasForeignKey("PadreId");
-
                     b.HasOne("Proyecto_de_practicas.Modules.Ubicaciones.Entities.TipoUbicacion", "TipoUbicacion")
                         .WithMany("Ubicaciones")
                         .HasForeignKey("TipoUbicacionId")
@@ -1399,8 +1774,6 @@ namespace Proyecto_de_practicas.Migrations
                         .HasForeignKey("UsuarioId");
 
                     b.Navigation("Escuela");
-
-                    b.Navigation("Padre");
 
                     b.Navigation("TipoUbicacion");
 
@@ -1473,8 +1846,6 @@ namespace Proyecto_de_practicas.Migrations
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Ubicacion", b =>
                 {
                     b.Navigation("Articulos");
-
-                    b.Navigation("Hijos");
 
                     b.Navigation("Solicitantes");
                 });

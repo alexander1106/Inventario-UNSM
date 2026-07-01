@@ -32,7 +32,25 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Services
             return await _repository.GetByFacultadIdAsync(facultadId);
         }
 
-        public async Task<Escuelas> CreateAsync(Escuelas escuela)
+        private async Task<string?> GuardarImagen(IFormFile? file)
+        {
+            if (file == null) return null;
+
+            var folder = Path.Combine("wwwroot", "uploads", "escuelas");
+            Directory.CreateDirectory(folder);
+
+            var fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
+            var path = Path.Combine(folder, fileName);
+
+            using (var stream = new FileStream(path, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            return "/uploads/escuelas/" + fileName;
+        }
+
+        public async Task<Escuelas> CreateAsync(Escuelas escuela, IFormFile? imagen)
         {
             var facultad = await _facultadesRepository.GetByIdAsync(escuela.FacultadId);
 
@@ -48,10 +66,12 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Services
                 throw new Exception("La escuela ya existe en esta facultad.");
             }
 
+            escuela.ImagenUrl = await GuardarImagen(imagen);
+
             return await _repository.CreateAsync(escuela);
         }
 
-        public async Task<Escuelas> UpdateAsync(int id, Escuelas escuela)
+        public async Task<Escuelas> UpdateAsync(int id, Escuelas escuela, IFormFile? imagen)
         {
             var actual = await _repository.GetByIdAsync(id);
 
@@ -71,6 +91,11 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Services
             actual.Nombre = escuela.Nombre;
             actual.FacultadId = escuela.FacultadId;
 
+            if (imagen != null)
+            {
+                actual.ImagenUrl = await GuardarImagen(imagen);
+            }
+
             await _repository.UpdateAsync(actual);
 
             return actual;
@@ -84,6 +109,16 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Services
                 throw new Exception("La escuela no existe.");
 
             await _repository.DeleteAsync(id);
+        }
+
+        public async Task<Escuelas> AsignarUsuarioAsync(int escuelaId, int usuarioId)
+        {
+            return await _repository.AsignarUsuarioAsync(escuelaId, usuarioId);
+        }
+
+        public async Task<Escuelas?> GetByUsuarioIdAsync(int usuarioId)
+        {
+            return await _repository.GetByUsuarioIdAsync(usuarioId);
         }
     }
 }
