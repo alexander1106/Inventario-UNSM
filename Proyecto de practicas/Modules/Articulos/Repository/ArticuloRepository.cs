@@ -427,5 +427,10 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
                          && ubicacionIds.Contains(a.UbicacionId.Value))
                 .ToListAsync();
         }
+
+        public async Task<bool> ExisteUbicacionAsync(int ubicacionId)
+        {
+            return await _context.Ubicaciones.AnyAsync(u => u.Id == ubicacionId);
+        }
     }
 }

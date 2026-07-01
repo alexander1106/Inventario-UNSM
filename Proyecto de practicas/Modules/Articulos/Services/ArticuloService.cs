@@ -107,6 +107,11 @@ namespace Proyecto_de_practicas.Modules.Articulos.Services
 
         public async Task<string> ProcesarCargaMasivaExcelAsync(IFormFile archivo, int ubicacionId)
         {
+            if (!await _repo.ExisteUbicacionAsync(ubicacionId))
+            {
+                throw new Exception($"La ubicación con id {ubicacionId} no existe. Verifique la ubicación seleccionada antes de cargar el archivo.");
+            }
+
             int insertados = 0;
             int errores = 0;
 

@@ -33,5 +33,6 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository.IArticulosRepositor
 
         Task<ArticuloEstadisticasDto> GetEstadisticasAsync();
         Task<List<Articulo>> GetByEscuelaIdAsync(int escuelaId);
+        Task<bool> ExisteUbicacionAsync(int ubicacionId);
     }
 }

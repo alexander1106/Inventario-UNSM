@@ -34,10 +34,12 @@ public class PrestamoService : IServicePrestamos
             FechaDevolucion = p.FechaDevolucion,
             Estado = p.Estado,
             RutaPdf = p.RutaPdf,
-            Aprobar= p.Aprobar,
+            Aprobar = p.Aprobar,
             EstadoPrestamo = p.EstadoPrestamo,
             ArticuloId = p.Articulo.Id,
-            SolicitanteId =p.SolicitanteId
+            SolicitanteId = p.SolicitanteId,
+            FirmadoPor = p.FirmadoPor,
+            FechaFirma = p.FechaFirma
         });
     }
 
@@ -63,7 +65,9 @@ public class PrestamoService : IServicePrestamos
             Aprobar = p.Aprobar,
             EstadoPrestamo = p.EstadoPrestamo,
             ArticuloId = p.Articulo.Id,
-            SolicitanteId = p.SolicitanteId
+            SolicitanteId = p.SolicitanteId,
+            FirmadoPor = p.FirmadoPor,
+            FechaFirma = p.FechaFirma
         });
     }
     public async Task<string> UploadPdfAsync(int prestamoId, IFormFile file)
@@ -144,61 +148,36 @@ public class PrestamoService : IServicePrestamos
             throw new Exception($"Error al guardar el préstamo: {inner}");
         }
     }
-    private void AgregarSello(string rutaPdf)
+    private void AgregarMarcaDeAgua(string rutaPdf, string firmante, DateTime fechaFirma)
     {
         var document = PdfReader.Open(rutaPdf, PdfDocumentOpenMode.Modify);
+
+        var fontAprobado = new XFont("Arial", 72, XFontStyle.Bold);
+        var fontInfo    = new XFont("Arial", 11, XFontStyle.Regular);
+        var brushRojo   = new XSolidBrush(XColor.FromArgb(55, 200, 0, 0));
+        var brushGris   = new XSolidBrush(XColor.FromArgb(110, 60, 60, 60));
 
         foreach (var page in document.Pages)
         {
             var gfx = XGraphics.FromPdfPage(page);
-            var font = new XFont("Arial", 40, XFontStyle.Bold);
+            double cx = page.Width  / 2;
+            double cy = page.Height / 2;
+
+            // "APROBADO" diagonal
+            var estado = gfx.Save();
+            gfx.TranslateTransform(cx, cy);
+            gfx.RotateTransform(-45);
+            gfx.DrawString("APROBADO", fontAprobado, brushRojo,
+                new XRect(-250, -45, 500, 90), XStringFormats.Center);
+            gfx.Restore(estado);
+
+            // Info centrada debajo del texto diagonal
             gfx.DrawString(
-                "APROBADO",
-                font,
-                XBrushes.Red,
-                new XRect(0, 0, page.Width, page.Height),
-                XStringFormats.Center
-            );
+                $"Firmado por: {firmante}   |   Fecha: {fechaFirma:dd/MM/yyyy HH:mm}",
+                fontInfo, brushGris,
+                new XRect(0, cy + 55, page.Width, 20),
+                XStringFormats.TopCenter);
         }
-
-        document.Save(rutaPdf);
-    }
-
-    private void AgregarFirma(string rutaPdf, string firmante, DateTime fechaFirma)
-    {
-        var document = PdfReader.Open(rutaPdf, PdfDocumentOpenMode.Modify);
-        var lastPage = document.Pages[document.PageCount - 1];
-        var gfx = XGraphics.FromPdfPage(lastPage);
-
-        var fontFirma = new XFont("Arial", 12, XFontStyle.Bold);
-        var fontFecha = new XFont("Arial", 10, XFontStyle.Regular);
-        var pen = new XPen(XColors.Black, 1.5);
-
-        double margen = 60;
-        double anchoRect = 220;
-        double altoRect = 55;
-        double baseY = lastPage.Height - margen - altoRect;
-
-        // Rectángulo contenedor
-        gfx.DrawRectangle(pen, margen, baseY, anchoRect, altoRect);
-
-        // Texto "Firmado por: nombre"
-        gfx.DrawString(
-            $"Firmado por: {firmante}",
-            fontFirma,
-            XBrushes.Black,
-            new XRect(margen + 8, baseY + 10, anchoRect - 16, 20),
-            XStringFormats.TopLeft
-        );
-
-        // Fecha de firma
-        gfx.DrawString(
-            $"Fecha: {fechaFirma:dd/MM/yyyy HH:mm}",
-            fontFecha,
-            XBrushes.Black,
-            new XRect(margen + 8, baseY + 30, anchoRect - 16, 20),
-            XStringFormats.TopLeft
-        );
 
         document.Save(rutaPdf);
     }
@@ -220,7 +199,7 @@ public class PrestamoService : IServicePrestamos
             throw new Exception("No se encontró el archivo PDF del préstamo.");
 
         var fechaFirma = DateTime.Now;
-        AgregarFirma(rutaAbsoluta, firmante, fechaFirma);
+        AgregarMarcaDeAgua(rutaAbsoluta, firmante, fechaFirma);
 
         prestamo.FirmadoPor = firmante;
         prestamo.FechaFirma = fechaFirma;
