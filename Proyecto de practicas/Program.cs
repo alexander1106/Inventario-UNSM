@@ -163,6 +163,9 @@ builder.Services.AddControllers()
         builder.Services.AddScoped<ITipoArticuloRepository, TipoArticuloRepository>();
         builder.Services.AddScoped<ITipoArticuloService, TipoArticuloService>();
 
+        builder.Services.AddScoped<IClasificacionDepreciacionRepository, ClasificacionDepreciacionRepository>();
+        builder.Services.AddScoped<IClasificacionDepreciacionService, ClasificacionDepreciacionService>();
+
         builder.Services.AddScoped<IUbicacionRepository, UbicacionRepository>();
         builder.Services.AddScoped<IUbicacionService, UbicacionService>();
 

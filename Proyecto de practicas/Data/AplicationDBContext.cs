@@ -22,6 +22,7 @@ namespace Proyecto_de_practicas.Data
         public DbSet<RolPermisos> RolPermisos { get; set; }
 
         public DbSet<TipoArticulo> TipoArticulos { get; set; }
+        public DbSet<ClasificacionDepreciacion> ClasificacionesDepreciacion { get; set; }
         public DbSet<Prestamos> Prestamos { get; set; }
 
         public DbSet<Articulo> Articulos { get; set; }
@@ -58,7 +59,6 @@ namespace Proyecto_de_practicas.Data
                 new Modulo { Id = 7, Nombre = "Reportes", Ruta = "/reportes", Icon = "fa-solid fa-chart-line", Estado = 1 },
                 new Modulo { Id = 8, Nombre = "Seguridad", Ruta = "/seguridad", Icon = "fa-solid fa-shield-alt", Estado = 1 },
                 new Modulo { Id = 9, Nombre = "Gestion institucional", Ruta = "/gestion-institucional", Icon = "fa-solid fa-shield-alt", Estado = 1 },
-
                 new Modulo { Id = 10, Nombre = "Inventario", Ruta = "/inventario", Icon = "fa-solid fa-shield-alt", Estado = 1 }
 
             );
@@ -67,9 +67,15 @@ namespace Proyecto_de_practicas.Data
                 .Property(a => a.ValorActual)
                 .HasPrecision(18, 2);
 
+            modelBuilder.Entity<Articulo>()
+                .HasOne(a => a.ClasificacionDepreciacion)
+                .WithMany(c => c.Articulos)
+                .HasForeignKey(a => a.ClasificacionDepreciacionId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<Roles>().HasData(
-                new Roles { Id = 1, Nombre = "Administrador", Estado = 1 },
-                new Roles { Id = 2, Nombre = "Usuario", Estado = 1 }
+                new Roles { Id = 1, Nombre = "superadmin", Estado = 1 },
+                new Roles { Id = 2, Nombre = "Administrador", Estado = 1 }
             );
             modelBuilder.Entity<Sedes>().HasData(
                 new Sedes { Id = 1, Nombre = "Rioja", Direccion = "Jr. Santo Toribio N° 1200 ", Estado = true },
@@ -95,7 +101,9 @@ namespace Proyecto_de_practicas.Data
                 new SubModulo { Id = 8, Nombre = "Modulos", Ruta = "/modulos", ModuloId = 8, Icon = "fa-solid fa-layer-group", Estado = 1 },
                 new SubModulo { Id = 9, Nombre = "Sedes", Ruta = "/sedes", ModuloId = 3,  Icon = "fa-solid fa-shield-alt", Estado = 1 },
                 new SubModulo { Id = 10, Nombre = "Facultades", Ruta = "/facultades", ModuloId = 3, Icon = "fa-solid fa-shield-alt", Estado = 1 },
-                new SubModulo { Id = 11, Nombre = "Escuelas", Ruta = "/escuelas", ModuloId = 3, Icon = "fa-solid fa-shield-alt", Estado = 1 }
+                new SubModulo { Id = 11, Nombre = "Escuelas", Ruta = "/escuelas", ModuloId = 3, Icon = "fa-solid fa-shield-alt", Estado = 1 },
+                new SubModulo { Id = 12, Nombre = "Prestamos", Ruta = "/prestamos", ModuloId = 5, Icon = "fa-solid fa-shield-alt", Estado = 1 }
+
             );
 
 
@@ -156,9 +164,7 @@ namespace Proyecto_de_practicas.Data
                 new Permiso { Id = 4, Nombre = "Eliminar", Activo = true }
             );
 
-            // ============================
-            // 🔐 ROL PERMISOS SEED
-            // ============================
+          
             modelBuilder.Entity<RolPermisos>().HasData(
                 // ADMINISTRADOR
                 new RolPermisos { Id = 1, RolId = 1, SubModuloId = 1, PermisoId = 1 },
@@ -205,12 +211,39 @@ namespace Proyecto_de_practicas.Data
                 new RolPermisos { Id = 46, RolId = 1, SubModuloId = 11, PermisoId = 2 },
                 new RolPermisos { Id = 47, RolId = 1, SubModuloId = 11, PermisoId = 3 },
                 new RolPermisos { Id = 48, RolId = 1, SubModuloId = 11, PermisoId = 4 },
+                new RolPermisos { Id = 49, RolId = 1, SubModuloId = 12, PermisoId = 1 },
+                new RolPermisos { Id = 50, RolId = 1, SubModuloId = 12, PermisoId = 2 },
+                new RolPermisos { Id = 51, RolId = 1, SubModuloId = 12, PermisoId = 3 },
+                new RolPermisos { Id = 52, RolId = 1, SubModuloId = 12, PermisoId = 4 },
+
+                // ADMINISTRADOR - Módulos sin submódulos (acceso total, excepto Dashboard)
+                new RolPermisos { Id = 53, RolId = 1, ModuloId = 4, PermisoId = 1 },
+                new RolPermisos { Id = 54, RolId = 1, ModuloId = 4, PermisoId = 2 },
+                new RolPermisos { Id = 55, RolId = 1, ModuloId = 4, PermisoId = 3 },
+                new RolPermisos { Id = 56, RolId = 1, ModuloId = 4, PermisoId = 4 },
+                new RolPermisos { Id = 57, RolId = 1, ModuloId = 6, PermisoId = 1 },
+                new RolPermisos { Id = 58, RolId = 1, ModuloId = 6, PermisoId = 2 },
+                new RolPermisos { Id = 59, RolId = 1, ModuloId = 6, PermisoId = 3 },
+                new RolPermisos { Id = 60, RolId = 1, ModuloId = 6, PermisoId = 4 },
+                new RolPermisos { Id = 61, RolId = 1, ModuloId = 7, PermisoId = 1 },
+                new RolPermisos { Id = 62, RolId = 1, ModuloId = 7, PermisoId = 2 },
+                new RolPermisos { Id = 63, RolId = 1, ModuloId = 7, PermisoId = 3 },
+                new RolPermisos { Id = 64, RolId = 1, ModuloId = 7, PermisoId = 4 },
+                new RolPermisos { Id = 65, RolId = 1, ModuloId = 9, PermisoId = 1 },
+                new RolPermisos { Id = 66, RolId = 1, ModuloId = 9, PermisoId = 2 },
+                new RolPermisos { Id = 67, RolId = 1, ModuloId = 9, PermisoId = 3 },
+                new RolPermisos { Id = 68, RolId = 1, ModuloId = 9, PermisoId = 4 },
+                new RolPermisos { Id = 69, RolId = 1, ModuloId = 10, PermisoId = 1 },
+                new RolPermisos { Id = 70, RolId = 1, ModuloId = 10, PermisoId = 2 },
+                new RolPermisos { Id = 71, RolId = 1, ModuloId = 10, PermisoId = 3 },
+                new RolPermisos { Id = 72, RolId = 1, ModuloId = 10, PermisoId = 4 },
 
                 // USUARIO
                 new RolPermisos { Id = 33, RolId = 2, SubModuloId = 1, PermisoId = 3 },
                 new RolPermisos { Id = 34, RolId = 2, SubModuloId = 2, PermisoId = 3 },
                 new RolPermisos { Id = 35, RolId = 2, SubModuloId = 3, PermisoId = 3 },
                 new RolPermisos { Id = 36, RolId = 2, SubModuloId = 4, PermisoId = 3 }
+
 
             );
 
@@ -268,24 +301,46 @@ namespace Proyecto_de_practicas.Data
           .OnDelete(DeleteBehavior.Restrict);
 
             // ============================
-            // FACULTADES SEED
+            // FACULTADES SEED (UNSM - Tarapoto)
             // ============================
             modelBuilder.Entity<Facultades>().HasData(
-                new Facultades { Id = 1, Nombre = "Facultad de Ingeniería de Sistemas e Informática", Direccion = "Jr. Amorarca N° 334, Morales", Estado = true, SedeId = 4 },
-                new Facultades { Id = 2, Nombre = "Facultad de Ciencias Económicas", Direccion = "Jr. Amorarca N° 334, Morales", Estado = true, SedeId = 4 },
-                new Facultades { Id = 3, Nombre = "Facultad de Ingeniería Agroindustrial", Direccion = "Jr. Amorarca N° 334, Morales", Estado = true, SedeId = 4 },
-                new Facultades { Id = 4, Nombre = "Facultad de Educación y Humanidades", Direccion = "Jr. Amorarca N° 334, Morales", Estado = true, SedeId = 4 }
+                new Facultades { Id = 1, Nombre = "Facultad de Ingeniería de Sistemas e Informática", Direccion = "Ciudad Universitaria, Jr. Amorarca N° 334, Morales", Estado = true, SedeId = 4 },
+                new Facultades { Id = 2, Nombre = "Facultad de Ciencias Económicas", Direccion = "Ciudad Universitaria, Jr. Amorarca N° 334, Morales", Estado = true, SedeId = 4 },
+                new Facultades { Id = 3, Nombre = "Facultad de Ingeniería Agroindustrial", Direccion = "Ciudad Universitaria, Jr. Amorarca N° 334, Morales", Estado = true, SedeId = 4 },
+                new Facultades { Id = 4, Nombre = "Facultad de Educación y Humanidades", Direccion = "Ciudad Universitaria, Jr. Amorarca N° 334, Morales", Estado = true, SedeId = 4 },
+                new Facultades { Id = 5, Nombre = "Facultad de Ciencias Agrarias", Direccion = "Ciudad Universitaria, Jr. Amorarca N° 334, Morales", Estado = true, SedeId = 4 },
+                new Facultades { Id = 6, Nombre = "Facultad de Ciencias de la Salud", Direccion = "Ciudad Universitaria, Jr. Amorarca N° 334, Morales", Estado = true, SedeId = 4 },
+                new Facultades { Id = 7, Nombre = "Facultad de Derecho y Ciencias Políticas", Direccion = "Ciudad Universitaria, Jr. Amorarca N° 334, Morales", Estado = true, SedeId = 4 },
+                new Facultades { Id = 8, Nombre = "Facultad de Ecología", Direccion = "Prolongación 20 de Abril S/N (Cuadra 3, Barrio Calvario), Moyobamba", Estado = true, SedeId = 2 },
+                new Facultades { Id = 9, Nombre = "Facultad de Ingeniería Civil y Arquitectura", Direccion = "Ciudad Universitaria, Jr. Amorarca N° 334, Morales", Estado = true, SedeId = 4 },
+                new Facultades { Id = 10, Nombre = "Facultad de Medicina Humana", Direccion = "Ciudad Universitaria, Jr. Amorarca N° 334, Morales", Estado = true, SedeId = 4 }
             );
 
             // ============================
-            // ESCUELAS SEED
+            // ESCUELAS SEED (UNSM - Tarapoto)
             // ============================
             modelBuilder.Entity<Escuelas>().HasData(
                 new Escuelas { Id = 1, Nombre = "Ingeniería de Sistemas e Informática", FacultadId = 1 },
                 new Escuelas { Id = 2, Nombre = "Contabilidad", FacultadId = 2 },
                 new Escuelas { Id = 3, Nombre = "Administración", FacultadId = 2 },
                 new Escuelas { Id = 4, Nombre = "Ingeniería Agroindustrial", FacultadId = 3 },
-                new Escuelas { Id = 5, Nombre = "Educación Primaria", FacultadId = 4 }
+                new Escuelas { Id = 5, Nombre = "Educación Primaria", FacultadId = 4 },
+                new Escuelas { Id = 6, Nombre = "Economía", FacultadId = 2 },
+                new Escuelas { Id = 7, Nombre = "Turismo", FacultadId = 2 },
+                new Escuelas { Id = 8, Nombre = "Educación Inicial", FacultadId = 4 },
+                new Escuelas { Id = 9, Nombre = "Educación Secundaria", FacultadId = 4 },
+                new Escuelas { Id = 10, Nombre = "Idiomas", FacultadId = 4 },
+                new Escuelas { Id = 11, Nombre = "Psicología", FacultadId = 4 },
+                new Escuelas { Id = 12, Nombre = "Agronomía", FacultadId = 5 },
+                new Escuelas { Id = 13, Nombre = "Medicina Veterinaria", FacultadId = 5 },
+                new Escuelas { Id = 14, Nombre = "Enfermería", FacultadId = 6 },
+                new Escuelas { Id = 15, Nombre = "Obstetricia", FacultadId = 6 },
+                new Escuelas { Id = 16, Nombre = "Derecho", FacultadId = 7 },
+                new Escuelas { Id = 17, Nombre = "Ingeniería Ambiental", FacultadId = 8 },
+                new Escuelas { Id = 18, Nombre = "Ingeniería Sanitaria", FacultadId = 8 },
+                new Escuelas { Id = 19, Nombre = "Arquitectura", FacultadId = 9 },
+                new Escuelas { Id = 20, Nombre = "Ingeniería Civil", FacultadId = 9 },
+                new Escuelas { Id = 21, Nombre = "Medicina Humana", FacultadId = 10 }
             );
 
             // ============================
@@ -305,7 +360,6 @@ namespace Proyecto_de_practicas.Data
                     Marca = "HP",
                     Modelo = "ProDesk 400 G7",
                     NroSerie = "SN-HP-001",
-                    Color = "Negro",
                     TiempoVidaUtil = 5,
                     DepreciacionAnual = 20,
                     ValorActual = 2000.00m,
@@ -323,7 +377,6 @@ namespace Proyecto_de_practicas.Data
                     UbicacionId = 100,
                     Marca = "Norditalia",
                     Modelo = "Ejecutiva-X",
-                    Color = "Negro",
                     TiempoVidaUtil = 10,
                     DepreciacionAnual = 10,
                     ValorActual = 315.00m,

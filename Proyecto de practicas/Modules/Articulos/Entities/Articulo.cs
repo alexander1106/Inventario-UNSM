@@ -24,9 +24,10 @@ namespace Proyecto_de_practicas.Modules.Articulos.Entities
         public string? Marca { get; set; }
         public string? Modelo { get; set; }
         public string? NroSerie { get; set; }
-        public string? Medidas { get; set; }
-        public string? Color { get; set; }
+        public string? OtrasObservaciones { get; set; }
         public double TiempoVidaUtil { get; set; }
+        public int? ClasificacionDepreciacionId { get; set; }
+        public virtual ClasificacionDepreciacion? ClasificacionDepreciacion { get; set; }
         public double DepreciacionAnual { get; set; }
         public decimal ValorActual { get; set; }
         [JsonIgnore]

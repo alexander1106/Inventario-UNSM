@@ -13,12 +13,23 @@ namespace Proyecto_de_practicas.Modules.Articulos.Services
     public class ArticuloService : IArticuloService
     {
         private readonly IArticuloRepository _repo;
+        private readonly IClasificacionDepreciacionRepository _clasificacionRepo;
         private readonly IMapper _mapper;
 
-        public ArticuloService(IArticuloRepository repo, IMapper mapper)
+        public ArticuloService(IArticuloRepository repo, IClasificacionDepreciacionRepository clasificacionRepo, IMapper mapper)
         {
             _repo = repo;
+            _clasificacionRepo = clasificacionRepo;
             _mapper = mapper;
+        }
+
+        private async Task<double> ResolverTiempoVidaUtilAsync(double tiempoVidaUtil, int? clasificacionDepreciacionId)
+        {
+            if (tiempoVidaUtil > 0 || clasificacionDepreciacionId == null)
+                return tiempoVidaUtil;
+
+            var clasificacion = await _clasificacionRepo.GetByIdAsync(clasificacionDepreciacionId.Value);
+            return clasificacion?.VidaUtilAnios ?? tiempoVidaUtil;
         }
         public async Task<string> UpdateArticuloConCampos(int id, ArticuloConCamposRequest request)
         {
@@ -41,6 +52,7 @@ namespace Proyecto_de_practicas.Modules.Articulos.Services
             var entity = _mapper.Map<Articulo>(dto);
             entity.FechaAdquision = DateTime.Now;
             entity.Estado = 1;
+            entity.TiempoVidaUtil = await ResolverTiempoVidaUtilAsync(entity.TiempoVidaUtil, entity.ClasificacionDepreciacionId);
             entity.DepreciacionAnual = entity.TiempoVidaUtil > 0 ? 100.0 / entity.TiempoVidaUtil : 0;
             var result = await _repo.AddAsync(entity);
             return _mapper.Map<ArticuloDto>(result);
@@ -50,6 +62,7 @@ namespace Proyecto_de_practicas.Modules.Articulos.Services
         {
             var entity = _mapper.Map<Articulo>(dto);
             entity.Id = id;
+            entity.TiempoVidaUtil = await ResolverTiempoVidaUtilAsync(entity.TiempoVidaUtil, entity.ClasificacionDepreciacionId);
             var result = await _repo.UpdateAsync(entity);
             return _mapper.Map<ArticuloDto>(result);
         }
@@ -141,8 +154,7 @@ namespace Proyecto_de_practicas.Modules.Articulos.Services
                         string marca = ObtenerValor("marca");
                         string modelo = ObtenerValor("modelo");
                         string nroSerie = ObtenerValor("nro_serie");
-                        string color = ObtenerValor("color");
-                        string medidas = ObtenerValor("medidas");
+                        string otrasObservaciones = ObtenerValor("otras_observaciones");
 
                         // Conversión limpia del valor
                         double valorNumerico = 0;
@@ -163,8 +175,7 @@ namespace Proyecto_de_practicas.Modules.Articulos.Services
                             Marca = !string.IsNullOrEmpty(marca) ? marca : null,
                             Modelo = !string.IsNullOrEmpty(modelo) ? modelo : null,
                             NroSerie = !string.IsNullOrEmpty(nroSerie) ? nroSerie : null,
-                            Color = !string.IsNullOrEmpty(color) ? color : null,
-                            Medidas = !string.IsNullOrEmpty(medidas) ? medidas : null,
+                            OtrasObservaciones = !string.IsNullOrEmpty(otrasObservaciones) ? otrasObservaciones : null,
                             CamposValores = new List<CampoValorDto>()
                         };
 

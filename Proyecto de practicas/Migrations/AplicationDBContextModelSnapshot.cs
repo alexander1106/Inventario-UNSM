@@ -30,13 +30,13 @@ namespace Proyecto_de_practicas.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("ClasificacionDepreciacionId")
+                        .HasColumnType("int");
+
                     b.Property<string>("CodigoBarra")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CodigoPatrimonial")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Color")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Condicion")
@@ -54,9 +54,6 @@ namespace Proyecto_de_practicas.Migrations
                     b.Property<string>("Marca")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Medidas")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Modelo")
                         .HasColumnType("nvarchar(max)");
 
@@ -64,6 +61,9 @@ namespace Proyecto_de_practicas.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NroSerie")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OtrasObservaciones")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("TiempoVidaUtil")
@@ -84,6 +84,8 @@ namespace Proyecto_de_practicas.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ClasificacionDepreciacionId");
+
                     b.HasIndex("TipoArticuloId");
 
                     b.HasIndex("UbicacionId");
@@ -95,7 +97,6 @@ namespace Proyecto_de_practicas.Migrations
                         {
                             Id = 1,
                             CodigoPatrimonial = "UNSM-001",
-                            Color = "Negro",
                             Condicion = "Bueno",
                             DepreciacionAnual = 20.0,
                             Estado = 1,
@@ -114,7 +115,6 @@ namespace Proyecto_de_practicas.Migrations
                         {
                             Id = 2,
                             CodigoPatrimonial = "UNSM-002",
-                            Color = "Negro",
                             Condicion = "Bueno",
                             DepreciacionAnual = 10.0,
                             Estado = 1,
@@ -181,6 +181,35 @@ namespace Proyecto_de_practicas.Migrations
                     b.HasIndex("TipoArticuloId");
 
                     b.ToTable("CamposArticulos");
+                });
+
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.ClasificacionDepreciacion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Descripcion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Estado")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("PorcentajeDepreciacionAnual")
+                        .HasColumnType("float");
+
+                    b.Property<double>("VidaUtilAnios")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ClasificacionesDepreciacion");
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.EncabezadoResult", b =>
@@ -513,13 +542,13 @@ namespace Proyecto_de_practicas.Migrations
                         {
                             Id = 1,
                             Estado = 1,
-                            Nombre = "Administrador"
+                            Nombre = "superadmin"
                         },
                         new
                         {
                             Id = 2,
                             Estado = 1,
-                            Nombre = "Usuario"
+                            Nombre = "Administrador"
                         });
                 });
 
@@ -652,6 +681,15 @@ namespace Proyecto_de_practicas.Migrations
                             ModuloId = 3,
                             Nombre = "Escuelas",
                             Ruta = "/escuelas"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Estado = 1,
+                            Icon = "fa-solid fa-shield-alt",
+                            ModuloId = 5,
+                            Nombre = "Prestamos",
+                            Ruta = "/prestamos"
                         });
                 });
 
@@ -1053,6 +1091,174 @@ namespace Proyecto_de_practicas.Migrations
                         },
                         new
                         {
+                            Id = 49,
+                            PermisoId = 1,
+                            RolId = 1,
+                            SubModuloId = 12
+                        },
+                        new
+                        {
+                            Id = 50,
+                            PermisoId = 2,
+                            RolId = 1,
+                            SubModuloId = 12
+                        },
+                        new
+                        {
+                            Id = 51,
+                            PermisoId = 3,
+                            RolId = 1,
+                            SubModuloId = 12
+                        },
+                        new
+                        {
+                            Id = 52,
+                            PermisoId = 4,
+                            RolId = 1,
+                            SubModuloId = 12
+                        },
+                        new
+                        {
+                            Id = 53,
+                            ModuloId = 4,
+                            PermisoId = 1,
+                            RolId = 1
+                        },
+                        new
+                        {
+                            Id = 54,
+                            ModuloId = 4,
+                            PermisoId = 2,
+                            RolId = 1
+                        },
+                        new
+                        {
+                            Id = 55,
+                            ModuloId = 4,
+                            PermisoId = 3,
+                            RolId = 1
+                        },
+                        new
+                        {
+                            Id = 56,
+                            ModuloId = 4,
+                            PermisoId = 4,
+                            RolId = 1
+                        },
+                        new
+                        {
+                            Id = 57,
+                            ModuloId = 6,
+                            PermisoId = 1,
+                            RolId = 1
+                        },
+                        new
+                        {
+                            Id = 58,
+                            ModuloId = 6,
+                            PermisoId = 2,
+                            RolId = 1
+                        },
+                        new
+                        {
+                            Id = 59,
+                            ModuloId = 6,
+                            PermisoId = 3,
+                            RolId = 1
+                        },
+                        new
+                        {
+                            Id = 60,
+                            ModuloId = 6,
+                            PermisoId = 4,
+                            RolId = 1
+                        },
+                        new
+                        {
+                            Id = 61,
+                            ModuloId = 7,
+                            PermisoId = 1,
+                            RolId = 1
+                        },
+                        new
+                        {
+                            Id = 62,
+                            ModuloId = 7,
+                            PermisoId = 2,
+                            RolId = 1
+                        },
+                        new
+                        {
+                            Id = 63,
+                            ModuloId = 7,
+                            PermisoId = 3,
+                            RolId = 1
+                        },
+                        new
+                        {
+                            Id = 64,
+                            ModuloId = 7,
+                            PermisoId = 4,
+                            RolId = 1
+                        },
+                        new
+                        {
+                            Id = 65,
+                            ModuloId = 9,
+                            PermisoId = 1,
+                            RolId = 1
+                        },
+                        new
+                        {
+                            Id = 66,
+                            ModuloId = 9,
+                            PermisoId = 2,
+                            RolId = 1
+                        },
+                        new
+                        {
+                            Id = 67,
+                            ModuloId = 9,
+                            PermisoId = 3,
+                            RolId = 1
+                        },
+                        new
+                        {
+                            Id = 68,
+                            ModuloId = 9,
+                            PermisoId = 4,
+                            RolId = 1
+                        },
+                        new
+                        {
+                            Id = 69,
+                            ModuloId = 10,
+                            PermisoId = 1,
+                            RolId = 1
+                        },
+                        new
+                        {
+                            Id = 70,
+                            ModuloId = 10,
+                            PermisoId = 2,
+                            RolId = 1
+                        },
+                        new
+                        {
+                            Id = 71,
+                            ModuloId = 10,
+                            PermisoId = 3,
+                            RolId = 1
+                        },
+                        new
+                        {
+                            Id = 72,
+                            ModuloId = 10,
+                            PermisoId = 4,
+                            RolId = 1
+                        },
+                        new
+                        {
                             Id = 33,
                             PermisoId = 3,
                             RolId = 2,
@@ -1180,6 +1386,102 @@ namespace Proyecto_de_practicas.Migrations
                             Id = 5,
                             FacultadId = 4,
                             Nombre = "Educación Primaria"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            FacultadId = 2,
+                            Nombre = "Economía"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            FacultadId = 2,
+                            Nombre = "Turismo"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            FacultadId = 4,
+                            Nombre = "Educación Inicial"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            FacultadId = 4,
+                            Nombre = "Educación Secundaria"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            FacultadId = 4,
+                            Nombre = "Idiomas"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            FacultadId = 4,
+                            Nombre = "Psicología"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            FacultadId = 5,
+                            Nombre = "Agronomía"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            FacultadId = 5,
+                            Nombre = "Medicina Veterinaria"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            FacultadId = 6,
+                            Nombre = "Enfermería"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            FacultadId = 6,
+                            Nombre = "Obstetricia"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            FacultadId = 7,
+                            Nombre = "Derecho"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            FacultadId = 8,
+                            Nombre = "Ingeniería Ambiental"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            FacultadId = 8,
+                            Nombre = "Ingeniería Sanitaria"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            FacultadId = 9,
+                            Nombre = "Arquitectura"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            FacultadId = 9,
+                            Nombre = "Ingeniería Civil"
+                        },
+                        new
+                        {
+                            Id = 21,
+                            FacultadId = 10,
+                            Nombre = "Medicina Humana"
                         });
                 });
 
@@ -1215,7 +1517,7 @@ namespace Proyecto_de_practicas.Migrations
                         new
                         {
                             Id = 1,
-                            Direccion = "Jr. Amorarca N° 334, Morales",
+                            Direccion = "Ciudad Universitaria, Jr. Amorarca N° 334, Morales",
                             Estado = true,
                             Nombre = "Facultad de Ingeniería de Sistemas e Informática",
                             SedeId = 4
@@ -1223,7 +1525,7 @@ namespace Proyecto_de_practicas.Migrations
                         new
                         {
                             Id = 2,
-                            Direccion = "Jr. Amorarca N° 334, Morales",
+                            Direccion = "Ciudad Universitaria, Jr. Amorarca N° 334, Morales",
                             Estado = true,
                             Nombre = "Facultad de Ciencias Económicas",
                             SedeId = 4
@@ -1231,7 +1533,7 @@ namespace Proyecto_de_practicas.Migrations
                         new
                         {
                             Id = 3,
-                            Direccion = "Jr. Amorarca N° 334, Morales",
+                            Direccion = "Ciudad Universitaria, Jr. Amorarca N° 334, Morales",
                             Estado = true,
                             Nombre = "Facultad de Ingeniería Agroindustrial",
                             SedeId = 4
@@ -1239,9 +1541,57 @@ namespace Proyecto_de_practicas.Migrations
                         new
                         {
                             Id = 4,
-                            Direccion = "Jr. Amorarca N° 334, Morales",
+                            Direccion = "Ciudad Universitaria, Jr. Amorarca N° 334, Morales",
                             Estado = true,
                             Nombre = "Facultad de Educación y Humanidades",
+                            SedeId = 4
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Direccion = "Ciudad Universitaria, Jr. Amorarca N° 334, Morales",
+                            Estado = true,
+                            Nombre = "Facultad de Ciencias Agrarias",
+                            SedeId = 4
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Direccion = "Ciudad Universitaria, Jr. Amorarca N° 334, Morales",
+                            Estado = true,
+                            Nombre = "Facultad de Ciencias de la Salud",
+                            SedeId = 4
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Direccion = "Ciudad Universitaria, Jr. Amorarca N° 334, Morales",
+                            Estado = true,
+                            Nombre = "Facultad de Derecho y Ciencias Políticas",
+                            SedeId = 4
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Direccion = "Prolongación 20 de Abril S/N (Cuadra 3, Barrio Calvario), Moyobamba",
+                            Estado = true,
+                            Nombre = "Facultad de Ecología",
+                            SedeId = 2
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Direccion = "Ciudad Universitaria, Jr. Amorarca N° 334, Morales",
+                            Estado = true,
+                            Nombre = "Facultad de Ingeniería Civil y Arquitectura",
+                            SedeId = 4
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Direccion = "Ciudad Universitaria, Jr. Amorarca N° 334, Morales",
+                            Estado = true,
+                            Nombre = "Facultad de Medicina Humana",
                             SedeId = 4
                         });
                 });
@@ -1564,6 +1914,11 @@ namespace Proyecto_de_practicas.Migrations
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.Articulo", b =>
                 {
+                    b.HasOne("Proyecto_de_practicas.Modules.Articulos.Entities.ClasificacionDepreciacion", "ClasificacionDepreciacion")
+                        .WithMany("Articulos")
+                        .HasForeignKey("ClasificacionDepreciacionId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Proyecto_de_practicas.Modules.Articulos.Entities.TipoArticulo", "TipoArticulo")
                         .WithMany("Articulos")
                         .HasForeignKey("TipoArticuloId")
@@ -1573,6 +1928,8 @@ namespace Proyecto_de_practicas.Migrations
                     b.HasOne("Proyecto_de_practicas.Modules.Ubicaciones.Entities.Ubicacion", "Ubicacion")
                         .WithMany("Articulos")
                         .HasForeignKey("UbicacionId");
+
+                    b.Navigation("ClasificacionDepreciacion");
 
                     b.Navigation("TipoArticulo");
 
@@ -1799,6 +2156,11 @@ namespace Proyecto_de_practicas.Migrations
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.CampoArticulo", b =>
                 {
                     b.Navigation("CamposValores");
+                });
+
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.ClasificacionDepreciacion", b =>
+                {
+                    b.Navigation("Articulos");
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Articulos.Entities.TipoArticulo", b =>

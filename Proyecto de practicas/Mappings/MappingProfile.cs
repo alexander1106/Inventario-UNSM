@@ -51,6 +51,9 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Imagen, opt => opt.Ignore())
             .ReverseMap();
 
+        // ====== CLASIFICACIÓN DE DEPRECIACIÓN (MEF) ======
+        CreateMap<ClasificacionDepreciacion, ClasificacionDepreciacionDto>().ReverseMap();
+
         // ====== CAMPOS DE ARTÍCULO ======
         CreateMap<CampoArticulo, CampoArticuloDto>();
         CreateMap<CampoArticuloDto, CampoArticulo>();
@@ -74,9 +77,9 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Marca,             opt => opt.MapFrom(src => src.Marca))
             .ForMember(dest => dest.Modelo,            opt => opt.MapFrom(src => src.Modelo))
             .ForMember(dest => dest.NroSerie,          opt => opt.MapFrom(src => src.NroSerie))
-            .ForMember(dest => dest.Medidas,           opt => opt.MapFrom(src => src.Medidas))
-            .ForMember(dest => dest.Color,             opt => opt.MapFrom(src => src.Color))
+            .ForMember(dest => dest.OtrasObservaciones, opt => opt.MapFrom(src => src.OtrasObservaciones))
             .ForMember(dest => dest.TiempoVidaUtil,    opt => opt.MapFrom(src => src.TiempoVidaUtil))
+            .ForMember(dest => dest.ClasificacionDepreciacionId, opt => opt.MapFrom(src => src.ClasificacionDepreciacionId))
             .ForMember(dest => dest.DepreciacionAnual, opt => opt.MapFrom(src => src.DepreciacionAnual))
             .ForMember(dest => dest.ValorActual,       opt => opt.MapFrom(src => src.ValorActual))
             .ForMember(dest => dest.Estado,            opt => opt.MapFrom(src => src.Estado));

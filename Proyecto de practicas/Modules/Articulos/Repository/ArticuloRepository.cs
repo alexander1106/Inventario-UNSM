@@ -21,6 +21,20 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
             _context = context;
         }
 
+        // 🔹 Si no llega TiempoVidaUtil pero sí una clasificación MEF, copia el valor desde el catálogo
+        private async Task<double> ResolverTiempoVidaUtilAsync(double tiempoVidaUtil, int? clasificacionDepreciacionId)
+        {
+            if (tiempoVidaUtil > 0 || clasificacionDepreciacionId == null)
+                return tiempoVidaUtil;
+
+            var vidaUtilAnios = await _context.ClasificacionesDepreciacion
+                .Where(c => c.Id == clasificacionDepreciacionId.Value)
+                .Select(c => (double?)c.VidaUtilAnios)
+                .FirstOrDefaultAsync();
+
+            return vidaUtilAnios ?? tiempoVidaUtil;
+        }
+
         // 🔹 Obtener todos los artículos (Entidad base)
         public async Task<List<Articulo>> GetAllAsync() =>
             await _context.Articulos.ToListAsync();
@@ -82,9 +96,9 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
                 Marca = articulo.Marca,
                 Modelo = articulo.Modelo,
                 NroSerie = articulo.NroSerie,
-                Medidas = articulo.Medidas,
-                Color = articulo.Color,
+                OtrasObservaciones = articulo.OtrasObservaciones,
                 TiempoVidaUtil = articulo.TiempoVidaUtil,
+                ClasificacionDepreciacionId = articulo.ClasificacionDepreciacionId,
                 DepreciacionAnual = articulo.DepreciacionAnual,
                 ValorActual = articulo.ValorActual,
                 Estado = articulo.Estado
@@ -148,10 +162,11 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
                 command.Parameters.Add(new SqlParameter("@Marca", request.Marca ?? (object)DBNull.Value));
                 command.Parameters.Add(new SqlParameter("@Modelo", request.Modelo ?? (object)DBNull.Value));
                 command.Parameters.Add(new SqlParameter("@NroSerie", request.NroSerie ?? (object)DBNull.Value));
-                command.Parameters.Add(new SqlParameter("@Medidas", request.Medidas ?? (object)DBNull.Value));
-                command.Parameters.Add(new SqlParameter("@Color", request.Color ?? (object)DBNull.Value));
-                double depreciacionUpdate = request.TiempoVidaUtil > 0 ? 100.0 / request.TiempoVidaUtil : 0;
-                command.Parameters.Add(new SqlParameter("@TiempoVidaUtil", request.TiempoVidaUtil));
+                command.Parameters.Add(new SqlParameter("@OtrasObservaciones", request.OtrasObservaciones ?? (object)DBNull.Value));
+                double tiempoVidaUtilUpdate = await ResolverTiempoVidaUtilAsync(request.TiempoVidaUtil, request.ClasificacionDepreciacionId);
+                double depreciacionUpdate = tiempoVidaUtilUpdate > 0 ? 100.0 / tiempoVidaUtilUpdate : 0;
+                command.Parameters.Add(new SqlParameter("@TiempoVidaUtil", tiempoVidaUtilUpdate));
+                command.Parameters.Add(new SqlParameter("@ClasificacionDepreciacionId", request.ClasificacionDepreciacionId ?? (object)DBNull.Value));
                 command.Parameters.Add(new SqlParameter("@DepreciacionAnual", depreciacionUpdate));
                 command.Parameters.Add(new SqlParameter("@CamposJSON", camposJson));
 
@@ -255,12 +270,14 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
                 command.Parameters.Add(new SqlParameter("@Marca", request.Marca ?? (object)DBNull.Value));
                 command.Parameters.Add(new SqlParameter("@Modelo", request.Modelo ?? (object)DBNull.Value));
                 command.Parameters.Add(new SqlParameter("@NroSerie", request.NroSerie ?? (object)DBNull.Value));
-                command.Parameters.Add(new SqlParameter("@Medidas", request.Medidas ?? (object)DBNull.Value));
-                command.Parameters.Add(new SqlParameter("@Color", request.Color ?? (object)DBNull.Value));
-                command.Parameters.Add(new SqlParameter("@TiempoVidaUtil", request.TiempoVidaUtil));
-                double depreciacion = request.TiempoVidaUtil > 0 ? 100.0 / request.TiempoVidaUtil : 0;
+                command.Parameters.Add(new SqlParameter("@OtrasObservaciones", request.OtrasObservaciones ?? (object)DBNull.Value));
+                double tiempoVidaUtil = await ResolverTiempoVidaUtilAsync(request.TiempoVidaUtil, request.ClasificacionDepreciacionId);
+                command.Parameters.Add(new SqlParameter("@TiempoVidaUtil", tiempoVidaUtil));
+                command.Parameters.Add(new SqlParameter("@ClasificacionDepreciacionId", request.ClasificacionDepreciacionId ?? (object)DBNull.Value));
+                double depreciacion = tiempoVidaUtil > 0 ? 100.0 / tiempoVidaUtil : 0;
                 command.Parameters.Add(new SqlParameter("@DepreciacionAnual", depreciacion));
                 command.Parameters.Add(new SqlParameter("@CamposJSON", camposJson));
+                command.Parameters.Add(new SqlParameter("@QRCodeBase64", (object)DBNull.Value));
 
                 await command.ExecuteNonQueryAsync();
             }
@@ -320,9 +337,9 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
                     Marca = articulo.Marca,
                     Modelo = articulo.Modelo,
                     NroSerie = articulo.NroSerie,
-                    Medidas = articulo.Medidas,
-                    Color = articulo.Color,
+                    OtrasObservaciones = articulo.OtrasObservaciones,
                     TiempoVidaUtil = articulo.TiempoVidaUtil,
+                    ClasificacionDepreciacionId = articulo.ClasificacionDepreciacionId,
                     DepreciacionAnual = articulo.DepreciacionAnual,
                     ValorActual = articulo.ValorActual,
                     Estado = articulo.Estado
