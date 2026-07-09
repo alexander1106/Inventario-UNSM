@@ -316,7 +316,7 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
 
         private string GenerarUrlAngular(int articuloId)
         {
-            return "http://localhost:4200/tipos-articulos/articulo/" + articuloId;
+            return "http://192.168.50.108:4202/tipos-articulos/articulo/" + articuloId;
         }
 
         // 🔹 Obtener todos los artículos con sus campos dinámicos mapeados
