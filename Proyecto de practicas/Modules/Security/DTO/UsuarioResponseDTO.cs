@@ -15,6 +15,7 @@ namespace Proyecto_de_practicas.Modules.Security.DTO
         public DateTime? FechaModificacion { get; set; }
         public string? UsuarioCreacion { get; set; }
         public string? UsuarioModificacion { get; set; }
+        public string? ImagenPath { get; set; }
 
     }
 }

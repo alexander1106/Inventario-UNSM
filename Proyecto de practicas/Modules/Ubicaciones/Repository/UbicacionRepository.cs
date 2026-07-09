@@ -60,7 +60,16 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Repository
             if (entity == null) return false;
 
             _context.Ubicaciones.Remove(entity);
-            await _context.SaveChangesAsync();
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                throw new Exception("No se puede eliminar la ubicación porque tiene traslados u otros registros asociados.");
+            }
+
             return true;
         }
     }

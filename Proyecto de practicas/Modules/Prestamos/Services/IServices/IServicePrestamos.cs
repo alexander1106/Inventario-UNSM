@@ -6,7 +6,7 @@ namespace Proyecto_de_practicas.Modules.Prestamos.Services.IServices
     {
         Task<IEnumerable<PrestamoDTO>> GetAllAsync();
         Task<PrestamoDTO?> GetByIdAsync(int id);
-        Task<PrestamoDTO> CreateAsync(CreatePrestamoDTO request);
+        Task<PrestamoDTO> CreateAsync(CreatePrestamoDTO request, string usuarioRegistroUsername);
         Task<PrestamoDTO?> UpdateAsync(int id, UpdatePrestamosDTO request);
         Task<bool> DeleteAsync(int id);
         Task<PrestamoDTO?> UpdateEstadoPrestamoAsync(int id, bool nuevoEstado);

@@ -186,7 +186,19 @@ namespace Proyecto_de_practicas.Modules.Articulos.Controller
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var success = await _service.DeleteAsync(id);
+            bool success;
+            try
+            {
+                success = await _service.DeleteAsync(id);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new ApiResponse<object>(
+                    false,
+                    ex.Message,
+                    null
+                ));
+            }
 
             if (!success)
             {

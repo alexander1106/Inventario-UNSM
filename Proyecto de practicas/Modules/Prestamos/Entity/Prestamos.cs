@@ -21,4 +21,5 @@ public class Prestamos
     public string? FirmadoPor { get; set; }
     public DateTime? FechaFirma { get; set; }
     public virtual Solicitantes Solicitante { get; set; } = null!;
+    public int UsuarioRegistroId { get; set; }
 }

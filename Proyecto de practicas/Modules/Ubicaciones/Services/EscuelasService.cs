@@ -120,5 +120,15 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Services
         {
             return await _repository.GetByUsuarioIdAsync(usuarioId);
         }
+
+        public async Task<Escuelas> AsignarTecnicoAsync(int escuelaId, int usuarioId)
+        {
+            return await _repository.AsignarTecnicoAsync(escuelaId, usuarioId);
+        }
+
+        public async Task<Escuelas?> GetByTecnicoIdAsync(int usuarioId)
+        {
+            return await _repository.GetByTecnicoIdAsync(usuarioId);
+        }
     }
 }

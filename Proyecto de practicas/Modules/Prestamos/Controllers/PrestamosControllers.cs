@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Proyecto_de_practicas.Config;
 using Proyecto_de_practicas.Modules.Prestamos.DTO;
@@ -81,12 +82,13 @@ public class PrestamosController : ControllerBase
     }
 
     // 🔹 CREATE
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreatePrestamoDTO request)
     {
         try
         {
-            var nuevoPrestamo = await _prestamoService.CreateAsync(request);
+            var nuevoPrestamo = await _prestamoService.CreateAsync(request, User.Identity!.Name!);
 
             return Ok(new ApiResponse<object>(
                 true,
@@ -173,6 +175,7 @@ public class PrestamosController : ControllerBase
         ));
     }
 
+    [Authorize]
     [HttpPut("{id}/firmar")]
     public async Task<IActionResult> Firmar(int id, [FromQuery] string firmante)
     {
@@ -194,6 +197,7 @@ public class PrestamosController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpPut("{id}/estado/2")]
     public async Task<IActionResult> CambiarAEstado(int id)
     {

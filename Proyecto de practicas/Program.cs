@@ -10,6 +10,8 @@ using Proyecto_de_practicas.Modules.Articulos.Repository.IArticulosRepository;
 using Proyecto_de_practicas.Modules.Articulos.Services;
 using Proyecto_de_practicas.Modules.Mantenimiento.Service;
 using Proyecto_de_practicas.Modules.Mantenimiento.Service.IService;
+using Proyecto_de_practicas.Modules.Notificaciones.Repository;
+using Proyecto_de_practicas.Modules.Notificaciones.Services;
 using Proyecto_de_practicas.Modules.Prestamos.Services;
 using Proyecto_de_practicas.Modules.Prestamos.Services.IServices;
 using Proyecto_de_practicas.Modules.Reporte.Service;
@@ -201,6 +203,10 @@ builder.Services.AddControllers()
 
         builder.Services.AddScoped<ISolicitanteService, SolicitanteService>();
         builder.Services.AddScoped<ISolicitanteRepository, SolicitanteRepository>();
+
+        builder.Services.AddScoped<INotificacionRepository, NotificacionRepository>();
+        builder.Services.AddScoped<INotificacionService, NotificacionService>();
+        builder.Services.AddHostedService<NotificacionVidaUtilBackgroundService>();
 
 
         builder.Services.AddScoped<IReporteRepository, ReporteRepository>();

@@ -262,6 +262,9 @@ namespace Proyecto_de_practicas.Migrations
                     b.Property<int>("SolicitanteId")
                         .HasColumnType("int");
 
+                    b.Property<int>("UsuarioRegistroId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ArticuloId");
@@ -362,6 +365,49 @@ namespace Proyecto_de_practicas.Migrations
                     b.HasIndex("ArticuloId");
 
                     b.ToTable("Mantenimientos");
+                });
+
+            modelBuilder.Entity("Proyecto_de_practicas.Modules.Notificaciones.Entities.Notificacion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("ArticuloId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaLectura")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Leido")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Mensaje")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PrestamoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Tipo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Titulo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UsuarioDestinoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Notificaciones");
                 });
 
             modelBuilder.Entity("Proyecto_de_practicas.Modules.Security.Entities.Modulo", b =>
@@ -549,6 +595,12 @@ namespace Proyecto_de_practicas.Migrations
                             Id = 2,
                             Estado = 1,
                             Nombre = "Administrador"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Estado = 1,
+                            Nombre = "Tecnico"
                         });
                 });
 
@@ -1345,12 +1397,17 @@ namespace Proyecto_de_practicas.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("TecnicoId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("UsuarioId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("FacultadId");
+
+                    b.HasIndex("TecnicoId");
 
                     b.HasIndex("UsuarioId");
 
@@ -2092,12 +2149,19 @@ namespace Proyecto_de_practicas.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Proyecto_de_practicas.Modules.Security.Entities.Usuario", "Tecnico")
+                        .WithMany()
+                        .HasForeignKey("TecnicoId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Proyecto_de_practicas.Modules.Security.Entities.Usuario", "Usuario")
                         .WithMany()
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Facultad");
+
+                    b.Navigation("Tecnico");
 
                     b.Navigation("Usuario");
                 });

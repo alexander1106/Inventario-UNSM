@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Proyecto_de_practicas.Data;
 using Proyecto_de_practicas.Modules.Articulos.Entities;
+using Proyecto_de_practicas.Modules.Notificaciones.Services;
 using Proyecto_de_practicas.Modules.Prestamos.DTO;
 using Proyecto_de_practicas.Modules.Prestamos.Services.IServices;
 using PdfSharpCore.Pdf;
@@ -13,11 +14,13 @@ public class PrestamoService : IServicePrestamos
 {
     private readonly AplicationDBContext _context;
     private readonly IMapper _mapper;
+    private readonly INotificacionService _notificacionService;
 
-    public PrestamoService(AplicationDBContext context, IMapper mapper)
+    public PrestamoService(AplicationDBContext context, IMapper mapper, INotificacionService notificacionService)
     {
         _context = context;
         _mapper = mapper;
+        _notificacionService = notificacionService;
     }
 
     public async Task<IEnumerable<PrestamoDTO>> GetAllAsync()
@@ -102,7 +105,7 @@ public class PrestamoService : IServicePrestamos
         return _mapper.Map<PrestamoDTO>(prestamo);
     }
 
-    public async Task<PrestamoDTO> CreateAsync(CreatePrestamoDTO request)
+    public async Task<PrestamoDTO> CreateAsync(CreatePrestamoDTO request, string usuarioRegistroUsername)
     {
         try
         {
@@ -115,6 +118,12 @@ public class PrestamoService : IServicePrestamos
 
             if (solicitante == null)
                 throw new Exception("Solicitante no existe");
+
+            var usuarioRegistro = await _context.Usuarios
+                .FirstOrDefaultAsync(u => u.Username == usuarioRegistroUsername);
+
+            if (usuarioRegistro == null)
+                throw new Exception("Usuario que registra el préstamo no existe");
 
             var yaPrestado = await _context.Prestamos
                 .AnyAsync(p => p.Articulo.Id == request.ArticuloId && p.EstadoPrestamo == true);
@@ -129,6 +138,7 @@ public class PrestamoService : IServicePrestamos
                 Solicitante = solicitante,   // ✅ CORRECTO
                 SolicitanteId = solicitante.Id, // ✅ CORRECTO
                 Aprobar = false,
+                UsuarioRegistroId = usuarioRegistro.Id,
 
                 NombreSolicitante = request.NombreSolicitante,
                 FechaPrestamo = request.FechaPrestamo,
@@ -139,6 +149,8 @@ public class PrestamoService : IServicePrestamos
 
             _context.Prestamos.Add(prestamo);
             await _context.SaveChangesAsync();
+
+            await _notificacionService.NotificarPrestamoPendienteAsync(prestamo.Id, articulo.Id, prestamo.NombreSolicitante);
 
             return _mapper.Map<PrestamoDTO>(prestamo);
         }
@@ -206,6 +218,10 @@ public class PrestamoService : IServicePrestamos
         prestamo.Aprobar = true;
         await _context.SaveChangesAsync();
 
+        var articuloId = _context.Entry(prestamo).Property<int>("ArticuloId").CurrentValue;
+        await _notificacionService.ResolverNotificacionesPrestamoAsync(prestamo.Id);
+        await _notificacionService.NotificarPrestamoAprobadoAsync(prestamo.Id, articuloId, prestamo.UsuarioRegistroId);
+
         return _mapper.Map<PrestamoDTO>(prestamo);
     }
     // 🔹 Eliminar
@@ -256,6 +272,13 @@ public class PrestamoService : IServicePrestamos
         prestamo.Aprobar = estado; // 👈 AQUÍ cambias a 2
 
         await _context.SaveChangesAsync();
+
+        if (estado)
+        {
+            var articuloId = _context.Entry(prestamo).Property<int>("ArticuloId").CurrentValue;
+            await _notificacionService.ResolverNotificacionesPrestamoAsync(prestamo.Id);
+            await _notificacionService.NotificarPrestamoAprobadoAsync(prestamo.Id, articuloId, prestamo.UsuarioRegistroId);
+        }
 
         return _mapper.Map<PrestamoDTO>(prestamo);
     }

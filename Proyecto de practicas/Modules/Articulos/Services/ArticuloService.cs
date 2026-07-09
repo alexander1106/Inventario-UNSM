@@ -69,6 +69,14 @@ namespace Proyecto_de_practicas.Modules.Articulos.Services
 
         public async Task<bool> DeleteAsync(int id)
         {
+            var entity = await _repo.GetByIdAsync(id);
+            if (entity == null) return false;
+
+            var tieneRelaciones = await _repo.TieneRelacionesAsync(id);
+            if (tieneRelaciones)
+                throw new InvalidOperationException(
+                    "No se puede eliminar el artículo porque tiene préstamos, mantenimientos o traslados registrados.");
+
             return await _repo.DeleteAsync(id);
         }
 

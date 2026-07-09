@@ -13,12 +13,16 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Entities
 
         public int FacultadId { get; set; }
         public int? UsuarioId { get; set; }
+        public int? TecnicoId { get; set; }
 
         [JsonIgnore]
         public Facultades? Facultad { get; set; }
 
         [JsonIgnore]
         public virtual Usuario? Usuario { get; set; }
+
+        [JsonIgnore]
+        public virtual Usuario? Tecnico { get; set; }
 
         // Relación 1:N
         public virtual ICollection<Ubicacion> Ubicaciones { get; set; }

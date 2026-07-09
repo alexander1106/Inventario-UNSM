@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Proyecto_de_practicas.Modules.Articulos.Entities;
 using Proyecto_de_practicas.Modules.Mantenimiento.Entity;
+using Proyecto_de_practicas.Modules.Notificaciones.Entities;
 using Proyecto_de_practicas.Modules.Security.Entities;
 using Proyecto_de_practicas.Modules.Security.Security;
 using Proyecto_de_practicas.Modules.Traslados.Entities;
@@ -28,6 +29,7 @@ namespace Proyecto_de_practicas.Data
         public DbSet<Articulo> Articulos { get; set; }
         public DbSet<Solicitantes> Solicitantes { get; set; }
         public DbSet<Mantenimientos> Mantenimientos { get; set; }
+        public DbSet<Notificacion> Notificaciones { get; set; }
 
         public DbSet<CampoArticulo> CamposArticulos { get; set; }
         public DbSet<ArticuloCampoValor> ArticuloCamposValores { get; set; }
@@ -75,7 +77,8 @@ namespace Proyecto_de_practicas.Data
 
             modelBuilder.Entity<Roles>().HasData(
                 new Roles { Id = 1, Nombre = "superadmin", Estado = 1 },
-                new Roles { Id = 2, Nombre = "Administrador", Estado = 1 }
+                new Roles { Id = 2, Nombre = "Administrador", Estado = 1 },
+                new Roles { Id = 3, Nombre = "Tecnico", Estado = 1 }
             );
             modelBuilder.Entity<Sedes>().HasData(
                 new Sedes { Id = 1, Nombre = "Rioja", Direccion = "Jr. Santo Toribio N° 1200 ", Estado = true },
@@ -270,6 +273,12 @@ namespace Proyecto_de_practicas.Data
                 .WithMany()
                 .HasForeignKey(e => e.UsuarioId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<Escuelas>()
+                .HasOne(e => e.Tecnico)
+                .WithMany()
+                .HasForeignKey(e => e.TecnicoId)
+                .OnDelete(DeleteBehavior.Restrict);
 
 
             modelBuilder.Entity<Traslado>(entity =>

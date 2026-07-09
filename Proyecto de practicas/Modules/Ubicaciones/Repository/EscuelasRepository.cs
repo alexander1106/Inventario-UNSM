@@ -76,5 +76,23 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Repository
             return await _context.Escuelas
                 .FirstOrDefaultAsync(e => e.UsuarioId == usuarioId);
         }
+
+        public async Task<Escuelas> AsignarTecnicoAsync(int escuelaId, int usuarioId)
+        {
+            var escuela = await _context.Escuelas.FindAsync(escuelaId);
+            if (escuela == null)
+                throw new Exception("Escuela no encontrada");
+
+            escuela.TecnicoId = usuarioId;
+            _context.Escuelas.Update(escuela);
+            await _context.SaveChangesAsync();
+            return escuela;
+        }
+
+        public async Task<Escuelas?> GetByTecnicoIdAsync(int usuarioId)
+        {
+            return await _context.Escuelas
+                .FirstOrDefaultAsync(e => e.TecnicoId == usuarioId);
+        }
     }
 }

@@ -112,5 +112,29 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Controller
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("tecnico/{usuarioId}")]
+        public async Task<IActionResult> GetByTecnico(int usuarioId)
+        {
+            var escuela = await _service.GetByTecnicoIdAsync(usuarioId);
+            if (escuela == null)
+                return NotFound(new { success = false, mensaje = "No hay escuela asignada a este técnico." });
+
+            return Ok(new { success = true, data = escuela });
+        }
+
+        [HttpPut("{id}/asignar-tecnico")]
+        public async Task<IActionResult> AsignarTecnico(int id, [FromBody] AsignarUsuarioUbicacionDto dto)
+        {
+            try
+            {
+                var result = await _service.AsignarTecnicoAsync(id, dto.UsuarioId);
+                return Ok(new { mensaje = "Técnico asignado correctamente a la escuela.", escuela = result });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

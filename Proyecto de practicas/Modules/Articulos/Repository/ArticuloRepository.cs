@@ -177,14 +177,15 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
                 await _context.Database.CloseConnectionAsync();
             }
 
-            var articuloActualizado = await _context.Articulos.FirstOrDefaultAsync(a => a.Id == id);
-            if (articuloActualizado != null)
-            {
-                articuloActualizado.ValorActual = DepreciacionCalculator.CalcularValorActual(
-                    articuloActualizado.ValorAdquisitivo, articuloActualizado.FechaAdquision, articuloActualizado.DepreciacionAnual);
-                _context.Articulos.Update(articuloActualizado);
-                await _context.SaveChangesAsync();
-            }
+            // El stored procedure ya escribió los valores nuevos directamente en la BD.
+            // articuloExistente sigue trackeado por EF con los valores viejos (identity map),
+            // así que hay que recargarlo desde la BD antes de tocar/guardar cualquier campo,
+            // o SaveChangesAsync terminaría pisando el UPDATE del SP con los datos obsoletos.
+            await _context.Entry(articuloExistente).ReloadAsync();
+
+            articuloExistente.ValorActual = DepreciacionCalculator.CalcularValorActual(
+                articuloExistente.ValorAdquisitivo, articuloExistente.FechaAdquision, articuloExistente.DepreciacionAnual);
+            await _context.SaveChangesAsync();
 
             return "Artículo actualizado correctamente con campos dinámicos";
         }
@@ -198,6 +199,19 @@ namespace Proyecto_de_practicas.Modules.Articulos.Repository
             _context.Articulos.Update(articulo);
             await _context.SaveChangesAsync();
             return articulo;
+        }
+
+        // 🔹 Verificar si el artículo tiene préstamos, mantenimientos o traslados asociados
+        public async Task<bool> TieneRelacionesAsync(int id)
+        {
+            var tienePrestamos = await _context.Prestamos.AnyAsync(p => p.Articulo.Id == id);
+            if (tienePrestamos) return true;
+
+            var tieneMantenimientos = await _context.Mantenimientos.AnyAsync(m => m.ArticuloId == id);
+            if (tieneMantenimientos) return true;
+
+            var tieneTraslados = await _context.Traslado.AnyAsync(t => t.ArticuloId == id);
+            return tieneTraslados;
         }
 
         // 🔹 Eliminar artículo

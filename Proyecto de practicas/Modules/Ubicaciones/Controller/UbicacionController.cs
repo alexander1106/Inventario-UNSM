@@ -128,12 +128,19 @@ namespace Proyecto_de_practicas.Modules.Ubicaciones.Controller
         [HttpDelete("{id}")]
         public async Task<ActionResult<ApiResponse<object>>> Delete(int id)
         {
-            var success = await _service.DeleteAsync(id);
+            try
+            {
+                var success = await _service.DeleteAsync(id);
 
-            if (!success)
-                return NotFound(new ApiResponse<object>(false, "No encontrado", null));
+                if (!success)
+                    return NotFound(new ApiResponse<object>(false, "No encontrado", null));
 
-            return Ok(new ApiResponse<object>(true, "Eliminado", null));
+                return Ok(new ApiResponse<object>(true, "Eliminado", null));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse<object>(false, ex.Message, null));
+            }
         }
     }
 }

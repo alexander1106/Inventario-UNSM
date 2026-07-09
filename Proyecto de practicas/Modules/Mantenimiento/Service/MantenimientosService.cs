@@ -7,16 +7,19 @@ using Proyecto_de_practicas.Data;
 using Proyecto_de_practicas.Modules.Mantenimiento.DTO;
 using Proyecto_de_practicas.Modules.Mantenimiento.Entity;
 using Proyecto_de_practicas.Modules.Mantenimiento.Service.IService;
+using Proyecto_de_practicas.Modules.Notificaciones.Services;
 
 namespace Proyecto_de_practicas.Modules.Mantenimiento.Service
 {
     public class MantenimientosService : IMantenimientosService
     {
         private readonly AplicationDBContext _context;
+        private readonly INotificacionService _notificacionService;
 
-        public MantenimientosService(AplicationDBContext context)
+        public MantenimientosService(AplicationDBContext context, INotificacionService notificacionService)
         {
             _context = context;
+            _notificacionService = notificacionService;
         }
 
         public async Task<List<Mantenimientos>> GetAll()
@@ -62,6 +65,9 @@ namespace Proyecto_de_practicas.Modules.Mantenimiento.Service
             _context.Add(mantenimiento);
             await _context.SaveChangesAsync();
 
+            await _notificacionService.NotificarMantenimientoRegistradoAsync(
+                mantenimiento.ArticuloId, mantenimiento.TipoMantenimiento);
+
             return mantenimiento;
         }
 
@@ -70,6 +76,8 @@ namespace Proyecto_de_practicas.Modules.Mantenimiento.Service
             var mantenimiento = await _context.Set<Mantenimientos>().FindAsync(id);
 
             if (mantenimiento == null) return false;
+
+            var seCompleto = mantenimiento.EstadoMantenimiento && !dto.EstadoMantenimiento;
 
             mantenimiento.ArticuloId = dto.ArticuloId;
             mantenimiento.FechaMantenimiento = dto.FechaMantenimiento;
@@ -81,6 +89,9 @@ namespace Proyecto_de_practicas.Modules.Mantenimiento.Service
 
             _context.Update(mantenimiento);
             await _context.SaveChangesAsync();
+
+            if (seCompleto)
+                await _notificacionService.NotificarMantenimientoCompletadoAsync(mantenimiento.ArticuloId);
 
             return true;
         }
