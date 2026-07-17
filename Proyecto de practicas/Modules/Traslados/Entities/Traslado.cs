@@ -24,7 +24,8 @@ namespace Proyecto_de_practicas.Modules.Traslados.Entities
 
         public string Observaciones { get; set; } = string.Empty;
 
-    
-    
-}
+        public string? RutaPdf { get; set; }
+        public string? FirmadoPor { get; set; }
+        public DateTime? FechaFirma { get; set; }
+    }
 }

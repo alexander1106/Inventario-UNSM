@@ -1350,11 +1350,20 @@ namespace Proyecto_de_practicas.Migrations
                     b.Property<int>("ArticuloId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("FechaFirma")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("FechaTraslado")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("FirmadoPor")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Observaciones")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RutaPdf")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UbicacionDestinoId")

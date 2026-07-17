@@ -14,5 +14,8 @@ namespace Proyecto_de_practicas.Modules.Notificaciones.Services
         Task ResolverNotificacionesPrestamoAsync(int prestamoId);
         Task NotificarMantenimientoRegistradoAsync(int articuloId, string tipoMantenimiento);
         Task NotificarMantenimientoCompletadoAsync(int articuloId);
+        Task NotificarTrasladoRegistradoAsync(int trasladoId, int articuloId, string? nombreUsuario);
+        Task NotificarTrasladoFirmadoAsync(int trasladoId, int articuloId, int usuarioRegistroId);
+        Task ResolverNotificacionesTrasladoAsync(int trasladoId);
     }
 }

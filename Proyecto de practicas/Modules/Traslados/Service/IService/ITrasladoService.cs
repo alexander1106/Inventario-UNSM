@@ -11,5 +11,7 @@ namespace Proyecto_de_practicas.Modules.Traslados.Service.IService
         Task<bool> DeleteAsync(int id);
         Task<bool> RealizarTrasladoAsync(Traslado traslado);
 
+        Task<string> UploadPdfAsync(int trasladoId, IFormFile file);
+        Task<Traslado?> FirmarTrasladoAsync(int id, string firmante);
     }
 }

@@ -8,6 +8,7 @@ namespace Proyecto_de_practicas.Modules.Notificaciones.Entities
         public string Mensaje { get; set; } = null!;
         public int? ArticuloId { get; set; }
         public int? PrestamoId { get; set; }
+        public int? TrasladoId { get; set; }
         public int UsuarioDestinoId { get; set; }
         public DateTime FechaCreacion { get; set; } = DateTime.Now;
         public bool Leido { get; set; } = false;

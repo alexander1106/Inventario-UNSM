@@ -179,6 +179,60 @@ namespace Proyecto_de_practicas.Modules.Notificaciones.Services
             }
         }
 
+        public async Task NotificarTrasladoRegistradoAsync(int trasladoId, int articuloId, string? nombreUsuario)
+        {
+            var aprobadores = await ObtenerUsuariosAprobadoresAsync();
+
+            var mensaje = string.IsNullOrWhiteSpace(nombreUsuario)
+                ? $"Se registró el traslado #{trasladoId}."
+                : $"El traslado #{trasladoId} fue registrado por {nombreUsuario}.";
+
+            foreach (var usuarioId in aprobadores)
+            {
+                var yaExiste = await _repo.ExisteNotificacionActivaAsync(
+                    NotificacionTipos.TrasladoRegistrado, articuloId, null, usuarioId, trasladoId);
+
+                if (yaExiste)
+                    continue;
+
+                await _repo.AddAsync(new Notificacion
+                {
+                    Tipo = NotificacionTipos.TrasladoRegistrado,
+                    Titulo = "Nuevo traslado registrado",
+                    Mensaje = mensaje,
+                    ArticuloId = articuloId,
+                    TrasladoId = trasladoId,
+                    UsuarioDestinoId = usuarioId,
+                    FechaCreacion = DateTime.Now
+                });
+            }
+        }
+
+        public async Task NotificarTrasladoFirmadoAsync(int trasladoId, int articuloId, int usuarioRegistroId)
+        {
+            var yaExiste = await _repo.ExisteNotificacionActivaAsync(
+                NotificacionTipos.TrasladoFirmado, articuloId, null, usuarioRegistroId, trasladoId);
+
+            if (yaExiste)
+                return;
+
+            await _repo.AddAsync(new Notificacion
+            {
+                Tipo = NotificacionTipos.TrasladoFirmado,
+                Titulo = "Traslado firmado",
+                Mensaje = $"El traslado #{trasladoId} que registraste ha sido firmado.",
+                ArticuloId = articuloId,
+                TrasladoId = trasladoId,
+                UsuarioDestinoId = usuarioRegistroId,
+                FechaCreacion = DateTime.Now
+            });
+        }
+
+        public async Task ResolverNotificacionesTrasladoAsync(int trasladoId)
+        {
+            await _repo.MarcarLeidasPorTrasladoAsync(trasladoId);
+        }
+
         private async Task<string> ObtenerDescripcionArticuloAsync(int articuloId)
         {
             var articulo = await _context.Articulos
@@ -222,6 +276,7 @@ namespace Proyecto_de_practicas.Modules.Notificaciones.Services
             Mensaje = n.Mensaje,
             ArticuloId = n.ArticuloId,
             PrestamoId = n.PrestamoId,
+            TrasladoId = n.TrasladoId,
             FechaCreacion = n.FechaCreacion,
             Leido = n.Leido,
             FechaLectura = n.FechaLectura

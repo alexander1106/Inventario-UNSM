@@ -44,13 +44,14 @@ namespace Proyecto_de_practicas.Modules.Notificaciones.Repository
             return entity;
         }
 
-        public async Task<bool> ExisteNotificacionActivaAsync(string tipo, int? articuloId, int? prestamoId, int usuarioDestinoId)
+        public async Task<bool> ExisteNotificacionActivaAsync(string tipo, int? articuloId, int? prestamoId, int usuarioDestinoId, int? trasladoId = null)
         {
             return await _context.Notificaciones.AnyAsync(n =>
                 n.Tipo == tipo &&
                 !n.Leido &&
                 n.ArticuloId == articuloId &&
                 n.PrestamoId == prestamoId &&
+                n.TrasladoId == trasladoId &&
                 n.UsuarioDestinoId == usuarioDestinoId);
         }
 
@@ -87,6 +88,22 @@ namespace Proyecto_de_practicas.Modules.Notificaciones.Repository
         {
             var pendientes = await _context.Notificaciones
                 .Where(n => !n.Leido && n.PrestamoId == prestamoId && n.Tipo == NotificacionTipos.PrestamoPendiente)
+                .ToListAsync();
+
+            var ahora = DateTime.Now;
+            foreach (var notificacion in pendientes)
+            {
+                notificacion.Leido = true;
+                notificacion.FechaLectura = ahora;
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task MarcarLeidasPorTrasladoAsync(int trasladoId)
+        {
+            var pendientes = await _context.Notificaciones
+                .Where(n => !n.Leido && n.TrasladoId == trasladoId && n.Tipo == NotificacionTipos.TrasladoRegistrado)
                 .ToListAsync();
 
             var ahora = DateTime.Now;

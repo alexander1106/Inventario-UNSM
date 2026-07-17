@@ -11,5 +11,8 @@ namespace Proyecto_de_practicas.Modules.Traslados.Repository.IRespository
 
         Task<bool> RealizarTrasladoAsync(Traslado traslado);
         Task<Traslado> UpdateAsync(Traslado traslado);
+
+        Task<string> UploadPdfAsync(int trasladoId, IFormFile file);
+        Task<Traslado?> FirmarTrasladoAsync(int id, string firmante);
     }
 }

@@ -8,9 +8,10 @@ namespace Proyecto_de_practicas.Modules.Notificaciones.Repository
         Task<int> CountNoLeidasAsync(int usuarioDestinoId);
         Task<Notificacion?> GetByIdAsync(int id);
         Task<Notificacion> AddAsync(Notificacion entity);
-        Task<bool> ExisteNotificacionActivaAsync(string tipo, int? articuloId, int? prestamoId, int usuarioDestinoId);
+        Task<bool> ExisteNotificacionActivaAsync(string tipo, int? articuloId, int? prestamoId, int usuarioDestinoId, int? trasladoId = null);
         Task<Notificacion?> MarcarLeidaAsync(int id, int usuarioDestinoId);
         Task MarcarTodasLeidasAsync(int usuarioDestinoId);
         Task MarcarLeidasPorPrestamoAsync(int prestamoId);
+        Task MarcarLeidasPorTrasladoAsync(int trasladoId);
     }
 }

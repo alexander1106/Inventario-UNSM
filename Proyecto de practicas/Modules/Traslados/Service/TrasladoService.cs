@@ -48,5 +48,17 @@ namespace Proyecto_de_practicas.Modules.Traslados.Service
         {
             return _repository.RealizarTrasladoAsync(traslado);
         }
+
+        // 🔹 Subir PDF del traslado
+        public Task<string> UploadPdfAsync(int trasladoId, IFormFile file)
+        {
+            return _repository.UploadPdfAsync(trasladoId, file);
+        }
+
+        // 🔹 Firmar traslado (marca de agua sobre el PDF)
+        public Task<Traslado?> FirmarTrasladoAsync(int id, string firmante)
+        {
+            return _repository.FirmarTrasladoAsync(id, firmante);
+        }
     }
 }
